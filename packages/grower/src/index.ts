@@ -1,19 +1,10 @@
-/**
- * @pentad/grower — 金
- * 收集与聚合：Fan-in — 多个数据源 → 统一收集。
- */
-
 import type { DispersionResult } from '@pentad/sweeper';
 
-/** 聚合后的结果 */
 export interface AbsorptionResult<T> {
   sources: string[];
   data: T[];
 }
 
-/**
- * 从多个上游汇聚数据，合并去重。
- */
 export function absorb<T>(
   results: DispersionResult<T>,
 ): AbsorptionResult<T> {
@@ -22,3 +13,31 @@ export function absorb<T>(
     data: results.map(([, data]) => data),
   };
 }
+
+absorb.unique = function unique<T>(
+  results: DispersionResult<T>,
+  key?: (item: T) => unknown,
+): AbsorptionResult<T> {
+  const seen = new Set<unknown>();
+  const sources: string[] = [];
+  const data: T[] = [];
+
+  for (const [target, item] of results) {
+    const k = key ? key(item) : item;
+    if (!seen.has(k)) {
+      seen.add(k);
+      sources.push(target);
+      data.push(item);
+    }
+  }
+
+  return { sources, data };
+};
+
+absorb.reduce = function reduce<T, R>(
+  results: DispersionResult<T>,
+  fn: (acc: R, item: T) => R,
+  initial: R,
+): R {
+  return results.reduce((acc, [, item]) => fn(acc, item), initial);
+};

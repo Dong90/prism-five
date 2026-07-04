@@ -1,17 +1,45 @@
-/**
- * @pentad/sweeper — 土
- * 分发：Fan-out — 一份数据 → 多个目标。
- */
-
-/** 分发结果：每组 [目标, 数据] */
 export type DispersionResult<T> = Array<[target: string, data: T]>;
 
-/**
- * 将数据副本分发到指定目标列表。
- */
-export function disperse<T>(
+type Target<T> = string | ((data: T) => void | Promise<void>);
+
+function isFunctionTarget<T>(t: Target<T>): t is (data: T) => void | Promise<void> {
+  return typeof t === 'function';
+}
+
+function clone<T>(data: T): T {
+  return structuredClone(data);
+}
+
+async function executeTarget<T>(
+  target: Target<T>,
   data: T,
-  targets: string[],
-): DispersionResult<T> {
-  return targets.map((target): [string, T] => [target, structuredClone(data)]);
+): Promise<[string, T] | null> {
+  if (isFunctionTarget(target)) {
+    try {
+      await target(clone(data));
+    } catch {
+      return null;
+    }
+    return [target.name || '<anonymous>', clone(data)];
+  }
+  return [target, clone(data)];
+}
+
+export async function disperse<T>(
+  data: T,
+  targets: Target<T>[],
+): Promise<DispersionResult<T>> {
+  if (targets.length === 0) return [];
+
+  const results = await Promise.allSettled(
+    targets.map(t => executeTarget(t, data)),
+  );
+
+  const out: DispersionResult<T> = [];
+  for (const r of results) {
+    if (r.status === 'fulfilled' && r.value !== null) {
+      out.push(r.value);
+    }
+  }
+  return out;
 }

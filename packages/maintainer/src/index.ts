@@ -1,14 +1,30 @@
-/**
- * @pentad/maintainer — 水
- * 最终输出：将数据发送到外部系统。
- */
+export class EmitError extends Error {
+  constructor(
+    message: string,
+    public readonly cause: unknown,
+    public readonly data?: unknown,
+  ) {
+    super(message);
+    this.name = 'EmitError';
+  }
+}
 
-/** Sink 可以是同步或异步输出函数 */
 export type Sink<T> = (data: T) => void | Promise<void>;
 
-/**
- * 将数据发送到指定 sink。
- */
-export function emit<T>(data: T, sink: Sink<T>): void | Promise<void> {
-  return sink(data);
+export async function emit<T>(
+  data: T,
+  sink: Sink<T>,
+): Promise<void> {
+  try {
+    const result = sink(data);
+    if (result instanceof Promise) {
+      await result;
+    }
+  } catch (err) {
+    throw new EmitError(
+      `emit failed: ${(err as Error).message}`,
+      err,
+      data,
+    );
+  }
 }
