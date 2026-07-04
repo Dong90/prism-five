@@ -6,3 +6,4 @@ export { loadAgent, agentSummary, type AgentContext, type AgentSection } from '.
 export { buildAgentPrompt, getAgentSkillMarkdown, listAgents, type AgentPrompt } from './prompt';
 export { AgentRuntime, type StepPlan, type WorkItem, type ExecutionLog } from './runtime';
 export { QueueManager, type QueueItem, type Priority } from './queue';
+export { logger, setLogLevel, type LogLevel, type LogEntry } from './logger';

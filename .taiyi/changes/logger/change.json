@@ -1,0 +1,6 @@
+{
+  "title": "错误处理 + 可观测性",
+  "motivation": "缺少结构化日志",
+  "scope": { "includes": ["orchestrator logger"], "excludes": ["外部日志系统"] },
+  "success_criteria": [{ "id": "SC1", "description": "Logger 可用" }]
+}

@@ -1,0 +1,31 @@
+{
+  "slug": "logger",
+  "currentPhase": "integration",
+  "completedPhases": [
+    "change",
+    "dev"
+  ],
+  "profile": "micro",
+  "skippedPhases": [
+    "requirement",
+    "design",
+    "ui-design",
+    "task",
+    "test",
+    "review"
+  ],
+  "strictDev": false,
+  "autoHarness": false,
+  "complexity": {
+    "level": "low",
+    "score": 3,
+    "recommendedSkills": [
+      "taiyi-intel-scan"
+    ]
+  },
+  "auxiliaryCompleted": [],
+  "workflowStatus": "active",
+  "createdAt": "2026-07-04T07:44:36.437Z",
+  "updatedAt": "2026-07-04T07:45:42.910Z",
+  "version": 3
+}

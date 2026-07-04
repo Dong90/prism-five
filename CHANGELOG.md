@@ -55,3 +55,13 @@
 ## Added
 
 - .github/workflows/ci.yml with build/test/lint on push & PR
+
+<!-- taiyi:orchestrator-cli --> 2026-07-04
+
+# CHANGELOG: Orchestrator + CLI 测试覆盖
+
+## Added
+
+- Pipeline 状态机测试 (6 tests)
+- Gate 测试 (3 tests)
+- 总测试数 22 → 31

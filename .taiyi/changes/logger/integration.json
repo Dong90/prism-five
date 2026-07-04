@@ -1,0 +1,6 @@
+{
+  "title": "错误处理 + 可观测性",
+  "changelog_entries": [
+    { "type": "feat", "description": "结构化 logger" }
+  ]
+}
