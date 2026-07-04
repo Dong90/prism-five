@@ -7,9 +7,11 @@ import { approveCommand } from './commands/approve';
 import { checkCommand } from './commands/check';
 import { promoteCommand } from './commands/promote';
 import { runCommand } from './commands/run';
+import { queueCommand } from './commands/queue';
+import { nextCommand } from './commands/next';
 
 const program = new Command();
-program.name('prism').description('Prism-Five — 五棱镜单功能串行管道 CLI').version('0.2.0');
+program.name('prism').description('Prism-Five — 五棱镜单功能串行管道 CLI').version('0.3.0');
 
 program.addCommand(statusCommand);
 program.addCommand(newCommand);
@@ -18,5 +20,7 @@ program.addCommand(approveCommand);
 program.addCommand(checkCommand);
 program.addCommand(promoteCommand);
 program.addCommand(runCommand);
+program.addCommand(queueCommand);
+program.addCommand(nextCommand);
 
 program.parse();

@@ -47,7 +47,7 @@ export const PipelineStateSchema = z.object({
   productStage: ProductStageSchema,
   activeFeature: z.string().nullable(),
   features: z.record(z.string(), FeatureSchema),
-  queue: z.array(z.string()).default([]),
+  queue: z.array(z.union([z.string(), z.object({ slug: z.string(), priority: z.enum(["P0","P1","P2"]), addedAt: z.string() })])).default([]),
   updated: z.string(),
 });
 export type PipelineState = z.infer<typeof PipelineStateSchema>;
