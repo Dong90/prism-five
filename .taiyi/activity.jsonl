@@ -105,3 +105,9 @@
 {"ts":"2026-07-04T15:09:25.538Z","event":"quality:passed","slug":"exempt-prism-exempt-force-skip","phase":"review","qualityScores":{"completeness":true,"consistency":true,"verifiability":true,"traceability":true,"engineering_quality":true},"hints":[]}
 {"ts":"2026-07-04T15:09:25.563Z","event":"phase:complete","slug":"exempt-prism-exempt-force-skip","phase":"review"}
 {"ts":"2026-07-04T15:09:26.236Z","event":"audit:blocked","slug":"exempt-prism-exempt-force-skip","findings":2}
+{"ts":"2026-07-04T15:09:27.447Z","event":"quality:failed","slug":"exempt-prism-exempt-force-skip","phase":"integration","error":"Quality gate failed: completeness, traceability — 含 1 个未填写占位符（_待定_）","hints":["含 1 个未填写占位符（_待定_）"]}
+{"ts":"2026-07-04T15:09:39.392Z","event":"quality:failed","slug":"exempt-prism-exempt-force-skip","phase":"integration","error":"Quality gate failed: completeness, traceability — 含 1 个未填写占位符（_待定_）","hints":["含 1 个未填写占位符（_待定_）"]}
+{"ts":"2026-07-04T15:09:46.445Z","event":"quality:failed","slug":"exempt-prism-exempt-force-skip","phase":"integration","error":"Quality gate failed: completeness, traceability — 含 1 个未填写占位符（_待定_）","hints":["含 1 个未填写占位符（_待定_）"]}
+{"ts":"2026-07-04T15:09:58.160Z","event":"audit:blocked","slug":"exempt-prism-exempt-force-skip","findings":1}
+{"ts":"2026-07-04T15:10:10.001Z","event":"audit:blocked","slug":"exempt-prism-exempt-force-skip","findings":1}
+{"ts":"2026-07-04T15:10:15.773Z","event":"audit:blocked","slug":"exempt-prism-exempt-force-skip","findings":1}
