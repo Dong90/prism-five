@@ -13,6 +13,7 @@
     "lint": "eslint packages/ && prettier --check packages/",
     "lint:fix": "eslint --fix packages/ && prettier --write packages/",
     "clean": "rm -rf packages/*/dist tsconfig.build.tsbuildinfo",
+    "bench": "vitest bench",
     "typecheck": "tsc -b --noEmit"
   },
   "devDependencies": {

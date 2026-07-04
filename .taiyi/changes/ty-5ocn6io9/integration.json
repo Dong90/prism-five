@@ -1,0 +1,1 @@
+{"title":"性能基准测试","changelog_entries":[{"type":"test","description":"vitest bench (7 benchmarks)"}],"verification":[{"check":"build","result":"pass"},{"check":"test","result":"pass 42"},{"check":"bench","result":"pass"}],"quality":"pass"}
