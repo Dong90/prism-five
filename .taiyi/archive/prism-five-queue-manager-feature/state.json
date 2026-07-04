@@ -6,7 +6,8 @@
     "requirement",
     "design",
     "dev",
-    "review"
+    "review",
+    "integration"
   ],
   "profile": "audit",
   "skippedPhases": [
@@ -26,7 +27,7 @@
   "auxiliaryCompleted": [
     "taiyi-intel-scan"
   ],
-  "workflowStatus": "active",
+  "workflowStatus": "completed",
   "createdAt": "2026-07-04T06:45:04.871Z",
-  "updatedAt": "2026-07-04T06:47:35.963Z"
+  "updatedAt": "2026-07-04T06:47:52.437Z"
 }
