@@ -108,3 +108,40 @@
 - [x] `npm run build` passes
 - [x] `npm test` passes (42 tests, 9 files)
 - [x] `npm run lint` passes
+
+
+<!-- taiyi:prism-five-incidence-refraction-dispersion-absor --> 2026-07-04
+
+# CHANGELOG: 还原项目名 + 5 要素重命名
+
+## Changed
+
+- 项目名 pentad → prism-five
+- 核心包目录 prototyper→incidence, builder→refraction, sweeper→dispersion, grower→absorption, maintainer→emission
+- 包名 @pentad/\* → @prism-five/\*（9 个包全部更新）
+- 25 处源码 import 同步
+- 全配置同步（tsconfig.json / README.md）
+
+## Verification
+
+- [x] `npm run build` exit 0
+- [x] `npm test` 42 tests pass (9 files)
+- [x] `npm run lint` pass
+- [x] 源码零残留 `@pentad/` 引用
+- [x] package-lock.json 干净
+
+<!-- taiyi:ty-5ocn6io9 --> 2026-07-04
+# CHANGELOG: 性能基准测试
+
+## Added
+- packages/benchmarks: vitest bench 套件 (7 个基准)
+- script: `npm run bench`
+
+## Changed
+- package.json: 添加 bench script
+- tsconfig.json: 添加 packages/benchmarks 引用
+
+## Verification
+- [x] `npm run build` passes
+- [x] `npm test` passes (42 tests)
+- [x] `npm run bench` runs (7 benchmarks)

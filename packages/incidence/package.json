@@ -1,7 +1,7 @@
 {
-  "name": "@pentad/maintainer",
+  "name": "@prism-five/incidence",
   "version": "0.1.0",
-  "description": "输出与渲染 (水 — emission)",
+  "description": "事件接收与触发 (木 — incidence)",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {

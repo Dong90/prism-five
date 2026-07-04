@@ -1,9 +1,9 @@
 import { bench, describe } from 'vitest';
-import { incident } from '@pentad/prototyper';
-import { refract } from '@pentad/builder';
-import { disperse } from '@pentad/sweeper';
-import { absorb } from '@pentad/grower';
-import { emit } from '@pentad/maintainer';
+import { incident } from '@prism-five/incidence';
+import { refract } from '@prism-five/refraction';
+import { disperse } from '@prism-five/dispersion';
+import { absorb } from '@prism-five/absorption';
+import { emit } from '@prism-five/emission';
 
 describe('prototyper', () => {
   bench('incident basic', () => {

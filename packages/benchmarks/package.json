@@ -1,12 +1,12 @@
 {
-  "name": "@pentad/benchmarks",
+  "name": "@prism-five/benchmarks",
   "private": true,
   "version": "0.1.0",
   "dependencies": {
-    "@pentad/prototyper": "workspace:*",
-    "@pentad/builder": "workspace:*",
-    "@pentad/sweeper": "workspace:*",
-    "@pentad/grower": "workspace:*",
-    "@pentad/maintainer": "workspace:*"
+    "@prism-five/incidence": "*",
+    "@prism-five/refraction": "*",
+    "@prism-five/dispersion": "*",
+    "@prism-five/absorption": "*",
+    "@prism-five/emission": "*"
   }
 }

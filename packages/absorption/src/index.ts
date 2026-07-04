@@ -1,4 +1,4 @@
-import type { DispersionResult } from '@pentad/sweeper';
+import type { DispersionResult } from '@prism-five/dispersion';
 
 /** Result of an absorb operation: aggregated sources and their data. */
 export interface AbsorptionResult<T> {

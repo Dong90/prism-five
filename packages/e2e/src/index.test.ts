@@ -1,9 +1,9 @@
 import { describe, it, expect, vi } from 'vitest';
-import { incident, PrototyperError } from '@pentad/prototyper';
-import { refract, RefractError } from '@pentad/builder';
-import { disperse } from '@pentad/sweeper';
-import { absorb } from '@pentad/grower';
-import { emit, EmitError } from '@pentad/maintainer';
+import { incident, PrototyperError } from '@prism-five/incidence';
+import { refract, RefractError } from '@prism-five/refraction';
+import { disperse } from '@prism-five/dispersion';
+import { absorb } from '@prism-five/absorption';
+import { emit, EmitError } from '@prism-five/emission';
 
 describe('pentad e2e: incident → refract → disperse → absorb → emit', () => {
   it('flows a simple event through the full pipeline', async () => {

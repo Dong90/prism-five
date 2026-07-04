@@ -1,7 +1,7 @@
 {
-  "name": "@pentad/sweeper",
+  "name": "@prism-five/emission",
   "version": "0.1.0",
-  "description": "分发与广播 (土 — dispersion)",
+  "description": "输出与渲染 (水 — emission)",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {

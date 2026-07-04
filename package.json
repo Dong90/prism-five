@@ -1,8 +1,8 @@
 {
-  "name": "pentad",
+  "name": "prism-five",
   "version": "0.1.0",
   "private": true,
-  "description": "5-role development pipeline — incidence, refraction, dispersion, absorption, emission",
+  "description": "5-prism data pipeline — incidence, refraction, dispersion, absorption, emission",
   "workspaces": [
     "packages/*"
   ],

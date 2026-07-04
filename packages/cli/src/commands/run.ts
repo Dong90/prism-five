@@ -1,6 +1,6 @@
 import { Command } from 'commander';
-import { Pipeline } from '@pentad/orchestrator';
-import { AgentRuntime } from '@pentad/orchestrator';
+import { Pipeline } from '@prism-five/orchestrator';
+import { AgentRuntime } from '@prism-five/orchestrator';
 
 export const runCommand = new Command('run')
   .description('Dispatch the current Agent: produce execution plan and LLM prompt')

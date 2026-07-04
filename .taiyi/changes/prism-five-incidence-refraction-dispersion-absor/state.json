@@ -1,32 +1,30 @@
 {
-  "slug": "ty-5ocn6io9",
+  "slug": "prism-five-incidence-refraction-dispersion-absor",
   "currentPhase": "integration",
   "completedPhases": [
     "change",
-    "dev",
-    "integration"
-  ],
-  "profile": "micro",
-  "skippedPhases": [
     "requirement",
     "design",
-    "ui-design",
     "task",
+    "dev",
     "test",
     "review"
+  ],
+  "profile": "api",
+  "skippedPhases": [
+    "ui-design"
   ],
   "strictDev": false,
   "autoHarness": false,
   "complexity": {
     "level": "low",
-    "score": 4,
+    "score": 3,
     "recommendedSkills": [
       "taiyi-intel-scan"
     ]
   },
   "auxiliaryCompleted": [],
-  "workflowStatus": "completed",
-  "createdAt": "2026-07-04T07:53:34.722Z",
-  "updatedAt": "2026-07-04T07:55:31.735Z",
-  "version": 3
+  "workflowStatus": "active",
+  "createdAt": "2026-07-04T08:34:01.512Z",
+  "updatedAt": "2026-07-04T08:52:04.456Z"
 }

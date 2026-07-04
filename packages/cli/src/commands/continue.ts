@@ -1,5 +1,5 @@
 import { Command } from 'commander';
-import { Pipeline } from '@pentad/orchestrator';
+import { Pipeline } from '@prism-five/orchestrator';
 
 export const continueCommand = new Command('continue')
   .alias('cont')

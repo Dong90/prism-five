@@ -1,5 +1,5 @@
 import { Command } from 'commander';
-import { QueueManager } from '@pentad/orchestrator';
+import { QueueManager } from '@prism-five/orchestrator';
 
 export const queueCommand = new Command('queue')
   .alias('q')

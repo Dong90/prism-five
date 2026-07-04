@@ -1,0 +1,19 @@
+{
+  "title": "还原项目名为 prism-five，包名还原为 incidence/refraction/dispersion/absorption/emission（五行金木水火土）",
+  "changelog_entries": [
+    { "type": "changed", "description": "项目名 pentad → prism-five" },
+    { "type": "changed", "description": "5 核心包目录 prototyper→incidence, builder→refraction, sweeper→dispersion, grower→absorption, maintainer→emission" },
+    { "type": "changed", "description": "包名 @pentad/* → @prism-five/*（9 个包全部更新）" },
+    { "type": "changed", "description": "25 处源码 import 同步更新" },
+    { "type": "changed", "description": "tsconfig.json path references 同步" },
+    { "type": "changed", "description": "README.md 同步项目名 + 包名" }
+  ],
+  "success_criteria_met": [
+    "npm run build exit 0",
+    "npm test 42 tests pass",
+    "npm run lint pass",
+    "项目名 package.json name = prism-five",
+    "5 核心包目录 incidence/refraction/dispersion/absorption/emission",
+    "源码零残留 @pentad/ 引用"
+  ]
+}

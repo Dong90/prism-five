@@ -7,10 +7,16 @@
   "include": ["src"],
   "references": [
     {
-      "path": "../prototyper"
+      "path": "../incidence"
     },
     {
-      "path": "../builder"
+      "path": "../refraction"
+    },
+    {
+      "path": "../dispersion"
+    },
+    {
+      "path": "../absorption"
     }
   ],
   "exclude": ["src/**/*.test.ts"]

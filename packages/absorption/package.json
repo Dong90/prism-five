@@ -1,12 +1,15 @@
 {
-  "name": "@pentad/prototyper",
+  "name": "@prism-five/absorption",
   "version": "0.1.0",
-  "description": "事件接收与触发 (木 — incidence)",
+  "description": "数据摄取与收集 (金 — absorption)",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "tsc",
     "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@prism-five/dispersion": "0.1.0"
   },
   "license": "MIT"
 }

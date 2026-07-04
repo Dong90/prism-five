@@ -1,7 +1,7 @@
 import { Command } from 'commander';
-import { Pipeline } from '@pentad/orchestrator';
-import { loadAgent as pentadLoadAgent, agentSummary } from '@pentad/orchestrator';
-import type { AgentRole } from '@pentad/orchestrator';
+import { Pipeline } from '@prism-five/orchestrator';
+import { loadAgent as pentadLoadAgent, agentSummary } from '@prism-five/orchestrator';
+import type { AgentRole } from '@prism-five/orchestrator';
 
 export const statusCommand = new Command('status')
   .alias('st')
