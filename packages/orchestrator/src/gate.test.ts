@@ -10,7 +10,12 @@ function makeFeature(overrides?: Partial<Feature>): Feature {
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
     stageHistory: [{ role: 'prototyper', enteredAt: new Date().toISOString() }],
-    gates: { prototype_approved: false, build_reviewed: false, sweep_passed: false, release_approved: false },
+    gates: {
+      prototype_approved: false,
+      build_reviewed: false,
+      sweep_passed: false,
+      release_approved: false,
+    },
     ...overrides,
   };
 }

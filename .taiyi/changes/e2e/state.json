@@ -1,10 +1,9 @@
 {
-  "slug": "api-jsdoc-readme",
+  "slug": "e2e",
   "currentPhase": "integration",
   "completedPhases": [
     "change",
-    "dev",
-    "integration"
+    "dev"
   ],
   "profile": "micro",
   "skippedPhases": [
@@ -19,14 +18,14 @@
   "autoHarness": false,
   "complexity": {
     "level": "low",
-    "score": 3,
+    "score": 6,
     "recommendedSkills": [
       "taiyi-intel-scan"
     ]
   },
   "auxiliaryCompleted": [],
-  "workflowStatus": "completed",
-  "createdAt": "2026-07-04T07:48:19.332Z",
-  "updatedAt": "2026-07-04T07:51:23.830Z",
-  "version": 4
+  "workflowStatus": "active",
+  "createdAt": "2026-07-04T07:51:26.679Z",
+  "updatedAt": "2026-07-04T07:53:18.490Z",
+  "version": 3
 }

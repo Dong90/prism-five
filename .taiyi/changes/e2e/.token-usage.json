@@ -1,0 +1,18 @@
+{
+  "version": 1,
+  "slug": "e2e",
+  "totalTokens": 56,
+  "estimatedCostUsd": 0.000168,
+  "byPhase": {
+    "change": 56
+  },
+  "entries": [
+    {
+      "at": "2026-07-04T07:52:58.098Z",
+      "phase": "change",
+      "kind": "scan",
+      "tokens": 56,
+      "label": "1 files"
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "name": "@pentad/e2e",
+  "private": true,
+  "version": "0.1.0",
+  "dependencies": {
+    "@pentad/prototyper": "workspace:*",
+    "@pentad/builder": "workspace:*",
+    "@pentad/sweeper": "workspace:*",
+    "@pentad/grower": "workspace:*",
+    "@pentad/maintainer": "workspace:*"
+  }
+}

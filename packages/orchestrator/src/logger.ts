@@ -35,8 +35,12 @@ function write(entry: LogEntry): void {
 }
 
 export const logger = {
-  debug: (message: string, data?: Record<string, unknown>) => write(createEntry('debug', message, data)),
-  info: (message: string, data?: Record<string, unknown>) => write(createEntry('info', message, data)),
-  warn: (message: string, data?: Record<string, unknown>) => write(createEntry('warn', message, data)),
-  error: (message: string, data?: Record<string, unknown>) => write(createEntry('error', message, data)),
+  debug: (message: string, data?: Record<string, unknown>) =>
+    write(createEntry('debug', message, data)),
+  info: (message: string, data?: Record<string, unknown>) =>
+    write(createEntry('info', message, data)),
+  warn: (message: string, data?: Record<string, unknown>) =>
+    write(createEntry('warn', message, data)),
+  error: (message: string, data?: Record<string, unknown>) =>
+    write(createEntry('error', message, data)),
 };

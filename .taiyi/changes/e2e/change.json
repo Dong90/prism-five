@@ -1,0 +1,1 @@
+{"title":"E2E 集成测试","motivation":"验证全流程端到端","scope":{"includes":["e2e test"]},"success_criteria":[{"id":"SC1","description":"E2E test passes"}]}
