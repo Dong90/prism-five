@@ -1,0 +1,36 @@
+{
+  "title": "上游强制 + exempt 豁免机制",
+  "motivation": "Pentad 5 角色按顺序依赖上游产出（Builder 需 PRD，Sweeper 需 build 产物）。当前 pipeline.continue() 只看 gate 不验证上游阶段是否跑过，允许用户错误地从 maintainer 开始。需加强制校验 + 豁免机制。",
+  "scope": {
+    "includes": [
+      "pipeline.json schema 加 exemptions 字段（stage/reason/expiresAt/approver/autoTrigger）",
+      "packages/orchestrator/src/upstream.ts：checkUpstreamForRole 校验逻辑",
+      "packages/cli/src/commands/exempt.ts：prism exempt new/list/revoke 命令",
+      "L1/L2 全部命令加 --force-skip flag（命令级临时绕过）",
+      "packages/orchestrator/src/audit.ts：审计日志 .pentad/audit-log.json"
+    ],
+    "excludes": [
+      "不引入 Taiyi 的 9 阶段 workflow（保持 Pentad 5 角色）",
+      "不重写 pipeline.continue() 核心逻辑（只加前置校验）",
+      "不改变现有 gate 机制"
+    ]
+  },
+  "success_criteria": [
+    { "id": "SC-01", "description": "prism build <slug> 在 prototyper 未完成时拒绝执行，提示上游缺失", "is_checked": true },
+    { "id": "SC-02", "description": "prism ship <slug> --force-skip 临时绕过上游检查，写审计日志", "is_checked": true },
+    { "id": "SC-03", "description": "prism exempt auth prototyper --reason 'migrated' 永久豁免某阶段，后续所有命令不检查该阶段", "is_checked": true },
+    { "id": "SC-04", "description": "prism exempt list 列出当前 feature 所有豁免项", "is_checked": true },
+    { "id": "SC-05", "description": "豁免有过期时间（--days 30），过期后恢复强制检查", "is_checked": true },
+    { "id": "SC-06", "description": "--force-skip 审计日志记录到 .pentad/audit-log.json，含 reason + timestamp", "is_checked": true }
+  ],
+  "risks": [
+    { "risk": "豁免过期后用户忘了重新申请导致 continue 被拒", "probability": "medium", "impact": "用户体验降级需手动处理", "mitigation": "过期前 7 天 status 提醒" },
+    { "risk": "exemptions 数据量增长导致 pipeline.json 膨胀", "probability": "low", "impact": "加载慢", "mitigation": "expiresAt 过期后自动清理" }
+  ],
+  "impact_map": [
+    { "module": "packages/orchestrator/src/schema.ts", "impact": "加 exemptions 字段", "owner": "shixiaocai" },
+    { "module": "packages/orchestrator/src/upstream.ts (new)", "impact": "上游校验逻辑", "owner": "shixiaocai" },
+    { "module": "packages/cli/src/commands/exempt.ts (new)", "impact": "exempt 命令", "owner": "shixiaocai" },
+    { "module": "packages/orchestrator/src/audit.ts (new)", "impact": "审计日志", "owner": "shixiaocai" }
+  ]
+}

@@ -1,0 +1,168 @@
+---
+phase: requirement
+skill: taiyi-requirement
+gate: auto
+produces: REQUIREMENT.md
+upstream: [change]
+downstream: [design, ui-design]
+---
+<!-- phase:requirement skill:taiyi-requirement gate:auto est:20min produces:REQUIREMENT.md upstream:[change] downstream:[design,ui-design] cplx:[ALL]5steps +[M+]4 +[H]1 -->
+# REQUIREMENT: 上游强制 + exempt 豁免功能
+
+> **一句话**: 5 角色按顺序受上游阶段校验保护；例外可通过 exempt 命令永久豁免或 --force-skip 临时绕过
+
+---
+
+> ⛔ **Out of Scope — 本变更明确不覆盖以下事项**
+> <!-- 放置在最顶部，让读者第一眼知道什么不做。与 Step 2 的 scope_out 内容一致无需重复详述，此处为硬性提醒 -->
+> - 不引入 Taiyi 9 阶段
+> - 不重写 pipeline.continue()
+>
+> 📌 *完整范围切分见下方 §Step 2 Scope Partitioning*
+
+---
+
+## Step 1: User Stories
+> **[ALL]** Goal: 从用户视角说清需求 | Inputs: CHANGE.md §1, §2
+<!-- Action: As a [角色] I want [功能] so that [价值]. 覆盖所有角色 -->
+
+* UPSTREAM-01: builder 阶段检查 prototyper stageHistory.completedAt 存在
+* UPSTREAM-02: sweeper/grower/maintainer 阶段各自检查对应上游阶段完成
+* EXEMPT-01: prism exempt <slug> <role> 永久豁免某阶段
+* EXEMPT-02: 豁免有过期时间（--days N），过期后自动失效
+* FORCE-01: L1/L2 命令加 --force-skip --reason 临时绕过
+* AUDIT-01: .pentad/audit-log.json 记录 force-skip 历史
+
+<!-- Validate: 所有用户角色都覆盖了？ -->
+
+## Step 2: Scope Partitioning
+> **[ALL]** Goal: 分版本切范围，防 TASK 阶段误判 | Inputs: CHANGE.md §2
+<!-- Action: v1=本次必做, v2=下次, out=永不. 至少 v2+out 各 ≥1 条 -->
+
+### v1（本次必做）
+
+### v2（下次）
+
+### out（永不）
+- 不引入 Taiyi 9 阶段
+- 不重写 pipeline.continue()
+
+<!-- Validate: v2 和 out 各 ≥ 1 条？v1 不包含 out 项？ -->
+
+## Step 3: Functional Requirements
+> **[ALL]** Goal: 拆成可测试的功能点 | Inputs: Step1
+<!-- Action: FR-XX编号，分模块。涉及UI标注(UI)→触发Phase4 -->
+
+### [模块名]
+- **FR-01**: [需求]
+
+<!-- Validate: 每个FR可独立测试？编号连续？ -->
+
+## Step 4: Acceptance Criteria
+> **[ALL]** Goal: 每个FR都有客观验收标准 | Inputs: Step3
+<!-- Action: Given/When/Then，AC-XX对应FR-XX。verify=可执行验证命令 -->
+
+- [ ] **AC-01**: Given 用户新建 feature 且未跑 prototyper
+When 执行 prism build auth
+Then 拒绝执行并提示 'prototyper upstream not satisfied'
+  - **验证**: `npx prism build test-ac --no-fail`
+- [ ] **AC-02**: Given feature 含未完成上游
+When 执行 prism ship auth --force-skip --reason 'P0'
+Then 执行 ship 并写入 audit-log.json
+  - **验证**: [待补充验证命令]
+- [ ] **AC-03**: Given 已执行 prism exempt auth prototyper
+When 执行 prism build auth
+Then 不检查 prototyper 直接执行
+  - **验证**: [待补充验证命令]
+- [ ] **AC-04**: Given 豁免已过期（--days 30 已过）
+When 执行 prism build auth
+Then 检查恢复，即检查 prototyper 完成
+  - **验证**: [待补充验证命令]
+
+<!-- Validate: 每个AC可独立验收？Given/When/Then完整？验证命令可执行？ -->
+
+## Step 5: Non-Functional Requirements
+> **[ALL]** Goal: 性能/安全/可用性有硬指标 | Inputs: Step2
+<!-- Action: NFR-XX编号，每个带数值 -->
+
+### 性能
+- **NFR-P01**: [性能指标]
+### 安全
+- **NFR-S01**: [安全指标]
+### 可用性
+- **NFR-A01**: [可用性指标]
+
+<!-- Validate: 每个指标有具体数字？ -->
+
+> 📎 **SSOT 规则**: NFR-S* 安全要求应基于 [CHANGE.md §Risks](CHANGE.md) 做非功能性拆解，不独立重评估。每条 NFR-S 应与 CHANGE 的 risks[] 可追溯。
+
+## Step 6: Error & Rescue Map
+> **[MEDIUM+]** Goal: 每个错误都有名字和恢复路径 | Inputs: Step2+3
+<!-- Action: 触发条件→捕获位置→用户看到→恢复路径 -->
+
+| 错误类型 | 触发 | 捕获 | 用户看到 | 恢复 |
+|---------|------|------|---------|------|
+| 上游阶段缺失 | prism build 在 prototyper 未完成时 | checkUpstreamForRole 返回 missing | ✗ Blocked: upstream not satisfied (prototyper). Use --force-skip or prism exempt. | prism exempt <slug> prototyper 或 跑 prototyper |
+| 豁免过期 | expiresAt < now | exempt list 检测 | ✗ Exemption expired for role 'prototyper' | prism exempt --renew |
+
+<!-- Validate: 所有可能的错误都有名字？恢复路径可执行？ -->
+
+## Step 7: Shadow Path Analysis
+> **[MEDIUM+]** Goal: 每条数据流覆盖四路径 | Inputs: Step5
+<!-- Action: Happy/Nil/Empty/UpstreamErr 逐条标注 -->
+
+### [流程名]
+| 路径 | 输入 | 预期 |
+|------|------|------|
+| Happy | | |
+| Nil | | |
+| Empty | | |
+| UpstreamErr | | |
+
+<!-- Validate: 核心流程都覆盖了四路径？ -->
+
+## Step 8: Non-Happy-Path Matrix
+> **[MEDIUM+]** Goal: 边界和异常不遗漏 | Inputs: Step5+6
+<!-- Action: 空值/超时/并发/权限/非法输入全覆盖 -->
+
+| 场景 | 预期行为 |
+|------|---------|
+| _空输入_ | _显示用法提示_ |
+
+<!-- Validate: 典型边界(空/超/并发/权限)全覆盖？ -->
+
+## Step 9: Dependencies
+> **[MEDIUM+]** Goal: 外部依赖不阻塞 | Inputs: CHANGE.md §4
+<!-- Action: 技术约束/第三方/跨团队+状态+风险 -->
+
+| 依赖 | 类型 | 状态 | 风险 |
+|------|------|------|------|
+| commander 12.x | internal | available | low |
+
+<!-- Validate: 第三方SLA确认？跨团队排期对齐？ -->
+
+## Step 10: Security & Compliance
+> **[HIGH]** Goal: 安全不出事 | Inputs: Step4+5
+<!-- Action: OWASP Top10 + GDPR/PIPL. user/auth/payment/PII场景必填 -->
+
+- [ ] npm audit 无 critical/high
+- [ ] 无硬编码密钥/令牌
+- [ ] PII/GDPR 合规检查（若涉及用户数据）
+
+<!-- Validate: threat modeling过了？PII合规？ -->
+
+---
+## Quality Gate
+<!-- Evidence-first: 每个需求可追溯到CHANGE.md的SC，ECC 替代 Superpowers 需求逐条对账 -->
+
+- [ ] S1 用户角色全覆盖
+- [ ] S2 版本切分 v1/v2/out 各≥1条
+- [ ] S3 每个FR可独立测试
+- [ ] S4 AC用Given/When/Then + 验证命令
+- [ ] S5 非功能需求有数值
+- [ ] [M+] S6 Error/Rescue全覆盖 | PD#2
+- [ ] [M+] S7 核心流程四路径 | PD#3
+- [ ] [M+] S8 典型边界全覆盖
+- [ ] [M+] S9 依赖关系已确认
+- [ ] [H]  S10 安全合规已覆盖
+- [ ] 无[NEEDS CLARIFICATION]残留

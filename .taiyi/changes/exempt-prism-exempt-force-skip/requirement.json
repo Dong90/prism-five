@@ -1,0 +1,24 @@
+{
+  "title": "上游强制 + exempt 豁免功能",
+  "one_liner": "5 角色按顺序受上游阶段校验保护；例外可通过 exempt 命令永久豁免或 --force-skip 临时绕过",
+  "features": [
+    "UPSTREAM-01: builder 阶段检查 prototyper stageHistory.completedAt 存在",
+    "UPSTREAM-02: sweeper/grower/maintainer 阶段各自检查对应上游阶段完成",
+    "EXEMPT-01: prism exempt <slug> <role> 永久豁免某阶段",
+    "EXEMPT-02: 豁免有过期时间（--days N），过期后自动失效",
+    "FORCE-01: L1/L2 命令加 --force-skip --reason 临时绕过",
+    "AUDIT-01: .pentad/audit-log.json 记录 force-skip 历史"
+  ],
+  "scope_out": ["不引入 Taiyi 9 阶段", "不重写 pipeline.continue()"],
+  "acceptance_criteria": [
+    { "id": "AC-01", "description": "Given 用户新建 feature 且未跑 prototyper\nWhen 执行 prism build auth\nThen 拒绝执行并提示 'prototyper upstream not satisfied'", "is_checked": false, "verify": "npx prism build test-ac --no-fail" },
+    { "id": "AC-02", "description": "Given feature 含未完成上游\nWhen 执行 prism ship auth --force-skip --reason 'P0'\nThen 执行 ship 并写入 audit-log.json", "is_checked": false },
+    { "id": "AC-03", "description": "Given 已执行 prism exempt auth prototyper\nWhen 执行 prism build auth\nThen 不检查 prototyper 直接执行", "is_checked": false },
+    { "id": "AC-04", "description": "Given 豁免已过期（--days 30 已过）\nWhen 执行 prism build auth\nThen 检查恢复，即检查 prototyper 完成", "is_checked": false }
+  ],
+  "error_rescue_map": [
+    { "error": "上游阶段缺失", "trigger": "prism build 在 prototyper 未完成时", "catch": "checkUpstreamForRole 返回 missing", "user_sees": "✗ Blocked: upstream not satisfied (prototyper). Use --force-skip or prism exempt.", "recovery": "prism exempt <slug> prototyper 或 跑 prototyper" },
+    { "error": "豁免过期", "trigger": "expiresAt < now", "catch": "exempt list 检测", "user_sees": "✗ Exemption expired for role 'prototyper'", "recovery": "prism exempt --renew" }
+  ],
+  "dependencies": [{ "dependency": "commander 12.x", "type": "internal", "status": "available", "risk": "low" }]
+}

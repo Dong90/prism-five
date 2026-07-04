@@ -1,0 +1,21 @@
+command: npm test
+exitCode: 0
+
+dev complete - all slices implemented
+
+## TDD 证据
+
+### S1: upstream.test.ts
+RED: 2 tests failed (no upstream module)
+GREEN: 7 tests passed
+
+### S2+S3: implemented
+- schema.ts: exemptions field added
+- upstream.ts: checkUpstreamForRole with expiry-aware exemption logic
+- exempt CLI: exempt.ts (grant/list/revoke)
+- audit.ts: read/write audit-log.json
+- orchestrator/src/index.ts: exports for upstream + audit
+- cli/src/index.ts: exemptCommand registered
+
+## 最终 green
+96/96 tests passing (14 files), build passes

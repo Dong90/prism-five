@@ -1,5 +1,5 @@
 {
-  "slug": "opencode-cli-adaptation-prism-cli-opencode",
+  "slug": "exempt-prism-exempt-force-skip",
   "currentPhase": "integration",
   "completedPhases": [
     "change",
@@ -17,14 +17,14 @@
   "autoHarness": false,
   "complexity": {
     "level": "low",
-    "score": 3,
+    "score": 7,
     "recommendedSkills": [
       "taiyi-intel-scan"
     ]
   },
   "auxiliaryCompleted": [],
   "workflowStatus": "active",
-  "createdAt": "2026-07-04T13:08:00.082Z",
-  "updatedAt": "2026-07-04T13:36:11.277Z",
-  "version": 16
+  "createdAt": "2026-07-04T14:33:17.294Z",
+  "updatedAt": "2026-07-04T14:50:13.972Z",
+  "version": 12
 }
