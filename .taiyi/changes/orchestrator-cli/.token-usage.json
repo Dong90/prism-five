@@ -1,0 +1,18 @@
+{
+  "version": 1,
+  "slug": "orchestrator-cli",
+  "totalTokens": 67,
+  "estimatedCostUsd": 0.000201,
+  "byPhase": {
+    "change": 67
+  },
+  "entries": [
+    {
+      "at": "2026-07-04T07:43:43.358Z",
+      "phase": "change",
+      "kind": "scan",
+      "tokens": 67,
+      "label": "1 files"
+    }
+  ]
+}

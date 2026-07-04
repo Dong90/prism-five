@@ -1,5 +1,5 @@
 {
-  "slug": "ci-cd-pipeline-github-actions",
+  "slug": "orchestrator-cli",
   "currentPhase": "integration",
   "completedPhases": [
     "change",
@@ -18,14 +18,14 @@
   "autoHarness": false,
   "complexity": {
     "level": "low",
-    "score": 3,
+    "score": 5,
     "recommendedSkills": [
       "taiyi-intel-scan"
     ]
   },
   "auxiliaryCompleted": [],
   "workflowStatus": "active",
-  "createdAt": "2026-07-04T07:42:21.298Z",
-  "updatedAt": "2026-07-04T07:43:05.124Z",
+  "createdAt": "2026-07-04T07:43:34.177Z",
+  "updatedAt": "2026-07-04T07:44:13.238Z",
   "version": 3
 }

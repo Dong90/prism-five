@@ -47,3 +47,11 @@
 ## Changed
 
 - 修复 CLI/orchestrator 中的 lint 错误
+
+<!-- taiyi:ci-cd-pipeline-github-actions --> 2026-07-04
+
+# CHANGELOG: CI/CD pipeline — GitHub Actions
+
+## Added
+
+- .github/workflows/ci.yml with build/test/lint on push & PR
