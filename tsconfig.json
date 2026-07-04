@@ -5,6 +5,7 @@
     { "path": "packages/refraction" },
     { "path": "packages/dispersion" },
     { "path": "packages/absorption" },
-    { "path": "packages/emission" }
+    { "path": "packages/emission" },
+    { "path": "packages/orchestrator" }
   ]
 }

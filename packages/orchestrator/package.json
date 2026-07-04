@@ -1,0 +1,23 @@
+{
+  "name": "@prism-five/orchestrator",
+  "version": "0.1.0",
+  "description": "Pipeline调度引擎 — 状态管理、门禁检查、Agent路由",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@prism-five/incidence": "0.1.0",
+    "@prism-five/refraction": "0.1.0",
+    "@prism-five/dispersion": "0.1.0",
+    "@prism-five/absorption": "0.1.0",
+    "@prism-five/emission": "0.1.0",
+    "zod": "^3.23.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.0"
+  },
+  "license": "MIT"
+}
