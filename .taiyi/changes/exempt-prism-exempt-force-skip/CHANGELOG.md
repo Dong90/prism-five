@@ -9,7 +9,7 @@ downstream: []
 <!-- phase:integration skill:taiyi-integration gate:auto est:15min produces:INTEGRATION.md upstream:[review,dev,test] downstream:[] cplx:[ALL]1steps +[M+]4 +[H]2 -->
 # INTEGRATION: exempt v0.4.1
 
-> **Release**: 2026-07-04 | **Date**: 2026-07-04 | **Status**: _deployed_
+> **Release**: _待定_ | **Date**: _待定_ | **Status**: _deployed_
 
 ---
 
@@ -76,7 +76,7 @@ _未提供 DDL 变更_
 > **[MEDIUM+]** Goal: 确认稳了才算完 | Inputs: Step4
 <!-- Action: 观察期+退出标准+异常处理 -->
 
-- **观察期**: 1 day
+- **观察期**: [N天/小时]
 - **观察指标**: 
 - **退出标准**: 
 - **异常处理**: 
@@ -89,7 +89,7 @@ _未提供 DDL 变更_
 
 **触发**: _量化条件_
 **操作**: 1. _命令_ 2. _命令_
-**时间**: ≤10min
+**时间**: ≤_N_min
 
 <!-- Validate: 触发量化？步骤精确？≤30min？ -->
 

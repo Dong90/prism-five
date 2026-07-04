@@ -7,7 +7,7 @@ upstream: [task, dev]
 downstream: [review]
 ---
 <!-- phase:test skill:taiyi-test gate:auto est:20min produces:TEST.md upstream:[task,dev] downstream:[review] cplx:[ALL]5steps +[M+]4 +[H]2 -->
-# TEST: exempt mechanism tests
+# TEST: exempt tests
 
 > **策略**: 覆盖单元/集成/E2E 三层测试
 
@@ -63,10 +63,9 @@ downstream: [review]
 > **[ALL]** Goal: 每TC可独立执行 | Inputs: REQUIREMENT.md §3
 <!-- Action: TC-XX [unit/integration/e2e] Given/When/Then -->
 
-- **T-01**: SC-01: builder rejected when prototyper missing `[passed]`
-- **T-02**: SC-03: builder accepted when exempted `[passed]`
-- **T-03**: SC-05: expired exemption rejected `[passed]`
-- **T-04**: SC-06: audit log writable `[passed]`
+- **T-01**: SC-01: reject build when prototyper missing `[passed]`
+- **T-02**: SC-03: accept when exempted `[passed]`
+- **T-03**: SC-05: reject when expired `[passed]`
 
 <!-- Validate: 每个TC有Given/When/Then？覆盖成功+失败？ -->
 

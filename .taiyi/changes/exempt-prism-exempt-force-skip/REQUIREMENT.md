@@ -9,7 +9,7 @@ downstream: [design, ui-design]
 <!-- phase:requirement skill:taiyi-requirement gate:auto est:20min produces:REQUIREMENT.md upstream:[change] downstream:[design,ui-design] cplx:[ALL]5steps +[M+]4 +[H]1 -->
 # REQUIREMENT: 上游强制 + exempt 豁免功能
 
-> **一句话**: 5 角色按顺序受上游阶段校验保护；例外可通过 exempt 命令永久豁免或 --force-skip 临时绕过
+> **一句话**: 5 角色受上游校验保护
 
 ---
 
@@ -26,12 +26,12 @@ downstream: [design, ui-design]
 > **[ALL]** Goal: 从用户视角说清需求 | Inputs: CHANGE.md §1, §2
 <!-- Action: As a [角色] I want [功能] so that [价值]. 覆盖所有角色 -->
 
-* UPSTREAM-01: builder 阶段检查 prototyper stageHistory.completedAt 存在
-* UPSTREAM-02: sweeper/grower/maintainer 阶段各自检查对应上游阶段完成
-* EXEMPT-01: prism exempt <slug> <role> 永久豁免某阶段
-* EXEMPT-02: 豁免有过期时间（--days N），过期后自动失效
-* FORCE-01: L1/L2 命令加 --force-skip --reason 临时绕过
-* AUDIT-01: .pentad/audit-log.json 记录 force-skip 历史
+* builder 阶段检查 prototyper 完成
+* sweeper/grower/maintainer 各自检查对应上游
+* prism exempt grant/list/revoke 豁免命令
+* 豁免有过期时间
+* L1/L2 命令加 --force-skip
+* audit-log.json 审计记录
 
 <!-- Validate: 所有用户角色都覆盖了？ -->
 
@@ -62,21 +62,13 @@ downstream: [design, ui-design]
 > **[ALL]** Goal: 每个FR都有客观验收标准 | Inputs: Step3
 <!-- Action: Given/When/Then，AC-XX对应FR-XX。verify=可执行验证命令 -->
 
-- [ ] **AC-01**: Given 用户新建 feature 且未跑 prototyper
-When 执行 prism build auth
-Then 拒绝执行并提示 'prototyper upstream not satisfied'
-  - **验证**: `npx prism build test-ac --no-fail`
-- [ ] **AC-02**: Given feature 含未完成上游
-When 执行 prism ship auth --force-skip --reason 'P0'
-Then 执行 ship 并写入 audit-log.json
+- [ ] **AC-01**: Given 用户未跑 prototyper When 执行 prism build Then 拒绝并提示上游缺失
+  - **验证**: `prism build test-upstream`
+- [ ] **AC-02**: Given 上游缺失 When prism ship --force-skip Then 执行并写 audit-log
   - **验证**: [待补充验证命令]
-- [ ] **AC-03**: Given 已执行 prism exempt auth prototyper
-When 执行 prism build auth
-Then 不检查 prototyper 直接执行
+- [ ] **AC-03**: Given exempt grant prototyper When prism build Then 不检查直接执行
   - **验证**: [待补充验证命令]
-- [ ] **AC-04**: Given 豁免已过期（--days 30 已过）
-When 执行 prism build auth
-Then 检查恢复，即检查 prototyper 完成
+- [ ] **AC-04**: Given 豁免已过期 When prism build Then 检查恢复
   - **验证**: [待补充验证命令]
 
 <!-- Validate: 每个AC可独立验收？Given/When/Then完整？验证命令可执行？ -->
@@ -102,8 +94,8 @@ Then 检查恢复，即检查 prototyper 完成
 
 | 错误类型 | 触发 | 捕获 | 用户看到 | 恢复 |
 |---------|------|------|---------|------|
-| 上游阶段缺失 | prism build 在 prototyper 未完成时 | checkUpstreamForRole 返回 missing | ✗ Blocked: upstream not satisfied (prototyper). Use --force-skip or prism exempt. | prism exempt <slug> prototyper 或 跑 prototyper |
-| 豁免过期 | expiresAt < now | exempt list 检测 | ✗ Exemption expired for role 'prototyper' | prism exempt --renew |
+| 上游缺失 | prism build 在 prototyper 未完成时 | checkUpstreamForRole | Blocked: upstream not satisfied | prism exempt 或 跑 prototyper |
+| 豁免过期 | expiresAt < now | exempt list 检测 | Exemption expired | prism exempt grant --renew |
 
 <!-- Validate: 所有可能的错误都有名字？恢复路径可执行？ -->
 

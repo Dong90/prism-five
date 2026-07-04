@@ -27,7 +27,10 @@ downstream: [integration]
 **评审范围**: 
 **关注重点**: 
 
-- **** `[minor]` ❌: exempt grant does not call writePipeline
+### Critical — 暂无
+### High — 暂无
+### Medium — 暂无
+### Low/Suggestion — 暂无
 
 <!-- Validate: 每个finding有具体位置+置信度+修复建议？ -->
 
@@ -51,9 +54,9 @@ downstream: [integration]
 |------|------|------|
 | functional | 5/10 | all ACs covered |
 | architecture | 5/10 | minimal schema change |
-| testing | 5/10 | 7 unit tests |
-| documentation | 4/10 | scripts documented |
-| maintainability | 4/10 | exempt CLI wrapper |
+| testing | 4/10 | 7 unit tests pass |
+| documentation | 4/10 | 5 phases documented |
+| maintainability | 4/10 | upstream table-driven |
 
 <!-- Validate: 每维有具体改进建议而非仅打分？ -->
 

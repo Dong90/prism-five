@@ -1,29 +1,27 @@
 # Change Graph: exempt-prism-exempt-force-skip
 
 ## Phases
-### change (12 nodes)
-**risk** (2) 豁免过期后用户忘了重新申请导致 continue 被拒 / exemptions 数据量增长导致 pipeline.json 膨胀
+### change (13 nodes)
+**risk** (2) 豁免过期后用户忘了重新申请 / exemptions 数据膨胀 pipeline.json
 **acceptance_criterion** (6)
-  - prism build <slug> 在 prototyper 未完成时拒绝执行，提示上游缺失
-  - prism ship <slug> --force-skip 临时绕过上游检查，写审计日志
-  - prism exempt auth prototyper --reason 'migrated' 永久豁免某阶段，...
+  - prism build 在 prototyper 未完成时拒绝执行
+  - prism ship --force-skip 临时绕过并写审计日志
+  - prism exempt grant 永久豁免某阶段
   - ... +3 more
 **unknown** (4)
   - packages/orchestrator/src/schema.ts
   - packages/orchestrator/src/upstream.ts (new)
   - packages/cli/src/commands/exempt.ts (new)
   - ... +1 more
+**rollback** (1) upstream check 误拦正常流程
 
 ### requirement (6 nodes)
 **acceptance_criterion** (4)
-  - Given 用户新建 feature 且未跑 prototyper
-When 执行 prism build aut...
-  - Given feature 含未完成上游
-When 执行 prism ship auth --force-skip...
-  - Given 已执行 prism exempt auth prototyper
-When 执行 prism buil...
+  - Given 用户未跑 prototyper When 执行 prism build Then 拒绝并提示上游缺失
+  - Given 上游缺失 When prism ship --force-skip Then 执行并写 audit-log
+  - Given exempt grant prototyper When prism build Then 不检查直接执行
   - ... +1 more
-**unknown** (2) 上游阶段缺失 / 豁免过期
+**unknown** (2) 上游缺失 / 豁免过期
 
 ### design (1 nodes)
 **design_decision** (1) A
@@ -34,19 +32,15 @@ When 执行 prism buil...
 ### task (3 nodes)
 **slice** (3) 0 / 1 / 2
 
-### test (4 nodes)
-**test_case** (4)
-  - SC-01: builder rejected when prototyper missing
-  - SC-03: builder accepted when exempted
-  - SC-05: expired exemption rejected
-  - ... +1 more
+### test (3 nodes)
+**test_case** (3) SC-01: reject build when prototyper missing / SC-03: accept when exempted / SC-05: reject when expired
 
-### review (6 nodes)
-**unknown** (6)
-  - exempt grant does not call writePipeline
+### review (5 nodes)
+**unknown** (5)
   - functional
   - architecture
-  - ... +3 more
+  - testing
+  - ... +2 more
 
 ### integration (1 nodes)
 **unknown** (1) 待填写
@@ -56,7 +50,7 @@ When 执行 prism buil...
 - [LOW] design_decision (design vs task): design_decision 跨阶段不一致: "A" ≠ "0"
 
 ## Stats
-- Total nodes: 34
+- Total nodes: 33
 - Total edges: 7
 - Phases with nodes: 8/8
 

@@ -9,7 +9,7 @@ downstream: [dev, test]
 <!-- phase:task skill:taiyi-task gate:auto est:15min produces:TASK.md upstream:[design,requirement] downstream:[dev,test] cplx:[ALL]2steps +[M+]2 +[H]1 -->
 # TASK: exempt mechanism
 
-> **总Slice**: 3 | **预估**: 1h | **并行**: 30min
+> **总Slice**: 3 | **预估**: 30min | **并行**: 2h
 
 ---
 
@@ -53,9 +53,9 @@ schema + upstream check
 > `packages/orchestrator/src/schema.ts``packages/orchestrator/src/upstream.ts`
 
 **验收点**:
-⬜ 1. schema.ts exemptions 字段 Zod 校验通过
-2. upstream.test.ts 6 AC 全部 green
-3. exempt CLI 3 个子命令可用
+⬜ _1. schema.ts exemptions Zod pass
+2. upstream.test.ts 6 AC green
+3. exempt CLI subcommands work
 
 <!-- Validate: 可独立merge/deploy？文件范围精确？ -->
 
@@ -72,17 +72,18 @@ exempt CLI
 **write_files**（写边界 · 不越界）:
 <!-- R7.3 强约束: 不碰禁动清单，不顺手改其他文件 -->
 - `packages/cli/src/commands/exempt.ts`
+- `packages/cli/src/index.ts`
 
 **验证**: `npx vitest run`
 
 **物理锚点**（git-diff 确认 write_files 已被实际修改）:
 > 🪝 实现完成后执行 `git diff --name-only` 确认以下文件出现在 diff 中：
-> `packages/cli/src/commands/exempt.ts`
+> `packages/cli/src/commands/exempt.ts``packages/cli/src/index.ts`
 
 **验收点**:
-⬜ 1. schema.ts exemptions 字段 Zod 校验通过
-2. upstream.test.ts 6 AC 全部 green
-3. exempt CLI 3 个子命令可用
+⬜ _1. schema.ts exemptions Zod pass
+2. upstream.test.ts 6 AC green
+3. exempt CLI subcommands work
 
 <!-- Validate: 可独立merge/deploy？文件范围精确？ -->
 
@@ -107,9 +108,9 @@ audit + force-skip
 > `packages/orchestrator/src/audit.ts`
 
 **验收点**:
-⬜ 1. schema.ts exemptions 字段 Zod 校验通过
-2. upstream.test.ts 6 AC 全部 green
-3. exempt CLI 3 个子命令可用
+⬜ _1. schema.ts exemptions Zod pass
+2. upstream.test.ts 6 AC green
+3. exempt CLI subcommands work
 
 <!-- Validate: 可独立merge/deploy？文件范围精确？ -->
 

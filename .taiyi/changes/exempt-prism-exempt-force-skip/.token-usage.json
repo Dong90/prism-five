@@ -1,17 +1,17 @@
 {
   "version": 1,
   "slug": "exempt-prism-exempt-force-skip",
-  "totalTokens": 1174,
-  "estimatedCostUsd": 0.003522,
+  "totalTokens": 1143,
+  "estimatedCostUsd": 0.003429,
   "byPhase": {
-    "change": 1174
+    "change": 1143
   },
   "entries": [
     {
-      "at": "2026-07-04T14:33:49.448Z",
+      "at": "2026-07-04T15:05:04.288Z",
       "phase": "change",
       "kind": "scan",
-      "tokens": 1174,
+      "tokens": 1143,
       "label": "1 files"
     }
   ]

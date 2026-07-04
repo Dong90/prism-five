@@ -1,6 +1,3 @@
-# Changelog Archive
-
-> 自动归档：CHANGELOG.md 超出 200 行时较早的条目移至此处。
 
 ## Archived at 2026-07-04
 
@@ -72,3 +69,23 @@
 
 - orchestrator/src/logger.ts — 结构化 logger (debug/info/warn/error)
 - 导出到 @pentad/orchestrator
+
+## Archived at 2026-07-04
+
+<!-- taiyi:api-jsdoc-readme --> 2026-07-04
+# CHANGELOG: API 文档
+
+## Added
+
+- prototyper: JSDoc for PrototyperError, IncidentEvent, incident()
+- builder: JSDoc for RefractError, refract(), refract.map
+- sweeper: JSDoc for DispersionResult, disperse()
+- grower: JSDoc for AbsorptionResult, absorb(), absorb.unique, absorb.reduce
+- maintainer: JSDoc for EmitError, Sink, emit()
+- orchestrator/logger: JSDoc for LogLevel
+
+## Verification
+
+- [x] `npm run build` passes
+- [x] `npm test` passes (33 tests)
+- [x] `npm run lint` passes

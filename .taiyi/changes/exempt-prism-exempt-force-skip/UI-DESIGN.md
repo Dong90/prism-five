@@ -7,7 +7,7 @@ upstream: [design, requirement]
 downstream: [task, dev]
 ---
 <!-- phase:ui-design skill:taiyi-ui-design gate:auto est:20min produces:UI-DESIGN.md upstream:[design,requirement] downstream:[task,dev] cplx:[ALL]5steps +[M+]2 +[H]1 -->
-# UI-DESIGN: Exempt CLI
+# UI-DESIGN: Exempt CLI output
 
 > **Scope**: CLI only
 

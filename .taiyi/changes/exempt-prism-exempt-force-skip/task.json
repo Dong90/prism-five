@@ -1,5 +1,1 @@
-{ "title": "exempt mechanism", "total_slices": 3, "slices": [
-  { "id": "S1", "description": "schema + upstream check", "write_files": ["packages/orchestrator/src/schema.ts", "packages/orchestrator/src/upstream.ts"], "test_command": "npx vitest run", "time_estimate": "30min" },
-  { "id": "S2", "description": "exempt CLI", "write_files": ["packages/cli/src/commands/exempt.ts"], "dependencies": "S1", "test_command": "npx vitest run", "time_estimate": "45min" },
-  { "id": "S3", "description": "audit + force-skip", "write_files": ["packages/orchestrator/src/audit.ts"], "dependencies": "S1", "test_command": "npx vitest run", "time_estimate": "30min" }
-]}
+{"title":"exempt mechanism","total_slices":3,"slices":[{"id":"S1","description":"schema + upstream check","write_files":["packages/orchestrator/src/schema.ts","packages/orchestrator/src/upstream.ts"],"test_command":"npx vitest run","time_estimate":"30min"},{"id":"S2","description":"exempt CLI","write_files":["packages/cli/src/commands/exempt.ts","packages/cli/src/index.ts"],"test_command":"npx vitest run","time_estimate":"45min","dependencies":"S1"},{"id":"S3","description":"audit + force-skip","write_files":["packages/orchestrator/src/audit.ts"],"test_command":"npx vitest run","time_estimate":"30min","dependencies":"S1"}]}

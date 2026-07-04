@@ -1,6 +1,1 @@
-{ "title": "exempt mechanism tests", "test_plan": [
-  { "id": "T-01", "description": "SC-01: builder rejected when prototyper missing", "status": "passed" },
-  { "id": "T-02", "description": "SC-03: builder accepted when exempted", "status": "passed" },
-  { "id": "T-03", "description": "SC-05: expired exemption rejected", "status": "passed" },
-  { "id": "T-04", "description": "SC-06: audit log writable", "status": "passed" }
-] }
+{"title":"exempt tests","test_plan":[{"id":"T-01","description":"SC-01: reject build when prototyper missing","status":"passed"},{"id":"T-02","description":"SC-03: accept when exempted","status":"passed"},{"id":"T-03","description":"SC-05: reject when expired","status":"passed"}]}

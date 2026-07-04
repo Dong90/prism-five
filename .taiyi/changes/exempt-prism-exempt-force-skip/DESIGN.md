@@ -9,7 +9,7 @@ downstream: [task, ui-design]
 <!-- phase:design skill:taiyi-design gate:human est:30min produces:DESIGN.md upstream:[requirement] downstream:[task,ui-design] cplx:[ALL]4steps +[M+]6 +[H]1 (+opt:1) -->
 # DESIGN: Exempt 机制技术设计
 
-> **一句话**: exempt field + exempt CLI + force-skip
+> **一句话**: [技术方案概述]
 
 ---
 
@@ -17,7 +17,7 @@ downstream: [task, ui-design]
 > **[ALL]** Goal: 框定设计边界 | Inputs: REQUIREMENT.md §2, §4, §8
 <!-- Action: 技术栈全貌 + 约束条件 -->
 
-- **选定**: TypeScript + Commander.js（沿用现有栈）
+- **选定**: TypeScript + Commander.js
 - **约束**: TypeScript strict + 不影响现有 9 命令
 
 <!-- Validate: 约束覆盖技术/性能/兼容性/时间/团队？ -->
@@ -28,7 +28,7 @@ downstream: [task, ui-design]
 
 **当前架构/行为**:
 
-pipeline.continue() 只看 gate 不看上游
+_待补充变更前的架构/行为快照（如：当前登录模块使用 Session 中间件，无 JWT 支持）_
 
 > ⚠️ **ADR 覆写规则**: 此 DESIGN.md 是当前变更的设计真源，**强制覆写**而非追加。每次设计变更请覆写/更新相关节段，不要保留过时的旧设计 —— 半年后的 Agent 从此文档拼出系统全貌，不看历史版本。变更记录由 CHANGELOG.md 和 git log 承担。
 
@@ -58,7 +58,7 @@ flowchart LR
 
 | 模块 | 操作 | 路径 | 说明 |
 |------|------|------|------|
-| orchestrator | 修改 | src | 加 exemptions 字段 |
+| orchestrator | _新增/修改/删除_ | _路径_ | _变更说明_ |
 
 ### 既有架构对齐（brownfield）
 <!-- Action: 三表 — 触碰模块 / 抽象沿用 / 模式对比 -->
@@ -80,8 +80,8 @@ flowchart LR
 
 | 方案 | 名称 | 思路 | 优点 | 缺点 | 代价 |
 |------|------|------|------|------|------|
-| A | exemptions 字段 + prism exempt CLI + --force-skip flag | exemptions 显式可审计，有过期机制 | 独立 CLI 命令清晰<br>豁免有过期时间<br>审计日志分离<br> | schema 加 1 字段<br>新增 CLI 命令<br> | ~200 LOC |
-| B | pipeline 层面 auto-skip（不暴露 exempt 命令） | exemptions 显式可审计，有过期机制 | CLI 不变<br>简单<br> | 无用户控制<br>无法记录审计<br> | ~50 LOC |
+| A | exemptions 字段 + exempt CLI + --force-skip | [描述] | 独立 CLI 命令清晰<br>豁免有过期时间<br>审计日志分离<br> | schema 加 1 字段<br>新增 CLI 命令<br> | 200 LOC |
+| B | pipeline 层面 auto-skip | [描述] | CLI 不变<br>简单<br> | 无用户控制<br>无法审计<br>无过期<br> | 50 LOC |
 
 <!-- Validate: ≥2方案？含"不改"对照？代价量化？ -->
 
@@ -121,11 +121,11 @@ flowchart LR
 
 ### API 设计
 ```
-prism exempt <slug> <role> --reason "..." --days 30
+在此处描述 API 变更（如新增 / 修改端点）
 ```
 
 ### 关键流程
-exempt → check → continue（时序：用户→CLI→upstream→audit）
+_在此处用 Mermaid 时序图描述关键流程（如有）_
 
 <!-- Validate: DDL有索引？API有rate limit？流程有错误路径？ -->
 
@@ -135,7 +135,7 @@ exempt → check → continue（时序：用户→CLI→upstream→audit）
 
 | 决策 | 半径 | 最坏情况 | 隔离 |
 |------|:--:|---------|------|
-| exempt 安全阀 | _低_ | exemptions 过期未清理 | prism exempt --renew |
+| exempt 机制是安全阀 | _低_ | _E2E 测试假阳性_ | _CI 重试机制_ |
 
 <!-- Validate: 有没有一个变更能影响所有用户？半径可控？ -->
 
@@ -168,8 +168,8 @@ _累计: 0/3_
 <!-- Action: 新artifact类型？CI/CD变更？回滚方式？ -->
 
 - **新artifact**: _无_
-- **CI/CD变更**: 无需 CI 变更
-- **回滚方式**: exemptions 导致 bypass；回滚：prism exempt --revoke
+- **CI/CD变更**: _在此列出 CI/CD 配置变更（如 workflow / deploy / npm publish）_
+- **回滚方式**: _在此描述回滚触发条件与操作步骤_
 
 <!-- Validate: 新artifact的build/publish/update流程完整？ -->
 
@@ -179,7 +179,7 @@ _累计: 0/3_
 
 | 威胁 | 攻击向量 | 缓解 |
 |------|---------|------|
-| path injection 已防护 | exempt 只改 CLI |
+| _本次变更无新增攻击面_ | _纯测试代码，无运行时暴露_ | _N/A_ |
 
 <!-- Validate: OWASP Top10全覆盖？敏感数据加密+日志脱敏？ -->
 
@@ -189,7 +189,7 @@ _累计: 0/3_
 > **[MEDIUM+]** Goal: 上线有计划 | Inputs: Step6+9
 <!-- Action: 灰度比例+观察时间+回滚触发 -->
 
-1. schema.ts 加 exemptions 字段 → 2. upstream.ts 校验 → 3. exempt CLI → 4. audit.ts
+1. [步骤]
 
 > 📎 **SSOT 规则**: 回滚真源见 [CHANGE.md §Risks](CHANGE.md)。此处为部署视角的灰度/上线步骤，与 CHANGE 的 rollback_{trigger,ops,time} 互不重复。若此处的回滚方式 != CHANGE 声明的，即视为 SSOT 违规。
 

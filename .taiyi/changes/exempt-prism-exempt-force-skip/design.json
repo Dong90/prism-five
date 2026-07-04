@@ -1,9 +1,1 @@
-{
-  "title": "Exempt 机制技术设计",
-  "options": [
-    { "id": "A", "name": "exemptions 字段 + prism exempt CLI + --force-skip flag", "pros": ["独立 CLI 命令清晰", "豁免有过期时间", "审计日志分离"], "cons": ["schema 加 1 字段", "新增 CLI 命令"], "cost": "~200 LOC" },
-    { "id": "B", "name": "pipeline 层面 auto-skip（不暴露 exempt 命令）", "pros": ["CLI 不变", "简单"], "cons": ["无用户控制", "无法记录审计"], "cost": "~50 LOC" }
-  ],
-  "decision": { "chosen": "A", "reason": "1. exempt 显式可审计\n2. 过期时间是安全阀\n3. --force-skip 与 exempt 互补", "tradeoffs": "接受多一个 CLI 命令" },
-  "existingArchitecture": { "touchedModules": ["packages/orchestrator/src/schema.ts"], "newModules": ["packages/orchestrator/src/upstream.ts", "packages/cli/src/commands/exempt.ts", "packages/orchestrator/src/audit.ts"], "doNotTouch": ["packages/orchestrator/src/pipeline.ts"] }
-}
+{"title":"Exempt 机制技术设计","options":[{"id":"A","name":"exemptions 字段 + exempt CLI + --force-skip","pros":["独立 CLI 命令清晰","豁免有过期时间","审计日志分离"],"cons":["schema 加 1 字段","新增 CLI 命令"],"cost":"200 LOC"},{"id":"B","name":"pipeline 层面 auto-skip","pros":["CLI 不变","简单"],"cons":["无用户控制","无法审计","无过期"],"cost":"50 LOC"}],"decision":{"chosen":"A","reason":"1. exempt 显式可审计\n2. 过期时间是安全阀\n3. --force-skip 与 exempt 互补","tradeoffs":"接受多一个 CLI 命令"},"existingArchitecture":{"touchedModules":["packages/orchestrator/src/schema.ts"],"newModules":["packages/orchestrator/src/upstream.ts","packages/cli/src/commands/exempt.ts","packages/orchestrator/src/audit.ts"],"doNotTouch":["packages/orchestrator/src/pipeline.ts"]}}
