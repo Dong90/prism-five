@@ -1,8 +1,0 @@
-{
-  "title": "测试基础设施 — vitest 配置 + 核心包单元测试",
-  "changelog_entries": [
-    { "type": "feat", "description": "vitest 测试框架配置" },
-    { "type": "feat", "description": "5 核心包 22 条单元测试" },
-    { "type": "chore", "description": "package.json test 脚本更新" }
-  ]
-}

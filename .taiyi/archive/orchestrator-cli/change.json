@@ -1,6 +1,0 @@
-{
-  "title": "Orchestrator + CLI 测试覆盖",
-  "motivation": "orchestrator 和 CLI 无测试",
-  "scope": { "includes": ["orchestrator 测试", "CLI 测试"], "excludes": ["E2E 测试"] },
-  "success_criteria": [{ "id": "SC1", "description": "npm test 包含 orchestrator 测试" }]
-}

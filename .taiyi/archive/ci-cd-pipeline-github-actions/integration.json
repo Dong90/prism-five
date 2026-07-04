@@ -1,6 +1,0 @@
-{
-  "title": "CI/CD pipeline — GitHub Actions",
-  "changelog_entries": [
-    { "type": "ci", "description": "GitHub Actions CI with build/test/lint" }
-  ]
-}

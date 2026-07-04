@@ -1,1 +1,0 @@
-{"title":"E2E 集成测试","changelog_entries":[{"type":"test","description":"E2E integration test (9 cases)"}],"verification":[{"check":"build","result":"pass"},{"check":"test","result":"pass 42"},{"check":"lint","result":"pass"}],"quality":"pass"}

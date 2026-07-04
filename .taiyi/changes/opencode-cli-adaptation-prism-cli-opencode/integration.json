@@ -1,0 +1,70 @@
+{
+  "title": "OpenCode plugin 集成 v0.4.0",
+  "release_version": "0.4.0",
+  "release_date": "2026-07-04",
+  "status": "released",
+  "has_config_changes": false,
+  "changelog_entries": [
+    {
+      "type": "feat",
+      "description": "prism status: 加 --json flag，输出 machine-readable JSON（OpenCode 集成基础）"
+    },
+    {
+      "type": "feat",
+      "description": "prism agent: 新增 list 子命令，按 5 角色分组显示所有 agent"
+    },
+    {
+      "type": "feat",
+      "description": "prism agent: 新增 <name> \"<task>\" 子命令，直调单个 agent（白名单 AGENT_MAP）"
+    },
+    {
+      "type": "feat",
+      "description": ".opencode-plugin/: 新增独立目录与 manifest skeleton，注册 9 个 prism-* tool + 5 个 pentad-* skill"
+    },
+    {
+      "type": "chore",
+      "description": "5 个核心 SKILL.md frontmatter 加 mode 字段满足 OpenCode skill loader 兼容"
+    },
+    {
+      "type": "chore",
+      "description": "orchestrator/src/index.ts 重导出 AGENT_MAP / ROLE_ORDER / AgentDefinition 给 cli"
+    },
+    {
+      "type": "test",
+      "description": "新增 4 个测试文件 / 44 个测试用例：status-json (3), agent (4), skill-frontmatter (35), opencode-plugin (5) — 总测试 45 → 89"
+    }
+  ],
+  "breaking_changes": [],
+  "alerts": [
+    {
+      "alert": "OpenCode plugin load failure",
+      "condition": ".opencode-plugin/manifest throws on load",
+      "severity": "medium",
+      "channel": "warning logged but standalone CLI fallback enabled"
+    }
+  ],
+  "post_launch": {
+    "period": "1 week",
+    "metrics": "OpenCode launch + slash command invocation; agent list render perf; status --json latency",
+    "exit_criteria": "no critical bugs; status --json latency under 50ms (NFR-PERF-01); 0 user-reported integration issues",
+    "incident_response": "Disable plugin (revert .opencode-plugin/); CLI continues to work standalone"
+  },
+  "rollback_trigger": "OpenCode plugin crash on launch OR critical command regression (status / continue / approve broken)",
+  "rollback_step1": "git revert HEAD; rm -rf .opencode-plugin/",
+  "rollback_step2": "npm test; verify 89 tests pass after rollback",
+  "rollback_time": "less than 10min",
+  "monitoring": [
+    {
+      "metric": "test passing rate",
+      "baseline": "89/89",
+      "threshold": "below 95% triggers review",
+      "severity": "high"
+    },
+    {
+      "metric": "status --json latency",
+      "baseline": "under 50ms (estimated; not yet measured)",
+      "threshold": "above 200ms triggers review",
+      "severity": "medium"
+    }
+  ]
+}

@@ -1,6 +1,0 @@
-{
-  "exitCode": 0,
-  "command": "npm test",
-  "timestamp": "2026-07-04T07:45:40.000Z",
-  "summary": "Structured logger + tests, 33 tests pass"
-}

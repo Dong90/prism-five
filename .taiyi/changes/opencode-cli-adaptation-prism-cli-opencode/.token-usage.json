@@ -1,0 +1,18 @@
+{
+  "version": 1,
+  "slug": "opencode-cli-adaptation-prism-cli-opencode",
+  "totalTokens": 1425,
+  "estimatedCostUsd": 0.004275,
+  "byPhase": {
+    "change": 1425
+  },
+  "entries": [
+    {
+      "at": "2026-07-04T13:11:52.647Z",
+      "phase": "change",
+      "kind": "scan",
+      "tokens": 1425,
+      "label": "1 files"
+    }
+  ]
+}

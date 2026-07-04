@@ -1,6 +1,0 @@
-{
-  "exitCode": 0,
-  "command": "npm run build && npm test && npm run lint",
-  "timestamp": "2026-07-04T08:44:00.000Z",
-  "summary": "dev complete; command: npm run build && npm test && npm run lint; exitCode: 0 — project name pentad → prism-five, 5 core packages renamed to incidence/refraction/dispersion/absorption/emission, 4 support packages renamed, 25 source imports updated, tsconfig/README synced"
-}

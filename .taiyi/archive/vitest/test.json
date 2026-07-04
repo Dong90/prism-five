@@ -1,5 +1,0 @@
-{
-  "test_plan": [
-    { "level": "unit", "scope": "5 核心包", "command": "npm test" }
-  ]
-}

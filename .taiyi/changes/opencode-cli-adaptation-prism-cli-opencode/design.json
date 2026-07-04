@@ -1,0 +1,181 @@
+{
+  "title": "OpenCode plugin + JSON 输出改造 prism CLI",
+  "techStack": {
+    "selected": "TypeScript + Commander.js + OpenCode plugin API",
+    "reason": "现有 9 命令已用 Commander.js；OpenCode plugin 是 OpenCode 官方扩展机制",
+    "frontend": "N/A",
+    "backend": "Node.js >=18, TypeScript strict mode",
+    "keyDeps": "commander 12.x, opencode-cli（plugin API）",
+    "excluded": "不引入 nestjs/fastify/express wrapper（不必要的封装）"
+  },
+  "existingArchitecture": {
+    "touchedModules": [
+      "packages/cli/src/index.ts",
+      "packages/cli/src/commands/status.ts",
+      "packages/cli/src/commands/run.ts",
+      ".pentad/agents/{prototyper,builder,sweeper,grower,maintainer}.md"
+    ],
+    "newModules": [
+      ".opencode-plugin/index.ts（OpenCode plugin manifest）",
+      ".opencode-plugin/tools/prism-commands.ts（9 命令 → OpenCode tools）",
+      ".opencode-plugin/skills/loader.ts（5 SKILL.md → OpenCode skills）",
+      "packages/cli/src/commands/agent.ts（prism-agent 子命令）"
+    ],
+    "doNotTouch": [
+      "packages/orchestrator/src/*（orchestrator 核心不动）",
+      ".pentad/pipeline.json schema（不重写）",
+      "5 个 SKILL.md 的实质内容（仅加 frontmatter）"
+    ]
+  },
+  "options": [
+    {
+      "id": "A",
+      "name": "独立 OpenCode plugin 包（@prism-five/opencode-plugin）",
+      "pros": [
+        "OpenCode plugin manifest 是标准机制，OpenCode 启动时自动加载",
+        "plugin 与 prism-five 解耦，可独立发版",
+        "复用现有 9 CLI 命令，只把 command 注册到 OpenCode tool registry"
+      ],
+      "cons": [
+        "新增一个 npm 包结构",
+        "用户需 npm link 安装 plugin（多一步）"
+      ],
+      "cost": "~250 LOC（含 manifest + 9 tool wrappers + 5 skill loaders）",
+      "approach": "在 .opencode-plugin/ 下写 plugin manifest，9 个命令做 wrapper，加 skill loader 暴露 5 SKILL.md"
+    },
+    {
+      "id": "B",
+      "name": "OpenCode tool 直接在 prism CLI 暴露（无需独立 plugin）",
+      "pros": [
+        "无需额外 npm 包；现有 CLI 直接扩展",
+        "用户无感知，开箱即用"
+      ],
+      "cons": [
+        "与 OpenCode 强耦合（如果 OpenCode 不存在则 prism CLI 也能用，但 tool 注册的代码没用）",
+        "plugin manifest 与 CLI 命令混在一起，结构混乱",
+        "未来 plugin 化（如支持其他 IDE）需要重写"
+      ],
+      "cost": "~300 LOC（含 plugin manifest + OpenCode tool 注册）",
+      "approach": "在 packages/cli/src/opencode.ts 里同时跑 CLI + OpenCode tool 注册"
+    }
+  ],
+  "decision": {
+    "chosen": "A",
+    "reason": "1. 解耦：OpenCode plugin 是辅助层，不污染 prism CLI 主流程\n2. 可测试：plugin 可单独 mock 测试，prism CLI 仍可在 standalone 模式用\n3. 复用 9 命令：plugin 是薄 wrapper，无需重复实现",
+    "tradeoffs": "接受：用户需多一步 npm link；放弃：避免 prism CLI 与 OpenCode 紧密耦合"
+  },
+  "current_state": "prism CLI 9 命令仅在 standalone terminal 可用；OpenCode 终端无法识别这些命令；pipeline.json 状态只能人眼看，无法被 OpenCode 模型 parse",
+  "modules": [
+    {
+      "name": ".opencode-plugin/index.ts",
+      "operation": "Plugin manifest 注册",
+      "path": ".opencode-plugin/index.ts",
+      "description": "OpenCode plugin 入口；声明 9 tool + 5 skill loader"
+    },
+    {
+      "name": ".opencode-plugin/tools/prism-commands.ts",
+      "operation": "9 → 9 tool mapping",
+      "path": ".opencode-plugin/tools/prism-commands.ts",
+      "description": "把 prism-new/status/continue/approve/check/promote/run/queue/next 注册为 OpenCode tools"
+    },
+    {
+      "name": ".opencode-plugin/skills/loader.ts",
+      "operation": "SKILL.md → skill loader",
+      "path": ".opencode-plugin/skills/loader.ts",
+      "description": "启动时扫描 .pentad/agents/*.md，加载到 OpenCode skill registry"
+    },
+    {
+      "name": "packages/cli/src/commands/status.ts",
+      "operation": "加 --json flag",
+      "path": "packages/cli/src/commands/status.ts",
+      "description": "扩展现有 status 命令；保留原 text 输出格式，新增 JSON mode"
+    },
+    {
+      "name": "packages/cli/src/commands/agent.ts",
+      "operation": "新增 agent 子命令",
+      "path": "packages/cli/src/commands/agent.ts",
+      "description": "prism-agent list | prism-agent <name> 直调单个 agent"
+    }
+  ],
+  "dependency_sandbox": [
+    {
+      "name": "commander",
+      "version_range": "^12.0.0",
+      "purpose": "CLI command registry（现有依赖）",
+      "alternatives_considered": "yargs (heavier), cac (too thin)",
+      "npm_latest": "12.x",
+      "staleness_check": "OK; 现有依赖"
+    },
+    {
+      "name": "opencode-cli",
+      "version_range": "^0.3.0",
+      "purpose": "OpenCode plugin API（必需依赖）",
+      "alternatives_considered": "N/A - OpenCode 是唯一目标",
+      "npm_latest": "0.3.x",
+      "staleness_check": "to-verify-at-dev-phase"
+    }
+  ],
+  "blast_radius": [
+    {
+      "decision": "新增 OpenCode plugin 包",
+      "radius": ".opencode-plugin/ 目录 + packages/cli/src/commands/status.ts/agent.ts",
+      "worst_case": "OpenCode plugin 报错导致 OpenCode 启动失败",
+      "isolation": "plugin 在 try/catch 中加载；失败时降级到 standalone CLI"
+    },
+    {
+      "decision": "status 命令加 --json flag",
+      "radius": "packages/cli/src/commands/status.ts",
+      "worst_case": "--json 输出格式与现存 text 输出互斥",
+      "isolation": "互斥分支：opts.json → JSON.stringify(new Pipeline().getState())"
+    }
+  ],
+  "design_innovation_tokens": [],
+  "tradeoffs": [
+    {
+      "point": "plugin 与 prism CLI 同仓库 vs 独立仓库",
+      "choice": "同仓库（monorepo）",
+      "reason": "现有 monorepo 已就绪；避免为单一功能新建仓库"
+    },
+    {
+      "point": "SKILL.md frontmatter 改造粒度",
+      "choice": "最小改动（只加 mode/paradigm，不改 description/iron-law 等）",
+      "reason": "现有 SKILL.md 是设计真源；frontmatter 扩展空间已存在"
+    }
+  ],
+  "new_artifact": ".opencode-plugin/index.ts（plugin manifest）+ packages/cli/src/commands/agent.ts（prism-agent 直调）",
+  "rollback_trigger": "OpenCode plugin 与 9 命令任一冲突导致关键命令不可用",
+  "rollout_steps": [
+    "1. dev 阶段：先实现 status --json（最小）→ 单测通过",
+    "2. dev 阶段：再实现 prism-agent list/<name> → 单测通过",
+    "3. dev 阶段：最后实现 .opencode-plugin/ → 集成测试",
+    "4. test 阶段：5 个 AC 的 verify 命令全部跑通",
+    "5. integration 阶段：写 CHANGELOG，归档"
+  ],
+  "security_threats": [
+    {
+      "threat": "恶意 SKILL.md 让 OpenCode 执行危险命令",
+      "vector": "sk loader 不验证 frontmatter 字段",
+      "mitigation": "loader 验证 frontmatter 含 mode/paradigm description 等必备字段；白名单 .pentad/agents/ 路径"
+    },
+    {
+      "threat": "prism-agent <name> 通过名字注入 shell 命令",
+      "vector": "<name> 未转义直接 exec",
+      "mitigation": "白名单 AGENT_MAP 中存在的 name；不允许 path 注入"
+    },
+    {
+      "threat": "prism-agent 读 .pentad/ 之外的敏感文件",
+      "vector": "未限定访问路径",
+      "mitigation": "agent 只能读 .pentad/pipeline.json + .pentad/features/*/；hooks 阻拦"
+    }
+  ],
+  "evolutionSuggestions": [
+    {
+      "type": "reusable-abstraction",
+      "description": "plugin pattern 可复用：未来加 claude-code/cursor plugin 时复用 .opencode-plugin/ 结构"
+    },
+    {
+      "type": "tech-decision",
+      "description": "SKILL.md frontmatter 扩展字段（mode/paradigm）应记录为 ADR-001"
+    }
+  ]
+}

@@ -1,38 +1,27 @@
-{"ts":"2026-07-04T07:28:09.771Z","event":"phase:complete","slug":"core-pipeline","phase":"dev"}
-{"ts":"2026-07-04T07:28:49.049Z","event":"phase:complete","slug":"core-pipeline","phase":"test"}
-{"ts":"2026-07-04T07:30:07.871Z","event":"phase:complete","slug":"core-pipeline","phase":"review"}
-{"ts":"2026-07-04T07:30:19.839Z","event":"audit:high","slug":"core-pipeline","findings":2}
-{"ts":"2026-07-04T07:30:36.525Z","event":"audit:high","slug":"core-pipeline","findings":1}
-{"ts":"2026-07-04T07:35:18.732Z","event":"phase:complete","slug":"vitest","phase":"task"}
-{"ts":"2026-07-04T07:36:11.826Z","event":"phase:complete","slug":"vitest","phase":"dev"}
-{"ts":"2026-07-04T07:36:36.034Z","event":"phase:complete","slug":"vitest","phase":"test"}
-{"ts":"2026-07-04T07:36:58.908Z","event":"phase:complete","slug":"vitest","phase":"review"}
-{"ts":"2026-07-04T07:37:09.978Z","event":"audit:high","slug":"vitest","findings":2}
-{"ts":"2026-07-04T07:37:28.532Z","event":"phase:complete","slug":"vitest","phase":"integration"}
-{"ts":"2026-07-04T07:37:50.969Z","event":"phase:complete","slug":"linter-eslint-prettier","phase":"change"}
-{"ts":"2026-07-04T07:40:58.529Z","event":"phase:complete","slug":"linter-eslint-prettier","phase":"dev"}
-{"ts":"2026-07-04T07:41:15.796Z","event":"audit:high","slug":"linter-eslint-prettier","findings":1}
-{"ts":"2026-07-04T07:41:22.998Z","event":"phase:complete","slug":"linter-eslint-prettier","phase":"integration"}
-{"ts":"2026-07-04T07:42:33.331Z","event":"phase:complete","slug":"ci-cd-pipeline-github-actions","phase":"change"}
-{"ts":"2026-07-04T07:43:05.130Z","event":"phase:complete","slug":"ci-cd-pipeline-github-actions","phase":"dev"}
-{"ts":"2026-07-04T07:43:15.301Z","event":"gate:failed","slug":"ci-cd-pipeline-github-actions","phase":"integration","reason":"completeness, consistency, verifiability, traceability, engineering_quality"}
-{"ts":"2026-07-04T07:43:26.575Z","event":"phase:complete","slug":"ci-cd-pipeline-github-actions","phase":"integration"}
-{"ts":"2026-07-04T07:43:43.356Z","event":"gate:failed","slug":"orchestrator-cli","phase":"change","reason":"completeness, consistency, verifiability, traceability, engineering_quality"}
-{"ts":"2026-07-04T07:43:51.017Z","event":"phase:complete","slug":"orchestrator-cli","phase":"change"}
-{"ts":"2026-07-04T07:44:13.244Z","event":"phase:complete","slug":"orchestrator-cli","phase":"dev"}
-{"ts":"2026-07-04T07:44:27.881Z","event":"phase:complete","slug":"orchestrator-cli","phase":"integration"}
-{"ts":"2026-07-04T07:44:46.092Z","event":"gate:failed","slug":"logger","phase":"change","reason":"completeness, consistency, verifiability, traceability, engineering_quality"}
-{"ts":"2026-07-04T07:44:54.414Z","event":"phase:complete","slug":"logger","phase":"change"}
-{"ts":"2026-07-04T07:45:42.916Z","event":"phase:complete","slug":"logger","phase":"dev"}
-{"ts":"2026-07-04T07:45:55.527Z","event":"phase:complete","slug":"logger","phase":"integration"}
-{"ts":"2026-07-04T07:48:28.493Z","event":"phase:complete","slug":"api-jsdoc-readme","phase":"change"}
-{"ts":"2026-07-04T07:49:46.030Z","event":"phase:complete","slug":"api-jsdoc-readme","phase":"dev"}
-{"ts":"2026-07-04T07:49:50.106Z","event":"audit:high","slug":"api-jsdoc-readme","findings":2}
-{"ts":"2026-07-04T07:50:02.188Z","event":"audit:high","slug":"api-jsdoc-readme","findings":1}
-{"ts":"2026-07-04T07:50:06.117Z","event":"audit:high","slug":"api-jsdoc-readme","findings":1}
-{"ts":"2026-07-04T07:50:09.861Z","event":"audit:high","slug":"api-jsdoc-readme","findings":1}
-{"ts":"2026-07-04T07:50:28.319Z","event":"audit:high","slug":"api-jsdoc-readme","findings":1}
-{"ts":"2026-07-04T07:53:15.556Z","event":"phase:complete","slug":"e2e","phase":"change"}
-{"ts":"2026-07-04T07:53:18.498Z","event":"phase:complete","slug":"e2e","phase":"dev"}
-{"ts":"2026-07-04T07:55:14.963Z","event":"phase:complete","slug":"ty-5ocn6io9","phase":"change"}
-{"ts":"2026-07-04T07:55:18.570Z","event":"phase:complete","slug":"ty-5ocn6io9","phase":"dev"}
+{"ts":"2026-07-04T13:12:55.714Z","event":"quality:failed","slug":"opencode-cli-adaptation-prism-cli-opencode","phase":"change","error":"Quality gate failed: engineering_quality — [质量门控] 占位符残留: /_待选定_/","hints":["[质量门控] 占位符残留: /_待选定_/"]}
+{"ts":"2026-07-04T13:13:16.446Z","event":"quality:passed","slug":"opencode-cli-adaptation-prism-cli-opencode","phase":"change","qualityScores":{"completeness":true,"consistency":true,"verifiability":true,"traceability":true,"engineering_quality":true},"hints":[]}
+{"ts":"2026-07-04T13:13:16.480Z","event":"phase:complete","slug":"opencode-cli-adaptation-prism-cli-opencode","phase":"change"}
+{"ts":"2026-07-04T13:14:19.127Z","event":"quality:passed","slug":"opencode-cli-adaptation-prism-cli-opencode","phase":"requirement","qualityScores":{"completeness":true,"consistency":true,"verifiability":true,"traceability":true,"engineering_quality":true},"hints":[]}
+{"ts":"2026-07-04T13:14:19.177Z","event":"phase:complete","slug":"opencode-cli-adaptation-prism-cli-opencode","phase":"requirement"}
+{"ts":"2026-07-04T13:14:59.354Z","event":"quality:failed","slug":"opencode-cli-adaptation-prism-cli-opencode","phase":"design","error":"Quality gate failed: engineering_quality — [质量门控] 占位符残留: /_在此列出/","hints":["[质量门控] 占位符残留: /_在此列出/"]}
+{"ts":"2026-07-04T13:15:46.637Z","event":"quality:passed","slug":"opencode-cli-adaptation-prism-cli-opencode","phase":"design","qualityScores":{"completeness":true,"consistency":true,"verifiability":true,"traceability":true,"engineering_quality":true},"hints":[]}
+{"ts":"2026-07-04T13:15:46.667Z","event":"phase:complete","slug":"opencode-cli-adaptation-prism-cli-opencode","phase":"design"}
+{"ts":"2026-07-04T13:16:12.249Z","event":"quality:passed","slug":"opencode-cli-adaptation-prism-cli-opencode","phase":"ui-design","qualityScores":{"completeness":true,"consistency":true,"verifiability":true,"traceability":true,"engineering_quality":true},"hints":[]}
+{"ts":"2026-07-04T13:16:12.282Z","event":"phase:complete","slug":"opencode-cli-adaptation-prism-cli-opencode","phase":"ui-design"}
+{"ts":"2026-07-04T13:17:24.165Z","event":"quality:passed","slug":"opencode-cli-adaptation-prism-cli-opencode","phase":"task","qualityScores":{"completeness":true,"consistency":true,"verifiability":true,"traceability":true,"engineering_quality":false},"hints":["[质量门控] 占位符残留: /_在此列出/"]}
+{"ts":"2026-07-04T13:17:24.194Z","event":"phase:complete","slug":"opencode-cli-adaptation-prism-cli-opencode","phase":"task"}
+{"ts":"2026-07-04T13:31:28.811Z","event":"quality:failed","slug":"opencode-cli-adaptation-prism-cli-opencode","phase":"dev","error":"Quality gate failed (basic): consistency — .dev-complete 需含 command: <npm test>; .dev-complete 需含 exitCode: 0","hints":[".dev-complete 需含 command: <npm test>",".dev-complete 需含 exitCode: 0"]}
+{"ts":"2026-07-04T13:31:43.407Z","event":"quality:passed","slug":"opencode-cli-adaptation-prism-cli-opencode","phase":"dev","qualityScores":{"completeness":true,"consistency":true,"verifiability":true,"traceability":true,"engineering_quality":true},"hints":[]}
+{"ts":"2026-07-04T13:31:43.457Z","event":"phase:complete","slug":"opencode-cli-adaptation-prism-cli-opencode","phase":"dev"}
+{"ts":"2026-07-04T13:32:20.949Z","event":"quality:passed","slug":"opencode-cli-adaptation-prism-cli-opencode","phase":"test","qualityScores":{"completeness":true,"consistency":true,"verifiability":true,"traceability":true,"engineering_quality":true},"hints":[]}
+{"ts":"2026-07-04T13:32:20.975Z","event":"phase:complete","slug":"opencode-cli-adaptation-prism-cli-opencode","phase":"test"}
+{"ts":"2026-07-04T13:32:57.985Z","event":"quality:failed","slug":"opencode-cli-adaptation-prism-cli-opencode","phase":"review","error":"Quality gate failed: consistency, traceability, engineering_quality — [Zod 校验失败] review.json: Unexpected token ']', ...\"eact)\",\n  ],\n  \"secu\"... is not valid JSON; [质量门控] 占位符残留: /_待定_/","hints":["[Zod 校验失败] review.json: Unexpected token ']', ...\"eact)\",\n  ],\n  \"secu\"... is not valid JSON","[质量门控] 占位符残留: /_待定_/"]}
+{"ts":"2026-07-04T13:35:58.373Z","event":"quality:failed","slug":"opencode-cli-adaptation-prism-cli-opencode","phase":"review","error":"Quality gate failed: consistency, traceability, engineering_quality — [Zod 校验失败] review.json: [\n  {\n    \"expected\": \"boolean\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"findings\",\n      0,\n      \"resolved\"\n    ],\n    \"message\": \"Invalid input: expected boolean, received string\"\n  },\n  {\n    \"expected\": \"boolean\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"findings\",\n      1,\n      \"resolved\"\n    ],\n    \"message\": \"Invalid input: expected boolean, received string\"\n  },\n  {\n    \"expected\": \"boolean\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"findings\",\n      2,\n      \"resolved\"\n    ],\n    \"message\": \"Invalid input: expected boolean, received string\"\n  },\n  {\n    \"expected\": \"boolean\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"findings\",\n      3,\n      \"resolved\"\n    ],\n    \"message\": \"Invalid input: expected boolean, received string\"\n  },\n  {\n    \"expected\": \"boolean\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"findings\",\n      4,\n      \"resolved\"\n    ],\n    \"message\": \"Invalid input: expected boolean, received string\"\n  }\n]; [质量门控] 占位符残留: /_待定_/","hints":["[Zod 校验失败] review.json: [\n  {\n    \"expected\": \"boolean\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"findings\",\n      0,\n      \"resolved\"\n    ],\n    \"message\": \"Invalid input: expected boolean, received string\"\n  },\n  {\n    \"expected\": \"boolean\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"findings\",\n      1,\n      \"resolved\"\n    ],\n    \"message\": \"Invalid input: expected boolean, received string\"\n  },\n  {\n    \"expected\": \"boolean\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"findings\",\n      2,\n      \"resolved\"\n    ],\n    \"message\": \"Invalid input: expected boolean, received string\"\n  },\n  {\n    \"expected\": \"boolean\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"findings\",\n      3,\n      \"resolved\"\n    ],\n    \"message\": \"Invalid input: expected boolean, received string\"\n  },\n  {\n    \"expected\": \"boolean\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"findings\",\n      4,\n      \"resolved\"\n    ],\n    \"message\": \"Invalid input: expected boolean, received string\"\n  }\n]","[质量门控] 占位符残留: /_待定_/"]}
+{"ts":"2026-07-04T13:36:11.275Z","event":"quality:passed","slug":"opencode-cli-adaptation-prism-cli-opencode","phase":"review","qualityScores":{"completeness":true,"consistency":true,"verifiability":true,"traceability":true,"engineering_quality":true},"hints":[]}
+{"ts":"2026-07-04T13:36:11.311Z","event":"phase:complete","slug":"opencode-cli-adaptation-prism-cli-opencode","phase":"review"}
+{"ts":"2026-07-04T13:36:40.170Z","event":"audit:blocked","slug":"opencode-cli-adaptation-prism-cli-opencode","findings":2}
+{"ts":"2026-07-04T13:37:01.200Z","event":"audit:blocked","slug":"opencode-cli-adaptation-prism-cli-opencode","findings":2}
+{"ts":"2026-07-04T13:37:10.293Z","event":"audit:blocked","slug":"opencode-cli-adaptation-prism-cli-opencode","findings":2}
+{"ts":"2026-07-04T13:37:56.475Z","event":"audit:blocked","slug":"opencode-cli-adaptation-prism-cli-opencode","findings":2}
+{"ts":"2026-07-04T13:39:00.133Z","event":"audit:blocked","slug":"opencode-cli-adaptation-prism-cli-opencode","findings":2}
+{"ts":"2026-07-04T13:42:59.462Z","event":"audit:blocked","slug":"opencode-cli-adaptation-prism-cli-opencode","findings":1}
