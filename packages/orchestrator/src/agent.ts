@@ -47,19 +47,25 @@ function extractList(section: string): string[] {
     .filter(Boolean);
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function extractTable(section: string): Record<string, string>[] {
   const rows: Record<string, string>[] = [];
   const lines = section.split('\n');
   let headers: string[] = [];
   for (const line of lines) {
-    const cells = line.split('|').map(c => c.trim()).filter(Boolean);
+    const cells = line
+      .split('|')
+      .map(c => c.trim())
+      .filter(Boolean);
     if (cells.length === 0) continue;
     if (cells[0]!.match(/^-+$/)) continue;
     if (headers.length === 0) {
       headers = cells;
     } else {
       const row: Record<string, string> = {};
-      cells.forEach((c, i) => { if (headers[i]) row[headers[i]!] = c; });
+      cells.forEach((c, i) => {
+        if (headers[i]) row[headers[i]!] = c;
+      });
       rows.push(row);
     }
   }
@@ -76,24 +82,29 @@ export function loadAgent(role: AgentRole): AgentContext {
   }
 
   const content = fs.readFileSync(skillPath, 'utf-8');
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const fm = parseFrontmatter(content);
 
   // Extract constraints section (supports <constraints> tag and ## Constraints heading)
   let constraintsSec = content.match(/<constraints>\n([\s\S]*?)\n<\/constraints>/);
   if (!constraintsSec) constraintsSec = content.match(/## Constraints\n([\s\S]*?)(?=\n## |\n<|$)/);
-  const constraints = (constraintsSec && constraintsSec[1])
-    ? constraintsSec[1].split("\n").filter((l: string) => l.trim().length > 0).map((l: string) => l.trim())
-    : [];
+  const constraints =
+    constraintsSec && constraintsSec[1]
+      ? constraintsSec[1]
+          .split('\n')
+          .filter((l: string) => l.trim().length > 0)
+          .map((l: string) => l.trim())
+      : [];
 
   // Extract Iron Law
   // Extract Iron Law (handles code block)
-  let ironLaw = "";
+  let ironLaw = '';
   const ironLawMatch = content.match(/## Iron Law\n+```\n?([\s\S]*?)\n?```/);
   if (ironLawMatch && ironLawMatch[1]) {
     ironLaw = ironLawMatch[1].trim();
   } else {
-    const alt = extractSection(content, "Iron Law");
-    if (alt) ironLaw = alt.replace(/```[\s\S]*?```/g, "").trim();
+    const alt = extractSection(content, 'Iron Law');
+    if (alt) ironLaw = alt.replace(/```[\s\S]*?```/g, '').trim();
   }
 
   // Extract Tools
@@ -139,12 +150,16 @@ export function loadAgent(role: AgentRole): AgentContext {
   // Extract fatal constraints (supports <fatal_constraints> tag and heading)
   let fatalSec = content.match(/<fatal_constraints>\n([\s\S]*?)\n<\/fatal_constraints>/);
   if (!fatalSec) fatalSec = content.match(/## Fatal Constraints\n([\s\S]*?)(?=\n## |\n<|$)/);
-  const fatalConstraints = (fatalSec && fatalSec[1]) ? fatalSec[1].split("\n").filter((l: string) => l.match(/^NEVER/)) : [];
+  const fatalConstraints =
+    fatalSec && fatalSec[1] ? fatalSec[1].split('\n').filter((l: string) => l.match(/^NEVER/)) : [];
 
   // Extract Escalation
   const escalationSec = extractSection(content, 'Escalation');
   const escalation = escalationSec
-    ? escalationSec.split('\n').filter(l => l.match(/^\|/)).slice(2)
+    ? escalationSec
+        .split('\n')
+        .filter(l => l.match(/^\|/))
+        .slice(2)
     : [];
 
   return {

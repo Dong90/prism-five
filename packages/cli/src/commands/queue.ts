@@ -7,7 +7,7 @@ export const queueCommand = new Command('queue')
   .option('-a, --add <slug>', 'Add feature to queue')
   .option('-p, --priority <level>', 'Priority: P0, P1, P2', 'P2')
   .option('-r, --remove <slug>', 'Remove feature from queue')
-  .action((opts) => {
+  .action(opts => {
     const qm = new QueueManager();
 
     if (opts.add) {
@@ -22,11 +22,15 @@ export const queueCommand = new Command('queue')
     } else {
       const items = qm.list();
       if (items.length === 0) {
-        console.log('Queue is empty. Add features with: npx prism queue --add <slug> --priority P1');
+        console.log(
+          'Queue is empty. Add features with: npx prism queue --add <slug> --priority P1',
+        );
       } else {
         console.log(`Queue (${items.length} items):`);
         for (const item of items) {
-          console.log(`  [${item.priority}] ${item.slug}  ${item.addedAt ? item.addedAt.slice(0, 10) : ''}`);
+          console.log(
+            `  [${item.priority}] ${item.slug}  ${item.addedAt ? item.addedAt.slice(0, 10) : ''}`,
+          );
         }
       }
     }

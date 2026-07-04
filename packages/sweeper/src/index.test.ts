@@ -16,7 +16,11 @@ describe('disperse', () => {
 
   it('handles function targets', async () => {
     const collected: string[] = [];
-    const result = await disperse('data', [v => { collected.push(v); }]);
+    const result = await disperse('data', [
+      v => {
+        collected.push(v);
+      },
+    ]);
     expect(collected).toEqual(['data']);
     expect(result).toHaveLength(1);
   });
@@ -24,7 +28,9 @@ describe('disperse', () => {
   it('isolates failing targets', async () => {
     const result = await disperse('x', [
       'good',
-      () => { throw new Error('fail'); },
+      () => {
+        throw new Error('fail');
+      },
     ]);
     expect(result).toHaveLength(1);
     expect(result[0]?.[0]).toBe('good');

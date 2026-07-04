@@ -8,6 +8,8 @@
     "build": "tsc",
     "typecheck": "tsc --noEmit"
   },
-  "dependencies": { "@pentad/sweeper": "0.1.0" },
+  "dependencies": {
+    "@pentad/sweeper": "0.1.0"
+  },
   "license": "MIT"
 }

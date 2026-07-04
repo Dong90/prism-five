@@ -5,9 +5,7 @@ export interface AbsorptionResult<T> {
   data: T[];
 }
 
-export function absorb<T>(
-  results: DispersionResult<T>,
-): AbsorptionResult<T> {
+export function absorb<T>(results: DispersionResult<T>): AbsorptionResult<T> {
   return {
     sources: results.map(([target]) => target),
     data: results.map(([, data]) => data),

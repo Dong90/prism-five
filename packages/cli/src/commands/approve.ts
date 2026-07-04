@@ -5,7 +5,7 @@ export const approveCommand = new Command('approve')
   .alias('ap')
   .description('Approve a human gate')
   .argument('<gate>', 'Gate to approve: prototype_approved or release_approved')
-  .action((gate) => {
+  .action(gate => {
     const valid = ['prototype_approved', 'release_approved'];
     if (!valid.includes(gate)) {
       console.log(`✗ Invalid gate: ${gate}. Valid gates: ${valid.join(', ')}`);

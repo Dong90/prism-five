@@ -15,7 +15,9 @@ export const continueCommand = new Command('continue')
     const result = pipeline.continue(feature.slug);
     if (!result.gate.passed) {
       console.log(`✗ Gate blocked: ${result.gate.reason}`);
-      console.log(`  ${result.gate.requiresHuman ? '→ Human approval required' : '→ Fix issues and retry'}`);
+      console.log(
+        `  ${result.gate.requiresHuman ? '→ Human approval required' : '→ Fix issues and retry'}`,
+      );
       process.exit(1);
     }
 

@@ -13,18 +13,11 @@ export function refract<T, U>(data: T, fn: (input: T) => U): U {
   try {
     return fn(data);
   } catch (err) {
-    throw new RefractError(
-      `refract transformation failed: ${(err as Error).message}`,
-      err,
-      data,
-    );
+    throw new RefractError(`refract transformation failed: ${(err as Error).message}`, err, data);
   }
 }
 
-refract.map = function map<T, U>(
-  arr: T[],
-  fn: (item: T, index: number) => U,
-): U[] {
+refract.map = function map<T, U>(arr: T[], fn: (item: T, index: number) => U): U[] {
   return arr.map((item, index) => {
     try {
       return fn(item, index);

@@ -6,9 +6,18 @@
   },
   "include": ["src"],
   "references": [
-    { "path": "../prototyper" },
-    { "path": "../builder" },
-    { "path": "../sweeper" },
-    { "path": "../grower" }
-  ]
+    {
+      "path": "../prototyper"
+    },
+    {
+      "path": "../builder"
+    },
+    {
+      "path": "../sweeper"
+    },
+    {
+      "path": "../grower"
+    }
+  ],
+  "exclude": ["src/**/*.test.ts"]
 }

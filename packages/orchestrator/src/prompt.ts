@@ -8,7 +8,11 @@ export interface AgentPrompt {
   context: AgentContext;
 }
 
-export function buildAgentPrompt(role: AgentRole, feature: Feature, state: PipelineState): AgentPrompt {
+export function buildAgentPrompt(
+  role: AgentRole,
+  feature: Feature,
+  state: PipelineState,
+): AgentPrompt {
   const ctx = loadAgent(role);
   const def = AGENT_MAP[role];
 

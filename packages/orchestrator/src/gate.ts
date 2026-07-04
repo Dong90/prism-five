@@ -16,7 +16,7 @@ export function checkHumanGate(feature: Feature, gateName: keyof GateState): Gat
 
 export function checkAutoGate(feature: Feature): GateResult {
   const checks: Array<{ name: string; passed: boolean }> = [
-        { name: 'role valid', passed: feature.currentRole !== undefined },
+    { name: 'role valid', passed: feature.currentRole !== undefined },
   ];
 
   const failed = checks.filter(c => !c.passed);

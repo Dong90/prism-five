@@ -6,6 +6,9 @@
   },
   "include": ["src"],
   "references": [
-    { "path": "../prototyper" }
-  ]
+    {
+      "path": "../prototyper"
+    }
+  ],
+  "exclude": ["src/**/*.test.ts"]
 }

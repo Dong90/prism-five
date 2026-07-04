@@ -19,13 +19,9 @@ function isPlainObject(v: unknown): v is Record<string, unknown> {
   return typeof v === 'object' && v !== null && !Array.isArray(v);
 }
 
-export function incident<T extends string, P>(
-  event: IncidentEvent<T, P>,
-): IncidentEvent<T, P> {
+export function incident<T extends string, P>(event: IncidentEvent<T, P>): IncidentEvent<T, P> {
   if (!isValidString(event.type)) {
-    throw new PrototyperError(
-      `event.type must be a non-empty string, got ${typeof event.type}`,
-    );
+    throw new PrototyperError(`event.type must be a non-empty string, got ${typeof event.type}`);
   }
   if (event.payload !== undefined && !isPlainObject(event.payload)) {
     throw new PrototyperError(

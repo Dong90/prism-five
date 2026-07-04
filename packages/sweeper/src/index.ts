@@ -10,10 +10,7 @@ function clone<T>(data: T): T {
   return structuredClone(data);
 }
 
-async function executeTarget<T>(
-  target: Target<T>,
-  data: T,
-): Promise<[string, T] | null> {
+async function executeTarget<T>(target: Target<T>, data: T): Promise<[string, T] | null> {
   if (isFunctionTarget(target)) {
     try {
       await target(clone(data));
@@ -25,15 +22,10 @@ async function executeTarget<T>(
   return [target, clone(data)];
 }
 
-export async function disperse<T>(
-  data: T,
-  targets: Target<T>[],
-): Promise<DispersionResult<T>> {
+export async function disperse<T>(data: T, targets: Target<T>[]): Promise<DispersionResult<T>> {
   if (targets.length === 0) return [];
 
-  const results = await Promise.allSettled(
-    targets.map(t => executeTarget(t, data)),
-  );
+  const results = await Promise.allSettled(targets.map(t => executeTarget(t, data)));
 
   const out: DispersionResult<T> = [];
   for (const r of results) {

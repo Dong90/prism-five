@@ -77,12 +77,28 @@ export class Pipeline {
 
     // Human gate: prototype_approved
     if (feature.currentRole === 'prototyper' && !feature.gates.prototype_approved) {
-      return { feature, nextRole: null, gate: { passed: false, reason: 'human gate: prototype_approved required', requiresHuman: true } };
+      return {
+        feature,
+        nextRole: null,
+        gate: {
+          passed: false,
+          reason: 'human gate: prototype_approved required',
+          requiresHuman: true,
+        },
+      };
     }
 
     // Human gate: release_approved (maintainer → live)
     if (feature.currentRole === 'maintainer' && !feature.gates.release_approved) {
-      return { feature, nextRole: null, gate: { passed: false, reason: 'human gate: release_approved required', requiresHuman: true } };
+      return {
+        feature,
+        nextRole: null,
+        gate: {
+          passed: false,
+          reason: 'human gate: release_approved required',
+          requiresHuman: true,
+        },
+      };
     }
 
     // Auto gate

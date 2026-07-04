@@ -21,6 +21,8 @@ describe('incident', () => {
   });
 
   it('rejects array payload', () => {
-    expect(() => incident({ type: 'x', payload: [] as unknown as Record<string, unknown> })).toThrow(PrototyperError);
+    expect(() =>
+      incident({ type: 'x', payload: [] as unknown as Record<string, unknown> }),
+    ).toThrow(PrototyperError);
   });
 });

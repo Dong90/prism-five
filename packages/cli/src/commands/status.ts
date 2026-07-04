@@ -1,13 +1,13 @@
 import { Command } from 'commander';
 import { Pipeline } from '@pentad/orchestrator';
-import { agentSummary } from '@pentad/orchestrator';
+import { loadAgent as pentadLoadAgent, agentSummary } from '@pentad/orchestrator';
 import type { AgentRole } from '@pentad/orchestrator';
 
 export const statusCommand = new Command('status')
   .alias('st')
   .description('Show current pipeline state')
   .option('-v, --verbose', 'Show full details')
-  .action((opts) => {
+  .action(opts => {
     const pipeline = new Pipeline();
     const state = pipeline.getState();
     const feature = pipeline.getActiveFeature();
@@ -36,7 +36,7 @@ export const statusCommand = new Command('status')
       if (opts.verbose) {
         const role = feature.currentRole as AgentRole;
         console.log(`\nCurrent Agent: ${role}`);
-        const ctx = loadAgent(role);
+        const ctx = pentadLoadAgent(role);
         console.log('--- Agent Context ---');
         console.log(agentSummary(ctx));
       }
@@ -44,8 +44,3 @@ export const statusCommand = new Command('status')
       console.log('\nNo active feature. Create one with: npx prism new <slug>');
     }
   });
-
-function loadAgent(role: string) {
-  const { loadAgent: la } = require('@pentad/orchestrator');
-  return la(role as AgentRole);
-}

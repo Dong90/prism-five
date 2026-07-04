@@ -1,14 +1,25 @@
 import { z } from 'zod';
 
 // AgentRole
-export const AgentRoleSchema = z.enum(['prototyper','builder','sweeper','grower','maintainer']);
+export const AgentRoleSchema = z.enum(['prototyper', 'builder', 'sweeper', 'grower', 'maintainer']);
 export type AgentRole = z.infer<typeof AgentRoleSchema>;
 
 // FeatureState
 export const FeatureStateSchema = z.enum([
-  'draft','exploring','prototype_done','building','build_done',
-  'sweeping','sweep_done','growing','grow_done',
-  'releasing','live','incident','deprecated','sunset'
+  'draft',
+  'exploring',
+  'prototype_done',
+  'building',
+  'build_done',
+  'sweeping',
+  'sweep_done',
+  'growing',
+  'grow_done',
+  'releasing',
+  'live',
+  'incident',
+  'deprecated',
+  'sunset',
 ]);
 export type FeatureState = z.infer<typeof FeatureStateSchema>;
 
@@ -28,17 +39,19 @@ export const FeatureSchema = z.object({
   currentRole: AgentRoleSchema,
   createdAt: z.string(),
   updatedAt: z.string(),
-  stageHistory: z.array(z.object({
-    role: AgentRoleSchema,
-    enteredAt: z.string(),
-    completedAt: z.string().optional(),
-  })),
+  stageHistory: z.array(
+    z.object({
+      role: AgentRoleSchema,
+      enteredAt: z.string(),
+      completedAt: z.string().optional(),
+    }),
+  ),
   gates: GateStateSchema,
 });
 export type Feature = z.infer<typeof FeatureSchema>;
 
 // ProductStage
-export const ProductStageSchema = z.enum(['exploring','building','growing','mature']);
+export const ProductStageSchema = z.enum(['exploring', 'building', 'growing', 'mature']);
 export type ProductStage = z.infer<typeof ProductStageSchema>;
 
 // PipelineState
@@ -47,13 +60,20 @@ export const PipelineStateSchema = z.object({
   productStage: ProductStageSchema,
   activeFeature: z.string().nullable(),
   features: z.record(z.string(), FeatureSchema),
-  queue: z.array(z.union([z.string(), z.object({ slug: z.string(), priority: z.enum(["P0","P1","P2"]), addedAt: z.string() })])).default([]),
+  queue: z
+    .array(
+      z.union([
+        z.string(),
+        z.object({ slug: z.string(), priority: z.enum(['P0', 'P1', 'P2']), addedAt: z.string() }),
+      ]),
+    )
+    .default([]),
   updated: z.string(),
 });
 export type PipelineState = z.infer<typeof PipelineStateSchema>;
 
 // Role ordering
-export const ROLE_ORDER: AgentRole[] = ['prototyper','builder','sweeper','grower','maintainer'];
+export const ROLE_ORDER: AgentRole[] = ['prototyper', 'builder', 'sweeper', 'grower', 'maintainer'];
 export function nextRole(current: AgentRole): AgentRole | null {
   const i = ROLE_ORDER.indexOf(current);
   if (i >= 0 && i < ROLE_ORDER.length - 1) {
@@ -67,15 +87,40 @@ export function nextRole(current: AgentRole): AgentRole | null {
 export const AgentDefinitionSchema = z.object({
   name: z.string(),
   role: AgentRoleSchema,
-  paradigm: z.enum(['Explorer','Operator','Scout','Analyst','Guardian','Navigator']),
+  paradigm: z.enum(['Explorer', 'Operator', 'Scout', 'Analyst', 'Guardian', 'Navigator']),
   skillPath: z.string(),
 });
 export type AgentDefinition = z.infer<typeof AgentDefinitionSchema>;
 
 export const AGENT_MAP: Record<AgentRole, AgentDefinition> = {
-  prototyper: { name:'pentad-prototype',role:'prototyper',paradigm:'Explorer',skillPath:'.pentad/agents/prototyper.md' },
-  builder:    { name:'pentad-build',     role:'builder',    paradigm:'Operator', skillPath:'.pentad/agents/builder.md' },
-  sweeper:    { name:'pentad-sweep',      role:'sweeper',    paradigm:'Scout',   skillPath:'.pentad/agents/sweeper.md' },
-  grower:     { name:'pentad-grow',       role:'grower',     paradigm:'Analyst', skillPath:'.pentad/agents/grower.md' },
-  maintainer: { name:'pentad-maintain',   role:'maintainer', paradigm:'Guardian',skillPath:'.pentad/agents/maintainer.md' },
+  prototyper: {
+    name: 'pentad-prototype',
+    role: 'prototyper',
+    paradigm: 'Explorer',
+    skillPath: '.pentad/agents/prototyper.md',
+  },
+  builder: {
+    name: 'pentad-build',
+    role: 'builder',
+    paradigm: 'Operator',
+    skillPath: '.pentad/agents/builder.md',
+  },
+  sweeper: {
+    name: 'pentad-sweep',
+    role: 'sweeper',
+    paradigm: 'Scout',
+    skillPath: '.pentad/agents/sweeper.md',
+  },
+  grower: {
+    name: 'pentad-grow',
+    role: 'grower',
+    paradigm: 'Analyst',
+    skillPath: '.pentad/agents/grower.md',
+  },
+  maintainer: {
+    name: 'pentad-maintain',
+    role: 'maintainer',
+    paradigm: 'Guardian',
+    skillPath: '.pentad/agents/maintainer.md',
+  },
 };

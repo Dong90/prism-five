@@ -7,7 +7,9 @@ describe('refract', () => {
   });
 
   it('wraps transform error', () => {
-    expect(() => refract(null as unknown as Record<string, unknown>, x => x.foo)).toThrow(RefractError);
+    expect(() => refract(null as unknown as Record<string, unknown>, x => x.foo)).toThrow(
+      RefractError,
+    );
   });
 });
 
@@ -17,6 +19,8 @@ describe('refract.map', () => {
   });
 
   it('wraps map error with index', () => {
-    expect(() => refract.map([1, null as unknown as number], x => x.toFixed())).toThrow(RefractError);
+    expect(() => refract.map([1, null as unknown as number], x => x.toFixed())).toThrow(
+      RefractError,
+    );
   });
 });

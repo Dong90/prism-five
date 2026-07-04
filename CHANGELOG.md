@@ -16,3 +16,20 @@
 
 - git revert packages/prototyper packages/builder packages/sweeper
   packages/grower packages/maintainer
+
+<!-- taiyi:vitest --> 2026-07-04
+
+# CHANGELOG: 测试基础设施
+
+## Added
+
+- vitest 测试框架配置
+- 5 核心包 22 条单元测试
+
+## Changed
+
+- package.json test 脚本更新为 vitest run
+
+## Rollback
+
+- git revert package.json vitest.config.ts packages/_/src/_.test.ts

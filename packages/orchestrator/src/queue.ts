@@ -18,11 +18,11 @@ export class QueueManager {
   constructor(statePath?: string) {
     this.statePath = statePath ?? '.pentad/pipeline.json';
     try {
-    this.state = readPipeline(this.statePath);
-  } catch {
-    this.state = createInitialState();
-    writePipeline(this.state, this.statePath);
-  }
+      this.state = readPipeline(this.statePath);
+    } catch {
+      this.state = createInitialState();
+      writePipeline(this.state, this.statePath);
+    }
   }
 
   list(): QueueItem[] {
@@ -47,7 +47,7 @@ export class QueueManager {
     const queue = this.state.queue || [];
     // Remove duplicate
     const filtered = queue.filter((e: string | QueueItem) =>
-      typeof e === 'string' ? e !== slug : (e as QueueItem).slug !== slug
+      typeof e === 'string' ? e !== slug : (e as QueueItem).slug !== slug,
     );
     filtered.push(item);
     this.state.queue = filtered;

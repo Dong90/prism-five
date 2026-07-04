@@ -8,3 +8,7 @@
 {"ts":"2026-07-04T07:36:36.034Z","event":"phase:complete","slug":"vitest","phase":"test"}
 {"ts":"2026-07-04T07:36:58.908Z","event":"phase:complete","slug":"vitest","phase":"review"}
 {"ts":"2026-07-04T07:37:09.978Z","event":"audit:high","slug":"vitest","findings":2}
+{"ts":"2026-07-04T07:37:28.532Z","event":"phase:complete","slug":"vitest","phase":"integration"}
+{"ts":"2026-07-04T07:37:50.969Z","event":"phase:complete","slug":"linter-eslint-prettier","phase":"change"}
+{"ts":"2026-07-04T07:40:58.529Z","event":"phase:complete","slug":"linter-eslint-prettier","phase":"dev"}
+{"ts":"2026-07-04T07:41:15.796Z","event":"audit:high","slug":"linter-eslint-prettier","findings":1}

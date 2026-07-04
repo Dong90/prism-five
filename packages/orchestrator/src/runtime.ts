@@ -1,6 +1,6 @@
 import type { PipelineState, Feature, AgentRole } from './schema';
 import { AGENT_MAP } from './schema';
-import { loadAgent, type AgentContext, type AgentSection } from './agent';
+import { loadAgent } from './agent';
 import { buildAgentPrompt } from './prompt';
 import { writePipeline } from './state';
 
@@ -132,9 +132,14 @@ export class AgentRuntime {
     ];
 
     for (const s of plan.steps) {
-      const icon = s.status === 'completed' ? '✓' :
-                   s.status === 'running' ? '▶' :
-                   s.status === 'failed' ? '✗' : '○';
+      const icon =
+        s.status === 'completed'
+          ? '✓'
+          : s.status === 'running'
+            ? '▶'
+            : s.status === 'failed'
+              ? '✗'
+              : '○';
       lines.push(`│ ${icon} Step ${s.step}: ${s.title.padEnd(40).slice(0, 40)} │`);
     }
 

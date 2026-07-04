@@ -1,12 +1,12 @@
 import { Command } from 'commander';
-import { Pipeline, loadAgent, buildAgentPrompt } from '@pentad/orchestrator';
+import { Pipeline } from '@pentad/orchestrator';
 import { AgentRuntime } from '@pentad/orchestrator';
 
 export const runCommand = new Command('run')
   .description('Dispatch the current Agent: produce execution plan and LLM prompt')
   .option('-p, --prompt', 'Output the full LLM prompt')
   .option('-s, --step <n>', 'Show detailed step N')
-  .action((opts) => {
+  .action(opts => {
     const pipeline = new Pipeline();
     const state = pipeline.getState();
     const feature = pipeline.getActiveFeature();

@@ -15,12 +15,16 @@ describe('emit', () => {
   });
 
   it('wraps sync sink error', async () => {
-    const sink = () => { throw new Error('boom'); };
+    const sink = () => {
+      throw new Error('boom');
+    };
     await expect(emit('x', sink)).rejects.toThrow(EmitError);
   });
 
   it('wraps async sink error', async () => {
-    const sink = async () => { throw new Error('async boom'); };
+    const sink = async () => {
+      throw new Error('async boom');
+    };
     await expect(emit('x', sink)).rejects.toThrow(EmitError);
   });
 });

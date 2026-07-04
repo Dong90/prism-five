@@ -7,7 +7,10 @@
 ```typescript
 import { absorb } from '@prism-five/absorption';
 
-const result = absorb([[ 'analytics', data1 ], [ 'db', data2 ]]);
+const result = absorb([
+  ['analytics', data1],
+  ['db', data2],
+]);
 ```
 
 ## 职责
