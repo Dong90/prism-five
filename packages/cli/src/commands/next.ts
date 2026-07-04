@@ -1,5 +1,5 @@
 import { Command } from 'commander';
-import { QueueManager, Pipeline } from '@prism-five/orchestrator';
+import { QueueManager, Pipeline } from '@pentad/orchestrator';
 
 export const nextCommand = new Command('next')
   .description('Activate the next feature from the queue')

@@ -1,7 +1,7 @@
 import { Command } from 'commander';
-import { Pipeline } from '@prism-five/orchestrator';
-import { agentSummary } from '@prism-five/orchestrator';
-import type { AgentRole } from '@prism-five/orchestrator';
+import { Pipeline } from '@pentad/orchestrator';
+import { agentSummary } from '@pentad/orchestrator';
+import type { AgentRole } from '@pentad/orchestrator';
 
 export const statusCommand = new Command('status')
   .alias('st')
@@ -12,7 +12,7 @@ export const statusCommand = new Command('status')
     const state = pipeline.getState();
     const feature = pipeline.getActiveFeature();
 
-    console.log('┌─ Prism-Five Pipeline ───────────────────────┐');
+    console.log('┌─ Pentad Pipeline ───────────────────────┐');
     console.log(`│ Stage:   ${state.productStage.padEnd(38)}│`);
     console.log(`│ Feature: ${(state.activeFeature ?? 'none').padEnd(38)}│`);
     console.log(`│ Queue:   ${state.queue.length} pending`.padEnd(45) + '│');
@@ -46,6 +46,6 @@ export const statusCommand = new Command('status')
   });
 
 function loadAgent(role: string) {
-  const { loadAgent: la } = require('@prism-five/orchestrator');
+  const { loadAgent: la } = require('@pentad/orchestrator');
   return la(role as AgentRole);
 }

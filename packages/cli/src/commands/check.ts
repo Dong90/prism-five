@@ -1,6 +1,6 @@
 import { Command } from 'commander';
-import { Pipeline } from '@prism-five/orchestrator';
-import type { AgentRole } from '@prism-five/orchestrator';
+import { Pipeline } from '@pentad/orchestrator';
+import type { AgentRole } from '@pentad/orchestrator';
 
 export const checkCommand = new Command('check')
   .alias('ck')
@@ -18,7 +18,7 @@ export const checkCommand = new Command('check')
     console.log(`Status:  ${feature.status}`);
     console.log('');
 
-    const { loadAgent } = require('@prism-five/orchestrator');
+    const { loadAgent } = require('@pentad/orchestrator');
     const ctx = loadAgent(feature.currentRole as AgentRole);
 
     console.log(`Agent:   ${ctx.definition.name} (${ctx.definition.paradigm})`);

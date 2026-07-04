@@ -2,7 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import { PipelineStateSchema, type PipelineState } from './schema';
 
-const DEFAULT_PATH = path.resolve(process.cwd(), '.prism-five/pipeline.json');
+const DEFAULT_PATH = path.resolve(process.cwd(), '.pentad/pipeline.json');
 
 export function readPipeline(filePath?: string): PipelineState {
   const p = filePath ?? DEFAULT_PATH;

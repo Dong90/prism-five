@@ -1,5 +1,5 @@
 {
-  "name": "@prism-five/cli",
+  "name": "@pentad/cli",
   "version": "0.1.0",
   "description": "Prism-Five CLI — 五棱镜管道斜杠命令",
   "bin": {
@@ -11,7 +11,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@prism-five/orchestrator": "0.1.0",
+    "@pentad/orchestrator": "0.1.0",
     "commander": "^12.0.0"
   },
   "devDependencies": {

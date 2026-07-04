@@ -16,7 +16,7 @@ export class QueueManager {
   private statePath: string;
 
   constructor(statePath?: string) {
-    this.statePath = statePath ?? '.prism-five/pipeline.json';
+    this.statePath = statePath ?? '.pentad/pipeline.json';
     try {
     this.state = readPipeline(this.statePath);
   } catch {

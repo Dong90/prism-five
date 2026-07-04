@@ -1,0 +1,12 @@
+{
+  "name": "@pentad/sweeper",
+  "version": "0.1.0",
+  "description": "分发与广播 (土 — dispersion)",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "typecheck": "tsc --noEmit"
+  },
+  "license": "MIT"
+}

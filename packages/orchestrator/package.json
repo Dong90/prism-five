@@ -1,5 +1,5 @@
 {
-  "name": "@prism-five/orchestrator",
+  "name": "@pentad/orchestrator",
   "version": "0.1.0",
   "description": "Pipeline调度引擎 — 状态管理、门禁检查、Agent路由",
   "main": "dist/index.js",
@@ -9,11 +9,11 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@prism-five/incidence": "0.1.0",
-    "@prism-five/refraction": "0.1.0",
-    "@prism-five/dispersion": "0.1.0",
-    "@prism-five/absorption": "0.1.0",
-    "@prism-five/emission": "0.1.0",
+    "@pentad/prototyper": "0.1.0",
+    "@pentad/builder": "0.1.0",
+    "@pentad/sweeper": "0.1.0",
+    "@pentad/grower": "0.1.0",
+    "@pentad/maintainer": "0.1.0",
     "zod": "^3.23.0"
   },
   "devDependencies": {

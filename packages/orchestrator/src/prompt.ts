@@ -14,7 +14,7 @@ export function buildAgentPrompt(role: AgentRole, feature: Feature, state: Pipel
 
   const systemPrompt = [
     `<agent-identity>`,
-    `You are ${def.name} — the ${def.role} Agent in the Prism-Five pipeline.`,
+    `You are ${def.name} — the ${def.role} Agent in the Pentad pipeline.`,
     `Your paradigm is ${def.paradigm}.`,
     `</agent-identity>`,
     '',
@@ -52,7 +52,7 @@ export function buildAgentPrompt(role: AgentRole, feature: Feature, state: Pipel
     `## Quality Checklist (must pass before gate)`,
     ...ctx.qualityCheck.map(q => `- [ ] ${q}`),
     '',
-    `Complete the steps for the ${role} role. Produce artifacts in .prism-five/features/${feature.slug}/ directory.`,
+    `Complete the steps for the ${role} role. Produce artifacts in .pentad/features/${feature.slug}/ directory.`,
   ].join('\n');
 
   return { systemPrompt, userPrompt, context: ctx };

@@ -73,9 +73,9 @@ export const AgentDefinitionSchema = z.object({
 export type AgentDefinition = z.infer<typeof AgentDefinitionSchema>;
 
 export const AGENT_MAP: Record<AgentRole, AgentDefinition> = {
-  prototyper: { name:'prism-prototype',role:'prototyper',paradigm:'Explorer',skillPath:'.prism-five/agents/prototyper.md' },
-  builder:    { name:'prism-build',     role:'builder',    paradigm:'Operator', skillPath:'.prism-five/agents/builder.md' },
-  sweeper:    { name:'prism-sweep',      role:'sweeper',    paradigm:'Scout',   skillPath:'.prism-five/agents/sweeper.md' },
-  grower:     { name:'prism-grow',       role:'grower',     paradigm:'Analyst', skillPath:'.prism-five/agents/grower.md' },
-  maintainer: { name:'prism-maintain',   role:'maintainer', paradigm:'Guardian',skillPath:'.prism-five/agents/maintainer.md' },
+  prototyper: { name:'pentad-prototype',role:'prototyper',paradigm:'Explorer',skillPath:'.pentad/agents/prototyper.md' },
+  builder:    { name:'pentad-build',     role:'builder',    paradigm:'Operator', skillPath:'.pentad/agents/builder.md' },
+  sweeper:    { name:'pentad-sweep',      role:'sweeper',    paradigm:'Scout',   skillPath:'.pentad/agents/sweeper.md' },
+  grower:     { name:'pentad-grow',       role:'grower',     paradigm:'Analyst', skillPath:'.pentad/agents/grower.md' },
+  maintainer: { name:'pentad-maintain',   role:'maintainer', paradigm:'Guardian',skillPath:'.pentad/agents/maintainer.md' },
 };

@@ -1,11 +1,11 @@
 {
   "files": [],
   "references": [
-    { "path": "packages/incidence" },
-    { "path": "packages/refraction" },
-    { "path": "packages/dispersion" },
-    { "path": "packages/absorption" },
-    { "path": "packages/emission" },
+    { "path": "packages/prototyper" },
+    { "path": "packages/builder" },
+    { "path": "packages/sweeper" },
+    { "path": "packages/grower" },
+    { "path": "packages/maintainer" },
     { "path": "packages/orchestrator" },
     { "path": "packages/cli" }
   ]

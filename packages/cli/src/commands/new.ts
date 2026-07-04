@@ -1,5 +1,5 @@
 import { Command } from 'commander';
-import { Pipeline } from '@prism-five/orchestrator';
+import { Pipeline } from '@pentad/orchestrator';
 
 export const newCommand = new Command('new')
   .description('Create a new feature in the pipeline')

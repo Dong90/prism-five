@@ -1,6 +1,6 @@
-# prism-five
+# pentad
 
-**5-prism 数据管道：incidence → refraction → dispersion → absorption → emission**
+**5-pentad 数据管道：prototyper → builder → sweeper → grower → maintainer**
 
 ```
 npm install
@@ -9,11 +9,11 @@ npm run build
 
 | 棱镜 | 包名 | 五行 | 职责 |
 |------|------|------|------|
-| incidence | `@prism-five/incidence` | 木 | 事件接收 & 触发 |
-| refraction | `@prism-five/refraction` | 火 | 数据变换 & 映射 |
-| dispersion | `@prism-five/dispersion` | 土 | 分发 & 广播 |
-| absorption | `@prism-five/absorption` | 金 | 数据摄取 & 收集 |
-| emission | `@prism-five/emission` | 水 | 输出 & 渲染 |
+| prototyper | `@pentad/prototyper` | 木 | 事件接收 & 触发 |
+| builder | `@pentad/builder` | 火 | 数据变换 & 映射 |
+| sweeper | `@pentad/sweeper` | 土 | 分发 & 广播 |
+| grower | `@pentad/grower` | 金 | 数据摄取 & 收集 |
+| maintainer | `@pentad/maintainer` | 水 | 输出 & 渲染 |
 
 ## 架构
 
