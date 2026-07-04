@@ -24,3 +24,11 @@
 {"ts":"2026-07-04T07:44:46.092Z","event":"gate:failed","slug":"logger","phase":"change","reason":"completeness, consistency, verifiability, traceability, engineering_quality"}
 {"ts":"2026-07-04T07:44:54.414Z","event":"phase:complete","slug":"logger","phase":"change"}
 {"ts":"2026-07-04T07:45:42.916Z","event":"phase:complete","slug":"logger","phase":"dev"}
+{"ts":"2026-07-04T07:45:55.527Z","event":"phase:complete","slug":"logger","phase":"integration"}
+{"ts":"2026-07-04T07:48:28.493Z","event":"phase:complete","slug":"api-jsdoc-readme","phase":"change"}
+{"ts":"2026-07-04T07:49:46.030Z","event":"phase:complete","slug":"api-jsdoc-readme","phase":"dev"}
+{"ts":"2026-07-04T07:49:50.106Z","event":"audit:high","slug":"api-jsdoc-readme","findings":2}
+{"ts":"2026-07-04T07:50:02.188Z","event":"audit:high","slug":"api-jsdoc-readme","findings":1}
+{"ts":"2026-07-04T07:50:06.117Z","event":"audit:high","slug":"api-jsdoc-readme","findings":1}
+{"ts":"2026-07-04T07:50:09.861Z","event":"audit:high","slug":"api-jsdoc-readme","findings":1}
+{"ts":"2026-07-04T07:50:28.319Z","event":"audit:high","slug":"api-jsdoc-readme","findings":1}

@@ -1,3 +1,4 @@
+/** Error thrown when event validation fails. */
 export class PrototyperError extends TypeError {
   constructor(message: string, options?: ErrorOptions) {
     super(message, options);
@@ -5,6 +6,7 @@ export class PrototyperError extends TypeError {
   }
 }
 
+/** A typed event entering the pipeline. */
 export interface IncidentEvent<T extends string = string, P = unknown> {
   type: T;
   payload?: P;
@@ -19,6 +21,10 @@ function isPlainObject(v: unknown): v is Record<string, unknown> {
   return typeof v === 'object' && v !== null && !Array.isArray(v);
 }
 
+/**
+ * Receive and validate an event entering the pipeline.
+ * Throws {@link PrototyperError} if the event shape is invalid.
+ */
 export function incident<T extends string, P>(event: IncidentEvent<T, P>): IncidentEvent<T, P> {
   if (!isValidString(event.type)) {
     throw new PrototyperError(`event.type must be a non-empty string, got ${typeof event.type}`);

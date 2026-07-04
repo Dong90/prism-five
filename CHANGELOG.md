@@ -65,3 +65,12 @@
 - Pipeline 状态机测试 (6 tests)
 - Gate 测试 (3 tests)
 - 总测试数 22 → 31
+
+<!-- taiyi:logger --> 2026-07-04
+
+# CHANGELOG: 错误处理 + 可观测性
+
+## Added
+
+- orchestrator/src/logger.ts — 结构化 logger (debug/info/warn/error)
+- 导出到 @pentad/orchestrator

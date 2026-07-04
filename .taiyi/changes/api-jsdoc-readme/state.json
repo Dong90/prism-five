@@ -1,0 +1,31 @@
+{
+  "slug": "api-jsdoc-readme",
+  "currentPhase": "integration",
+  "completedPhases": [
+    "change",
+    "dev"
+  ],
+  "profile": "micro",
+  "skippedPhases": [
+    "requirement",
+    "design",
+    "ui-design",
+    "task",
+    "test",
+    "review"
+  ],
+  "strictDev": false,
+  "autoHarness": false,
+  "complexity": {
+    "level": "low",
+    "score": 3,
+    "recommendedSkills": [
+      "taiyi-intel-scan"
+    ]
+  },
+  "auxiliaryCompleted": [],
+  "workflowStatus": "active",
+  "createdAt": "2026-07-04T07:48:19.332Z",
+  "updatedAt": "2026-07-04T07:49:46.025Z",
+  "version": 4
+}

@@ -1,3 +1,4 @@
+/** Error thrown when emitting to a sink fails. */
 export class EmitError extends Error {
   constructor(
     message: string,
@@ -9,8 +10,13 @@ export class EmitError extends Error {
   }
 }
 
+/** A sink is a function that consumes data, either synchronously or asynchronously. */
 export type Sink<T> = (data: T) => void | Promise<void>;
 
+/**
+ * Send data to a sink. Supports both sync and async sinks.
+ * Wraps errors in {@link EmitError} with the original error as the cause.
+ */
 export async function emit<T>(data: T, sink: Sink<T>): Promise<void> {
   try {
     const result = sink(data);

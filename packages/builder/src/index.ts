@@ -1,3 +1,4 @@
+/** Error thrown when a refract transformation fails. */
 export class RefractError extends Error {
   constructor(
     message: string,
@@ -9,6 +10,10 @@ export class RefractError extends Error {
   }
 }
 
+/**
+ * Transform data using a pure function.
+ * Wraps errors in {@link RefractError} so the pipeline can handle failures gracefully.
+ */
 export function refract<T, U>(data: T, fn: (input: T) => U): U {
   try {
     return fn(data);
@@ -17,6 +22,7 @@ export function refract<T, U>(data: T, fn: (input: T) => U): U {
   }
 }
 
+/** Map a function over an array, wrapping errors with index context. */
 refract.map = function map<T, U>(arr: T[], fn: (item: T, index: number) => U): U[] {
   return arr.map((item, index) => {
     try {

@@ -1,3 +1,4 @@
+/** Result of a disperse operation: a list of [target, data] pairs. */
 export type DispersionResult<T> = Array<[target: string, data: T]>;
 
 type Target<T> = string | ((data: T) => void | Promise<void>);
@@ -22,6 +23,10 @@ async function executeTarget<T>(target: Target<T>, data: T): Promise<[string, T]
   return [target, clone(data)];
 }
 
+/**
+ * Distribute data to multiple targets (string labels or handler functions).
+ * Each target receives a clone of the data. Failures are isolated per target.
+ */
 export async function disperse<T>(data: T, targets: Target<T>[]): Promise<DispersionResult<T>> {
   if (targets.length === 0) return [];
 
