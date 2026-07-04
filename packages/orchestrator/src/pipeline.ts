@@ -3,14 +3,20 @@ import {
   type Feature,
   type AgentRole,
   type FeatureState,
-  AgentRoleSchema,
-  FeatureStateSchema,
   nextRole,
   AGENT_MAP,
-  ROLE_ORDER,
 } from './schema';
 import { readPipeline, writePipeline, createInitialState } from './state';
-import { checkHumanGate, checkAutoGate, type GateResult } from './gate';
+import { checkAutoGate, type GateResult } from './gate';
+
+// Status transition map — role completed → status for next role
+const STATUS_MAP: Record<AgentRole, FeatureState> = {
+  prototyper: 'prototype_done',
+  builder: 'building',
+  sweeper: 'sweeping',
+  grower: 'growing',
+  maintainer: 'releasing',
+};
 
 export class Pipeline {
   private state: PipelineState;
@@ -37,8 +43,8 @@ export class Pipeline {
     const now = new Date().toISOString();
     const feature: Feature = {
       slug,
-      status: 'draft' as FeatureState,
-      currentRole: 'prototyper' as AgentRole,
+      status: 'draft',
+      currentRole: 'prototyper',
       createdAt: now,
       updatedAt: now,
       stageHistory: [{ role: 'prototyper', enteredAt: now }],
@@ -69,45 +75,40 @@ export class Pipeline {
     const feature = this.state.features[slug];
     if (!feature) throw new Error(`feature "${slug}" not found`);
 
-    const now = new Date().toISOString();
-
-    // Check gates
+    // Human gate: prototype_approved
     if (feature.currentRole === 'prototyper' && !feature.gates.prototype_approved) {
       return { feature, nextRole: null, gate: { passed: false, reason: 'human gate: prototype_approved required', requiresHuman: true } };
     }
 
+    // Human gate: release_approved (maintainer → live)
+    if (feature.currentRole === 'maintainer' && !feature.gates.release_approved) {
+      return { feature, nextRole: null, gate: { passed: false, reason: 'human gate: release_approved required', requiresHuman: true } };
+    }
+
+    // Auto gate
     const autoGate = checkAutoGate(feature);
     if (!autoGate.passed) {
       return { feature, nextRole: null, gate: autoGate };
     }
 
-    // Advance to next role
     const currentRole = feature.currentRole;
     const next = nextRole(currentRole);
 
     if (next) {
-      // Complete current stage
+      const now = new Date().toISOString();
       const currentStage = feature.stageHistory.find(s => s.role === currentRole && !s.completedAt);
       if (currentStage) currentStage.completedAt = now;
 
-      // Start next stage
       feature.currentRole = next;
       feature.stageHistory.push({ role: next, enteredAt: now });
       feature.updatedAt = now;
-
-      // Auto-transition status
-      const statusMap: Record<AgentRole, FeatureState> = {
-        prototyper: 'prototype_done',
-        builder: 'building',
-        sweeper: 'sweeping',
-        grower: 'growing',
-        maintainer: 'releasing',
-      };
-      feature.status = statusMap[next];
+      feature.status = STATUS_MAP[next];
     } else {
-      // Last role completed — feature is live
-      feature.status = 'live' as FeatureState;
-      feature.updatedAt = now;
+      feature.status = 'live';
+      const finishedAt = new Date().toISOString();
+      feature.updatedAt = finishedAt;
+      const lastStage = feature.stageHistory.find(s => s.role === currentRole && !s.completedAt);
+      if (lastStage) lastStage.completedAt = finishedAt;
     }
 
     writePipeline(this.state, this.statePath);
