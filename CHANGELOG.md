@@ -14,8 +14,8 @@
 
 ## Rollback
 
-- git revert packages/prototyper packages/builder packages/sweeper
-  packages/grower packages/maintainer
+- git revert packages/prototyper packages/builder packages/sweeper packages/grower
+  packages/maintainer
 
 <!-- taiyi:vitest --> 2026-07-04
 
@@ -33,3 +33,17 @@
 ## Rollback
 
 - git revert package.json vitest.config.ts packages/_/src/_.test.ts
+
+<!-- taiyi:linter-eslint-prettier --> 2026-07-04
+
+# CHANGELOG: Linter + 代码质量工具
+
+## Added
+
+- ESLint flat config (typescript-eslint)
+- Prettier 配置
+- npm run lint 脚本
+
+## Changed
+
+- 修复 CLI/orchestrator 中的 lint 错误

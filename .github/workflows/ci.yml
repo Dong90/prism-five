@@ -7,44 +7,15 @@ on:
     branches: [main]
 
 jobs:
-  typecheck:
+  ci:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
           cache: npm
       - run: npm ci
-      - run: npx tsc -b --noEmit
-
-  lint:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: npm
-      - run: npm ci
-      - run: echo "Lint step — linter TBD"
-
-  test:
-    needs: [typecheck]
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        package:
-          - incidence
-          - refraction
-          - dispersion
-          - absorption
-          - emission
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: npm
-      - run: npm ci
-      - run: echo "Test @prism-five/${{ matrix.package }}"
+      - run: npm run build
+      - run: npm test
+      - run: npm run lint

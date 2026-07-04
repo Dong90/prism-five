@@ -1,0 +1,6 @@
+{
+  "title": "CI/CD pipeline — GitHub Actions",
+  "motivation": "项目无 CI",
+  "scope": { "includes": [".github/workflows/ci.yml"], "excludes": ["发布流水线"] },
+  "success_criteria": [{ "id": "SC1", "description": "CI workflow 文件含 build/test/lint" }]
+}
