@@ -7,3 +7,5 @@ export { buildAgentPrompt, getAgentSkillMarkdown, listAgents, type AgentPrompt }
 export { AgentRuntime, type StepPlan, type WorkItem, type ExecutionLog } from './runtime';
 export { QueueManager, type QueueItem, type Priority } from './queue';
 export { logger, setLogLevel, type LogLevel, type LogEntry } from './logger';
+export { checkUpstreamForRole, getRoleIndex, type UpstreamResult } from './upstream';
+export { writeAuditLog, readAuditLog, type AuditEntry } from './audit';

@@ -47,8 +47,21 @@ export const FeatureSchema = z.object({
     }),
   ),
   gates: GateStateSchema,
+  exemptions: z
+    .array(
+      z.object({
+        stage: AgentRoleSchema,
+        reason: z.string(),
+        createdAt: z.string(),
+        expiresAt: z.string().optional(),
+        approver: z.string().optional(),
+        autoTrigger: z.string().optional(),
+      }),
+    )
+    .optional(),
 });
 export type Feature = z.infer<typeof FeatureSchema>;
+export type Exemption = Feature['exemptions'] extends (infer E)[] | undefined ? E : never;
 
 // ProductStage
 export const ProductStageSchema = z.enum(['exploring', 'building', 'growing', 'mature']);
