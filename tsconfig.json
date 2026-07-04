@@ -1,0 +1,10 @@
+{
+  "files": [],
+  "references": [
+    { "path": "packages/incidence" },
+    { "path": "packages/refraction" },
+    { "path": "packages/dispersion" },
+    { "path": "packages/absorption" },
+    { "path": "packages/emission" }
+  ]
+}
