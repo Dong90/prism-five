@@ -7,10 +7,22 @@ export const statusCommand = new Command('status')
   .alias('st')
   .description('Show current pipeline state')
   .option('-v, --verbose', 'Show full details')
+  .option('-j, --json', 'Output machine-readable JSON (for OpenCode integration)')
   .action(opts => {
     const pipeline = new Pipeline();
     const state = pipeline.getState();
     const feature = pipeline.getActiveFeature();
+
+    if (opts.json) {
+      const payload = {
+        type: 'success' as const,
+        state,
+        feature: feature ?? null,
+        timestamp: new Date().toISOString(),
+      };
+      console.log(JSON.stringify(payload, null, 2));
+      return;
+    }
 
     console.log('┌─ Pentad Pipeline ───────────────────────┐');
     console.log(`│ Stage:   ${state.productStage.padEnd(38)}│`);

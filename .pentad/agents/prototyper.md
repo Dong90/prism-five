@@ -1,5 +1,6 @@
 ---
 name: pentad-prototype
+mode: agent
 paradigm: Explorer
 role: prototyper (wood)
 description: Explore ideas → rapid prototype → initiate. High discard rate, most don't ship.

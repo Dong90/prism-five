@@ -1,5 +1,6 @@
 ---
 name: pentad-build
+mode: agent
 paradigm: Operator
 role: builder (fire)
 description: Prototype → production code. TDD driven, type safe, testable.

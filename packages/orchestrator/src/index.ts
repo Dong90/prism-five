@@ -1,5 +1,5 @@
 export { Pipeline } from './pipeline';
-export type { PipelineState, Feature, AgentRole, GateState } from './schema';
+export { AGENT_MAP, ROLE_ORDER, type PipelineState, type Feature, type AgentRole, type GateState, type AgentDefinition } from './schema';
 export { checkHumanGate, checkAutoGate } from './gate';
 export { readPipeline, writePipeline } from './state';
 export { loadAgent, agentSummary, type AgentContext, type AgentSection } from './agent';

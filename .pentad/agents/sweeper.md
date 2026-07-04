@@ -1,5 +1,6 @@
 ---
 name: pentad-sweep
+mode: agent
 paradigm: Scout
 role: sweeper (earth)
 description: Code review → cleanup → unshipping → quality gate. Core is "reduce", not "add".

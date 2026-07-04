@@ -1,5 +1,6 @@
 ---
 name: pentad-maintain
+mode: agent
 paradigm: Guardian
 role: maintainer (water)
 description: Deploy → monitor → incident → postmortem → close. Secure, reliable, fast, efficient at scale.

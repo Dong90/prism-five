@@ -1,5 +1,6 @@
 ---
 name: pentad-grow
+mode: agent
 paradigm: Analyst
 role: grower (metal)
 description: Live → data analysis → experiment → iterate → discover new needs. External signals, not intuition.
