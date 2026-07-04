@@ -1,0 +1,7 @@
+{
+  "title": "测试基础设施 — vitest 配置 + 核心包单元测试",
+  "slices": [
+    { "id": "S1", "name": "vitest 安装配置", "description": "安装 vitest，配置 vitest.config.ts，更新 package.json test 脚本", "done": "npm test runs" },
+    { "id": "S2", "name": "5 核心包单元测试", "description": "为 prototyper/builder/sweeper/grower/maintainer 编写测试", "done": "22 tests pass" }
+  ]
+}

@@ -8,7 +8,8 @@
   ],
   "scripts": {
     "build": "tsc -b",
-    "test": "echo \"No tests configured yet\"",
+    "test": "vitest run",
+    "test:watch": "vitest",
     "lint": "echo \"No linter configured yet\"",
     "clean": "rm -rf packages/*/dist tsconfig.build.tsbuildinfo",
     "typecheck": "tsc -b --noEmit"
