@@ -414,3 +414,37 @@ v0.1–v0.2:              v0.3:                   v0.4:                  v0.5:
 | A (辅助模块) | 9 | health/scan/adr/evolve/reanalyze/restyle/diagram(x2)/autopilot |
 | R (运行模式) | 4 | loop/ultrawork/team/ci-prompt |
 | **合计** | **48** |
+
+## 执行依赖顺序
+
+```
+M1──►M2──►M3──►M4──►M5──►M6──►M7
+ │                        │
+ ├─ M8 (variant)          ├─ M12 (CLI补齐)──►M13 (交付链)
+ │                        │
+ ├─ M9 (harness)          ├─ M14 (状态扩展)
+ │                        │
+ └─ M11 (CI sync)         ├─ M15 (token)
+                          │
+                          ├─ M16 (bug追踪)
+                          │
+                          ├─ M17 (variant扩展)
+                          │
+                          ├─ M18 (openspec)
+                          │
+                          ├─ M19-M24 (质量/Escalation/豁免/队列/生命周期/Preflight)
+                          │
+                          ▼
+                    P1─P5 (profile生态)
+                          │
+                          ▼
+                    S1─S6 (运营)
+                          │
+                          ▼
+                    A1─A8 (辅助模块)
+                          │
+                          ▼
+                    R1─R4 (运行模式)
+```
+
+> M1-M7 是基底线，必须串行。M8-M18 可部分并行。P/S/A/R 放最后。
