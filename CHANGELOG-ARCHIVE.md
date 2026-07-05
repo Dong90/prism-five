@@ -1,91 +1,24 @@
+# Changelog Archive
 
-## Archived at 2026-07-04
+> 自动归档：CHANGELOG.md 超出 200 行时较早的条目移至此处。
 
-<!-- taiyi:core-pipeline --> 2026-07-04
-# CHANGELOG: Core pipeline 包增强 — 函数桩到完整实现
+## Archived at 2026-07-05
+
+<!-- taiyi:e2e --> 2026-07-04
+# CHANGELOG: E2E 集成测试
+
+## Added
+
+- packages/e2e: 全流程集成测试 (incident → refract → disperse → absorb → emit)
+- 新增 9 个 E2E 测试用例，覆盖正常流程、错误处理、refract.map、absorb.unique、absorb.reduce
 
 ## Changed
 
-- prototyper: incident() 添加 schema 校验 + PrototyperError
-- builder: refract() 添加 try/catch 异常包装 + refract.map 工具 + RefractError
-- sweeper: disperse() 支持异步 target + 失败隔离，返回 Promise
-- grower: absorb() 添加 absorb.unique + absorb.reduce
-- maintainer: emit() 返回 Promise，支持 async sink + EmitError
-
-## Rollback
-
-- git revert packages/prototyper packages/builder packages/sweeper packages/grower
-  packages/maintainer
-
-<!-- taiyi:vitest --> 2026-07-04
-# CHANGELOG: 测试基础设施
-
-## Added
-
-- vitest 测试框架配置
-- 5 核心包 22 条单元测试
-
-## Changed
-
-- package.json test 脚本更新为 vitest run
-
-## Rollback
-
-- git revert package.json vitest.config.ts packages/_/src/_.test.ts
-
-<!-- taiyi:linter-eslint-prettier --> 2026-07-04
-# CHANGELOG: Linter + 代码质量工具
-
-## Added
-
-- ESLint flat config (typescript-eslint)
-- Prettier 配置
-- npm run lint 脚本
-
-## Changed
-
-- 修复 CLI/orchestrator 中的 lint 错误
-
-<!-- taiyi:ci-cd-pipeline-github-actions --> 2026-07-04
-# CHANGELOG: CI/CD pipeline — GitHub Actions
-
-## Added
-
-- .github/workflows/ci.yml with build/test/lint on push & PR
-
-<!-- taiyi:orchestrator-cli --> 2026-07-04
-# CHANGELOG: Orchestrator + CLI 测试覆盖
-
-## Added
-
-- Pipeline 状态机测试 (6 tests)
-- Gate 测试 (3 tests)
-- 总测试数 22 → 31
-
-<!-- taiyi:logger --> 2026-07-04
-# CHANGELOG: 错误处理 + 可观测性
-
-## Added
-
-- orchestrator/src/logger.ts — 结构化 logger (debug/info/warn/error)
-- 导出到 @pentad/orchestrator
-
-## Archived at 2026-07-04
-
-<!-- taiyi:api-jsdoc-readme --> 2026-07-04
-# CHANGELOG: API 文档
-
-## Added
-
-- prototyper: JSDoc for PrototyperError, IncidentEvent, incident()
-- builder: JSDoc for RefractError, refract(), refract.map
-- sweeper: JSDoc for DispersionResult, disperse()
-- grower: JSDoc for AbsorptionResult, absorb(), absorb.unique, absorb.reduce
-- maintainer: JSDoc for EmitError, Sink, emit()
-- orchestrator/logger: JSDoc for LogLevel
+- tsconfig.json: 添加 packages/e2e 引用
+- vitest.config.ts: 包含 e2e 测试路径
 
 ## Verification
 
 - [x] `npm run build` passes
-- [x] `npm test` passes (33 tests)
+- [x] `npm test` passes (42 tests, 9 files)
 - [x] `npm run lint` passes
