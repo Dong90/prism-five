@@ -8,7 +8,8 @@ export const cancelCommand = new Command('cancel')
   .action(slug => {
     const pipeline = new Pipeline();
     const feature = pipeline.getFeature(slug);
-    if (!feature) { console.log(`✗ Feature "${slug}" not found`); process.exit(1); }
+    if (!feature) { console.log(`Feature "${slug}" not found`); process.exit(1); }
+    if (feature.status === 'live') { console.log('Cannot cancel live feature — use prism land first'); process.exit(1); }
     feature.status = 'deprecated';
     feature.updatedAt = new Date().toISOString();
     pipeline.persist();
