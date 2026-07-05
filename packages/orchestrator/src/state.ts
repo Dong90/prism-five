@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import { PipelineStateSchema, type PipelineState } from './schema';
+import { PipelineStateSchema, DEFAULT_ARTIFACT_MANIFEST, type PipelineState } from './schema';
 
 const DEFAULT_PATH = path.resolve(process.cwd(), '.prism/pipeline.json');
 
@@ -39,13 +39,7 @@ export function createInitialState(): PipelineState {
       maintainer: 20000,
       used: {},
     },
-    artifactManifest: {
-      prototyper: ['raw/RESEARCH.md', 'raw/PRD.md', 'raw/INITIATE.md'],
-      builder: ['built/DESIGN.md', 'built/TASK.md'],
-      sweeper: ['swept/REVIEW.md', 'swept/INSPECT.md'],
-      grower: ['grown/ANALYZE.md'],
-      maintainer: ['live/RELEASE_CHECK.md', 'live/CHANGELOG.md'],
-    },
+    artifactManifest: DEFAULT_ARTIFACT_MANIFEST,
     queue: [],
     updated: now,
   };

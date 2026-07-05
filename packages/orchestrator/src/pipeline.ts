@@ -5,6 +5,7 @@ import {
   type FeatureState,
   nextRole,
   AGENT_MAP,
+  DEFAULT_ARTIFACT_MANIFEST,
 } from './schema';
 import { readPipeline, writePipeline, createInitialState } from './state';
 import { checkAutoGate, type GateResult } from './gate';
@@ -93,21 +94,21 @@ export class Pipeline {
 
     // Human gate: release_approved (maintainer → live)
     if (feature.currentRole === 'maintainer' && !feature.gates.release_approved) {
-      return {
-        feature,
-        nextRole: null,
-        gate: {
-          passed: false,
-          reason: 'human gate: release_approved required',
-          requiresHuman: true,
-        },
-      };
+      return { feature, nextRole: null, gate: { passed: false, reason: 'human gate: release_approved required', requiresHuman: true } };
     }
 
     // Auto gate
     const autoGate = checkAutoGate(feature);
     if (!autoGate.passed) {
       return { feature, nextRole: null, gate: autoGate };
+    }
+
+    // Track artifacts on gate pass
+    const expectedArtifacts = DEFAULT_ARTIFACT_MANIFEST[feature.currentRole];
+    if (expectedArtifacts) {
+      for (const artifact of expectedArtifacts) {
+        if (!feature.artifacts[artifact]) feature.artifacts[artifact] = ['auto'];
+      }
     }
 
     const currentRole = feature.currentRole;

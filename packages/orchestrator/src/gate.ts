@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import type { Feature, GateState } from './schema';
+import type { Feature, GateState, PipelineState } from './schema';
 import { DEFAULT_ARTIFACT_MANIFEST } from './schema';
 
 export interface GateResult {
@@ -15,7 +15,7 @@ export function checkHumanGate(feature: Feature, gateName: keyof GateState): Gat
   return { passed: true, requiresHuman: false };
 }
 
-export function checkAutoGate(feature: Feature): GateResult {
+export function checkAutoGate(feature: Feature, budget?: { used: number; limit: number }): GateResult {
   const checks: Array<{ name: string; passed: boolean }> = [];
 
   if (!feature.currentRole) checks.push({ name: 'role valid', passed: false });
@@ -24,8 +24,14 @@ export function checkAutoGate(feature: Feature): GateResult {
   if (expectedArtifacts) {
     const baseDir = path.join(process.cwd(), '.prism/features', feature.slug);
     for (const artifact of expectedArtifacts) {
-      checks.push({ name: `artifact: ${artifact}`, passed: feature.artifacts[artifact] !== undefined || fs.existsSync(path.join(baseDir, artifact)) });
+      const inArtifacts = artifact in (feature.artifacts ?? {});
+      const onDisk = fs.existsSync(path.join(baseDir, artifact));
+      checks.push({ name: `artifact: ${artifact}`, passed: inArtifacts || onDisk });
     }
+  }
+
+  if (budget && budget.used > budget.limit) {
+    checks.push({ name: 'token budget', passed: false });
   }
 
   const failed = checks.filter(c => !c.passed);
