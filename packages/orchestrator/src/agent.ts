@@ -1,6 +1,6 @@
 import fs from 'fs';
-import type { AgentRole } from './schema';
-import { AGENT_MAP, type AgentDefinition } from './schema';
+import type { AgentRole, ProfileName } from './schema';
+import { AGENT_MAP, agentSkillPath, type AgentDefinition } from './schema';
 
 export interface AgentSection {
   title: string;
@@ -72,11 +72,12 @@ function extractTable(section: string): Record<string, string>[] {
   return rows;
 }
 
-export function loadAgent(role: AgentRole): AgentContext {
+export function loadAgent(role: AgentRole, profile?: ProfileName): AgentContext {
   const def = AGENT_MAP[role];
   if (!def) throw new Error(`no agent definition for role: ${role}`);
 
-  const skillPath = def.skillPath;
+  const skillPath = agentSkillPath(role, profile);
+
   if (!fs.existsSync(skillPath)) {
     throw new Error(`agent SKILL.md not found: ${skillPath}`);
   }
