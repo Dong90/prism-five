@@ -12,6 +12,6 @@ TaiyiForge 的 /taiyi:commit /taiyi:ship /taiyi:land 三个交付命令需要吸
 无。遵循现有 Commander.js 模式。
 
 ## Success Criteria
-- [ ] 3 CLI 命令创建 + index.ts 注册
-- [ ] npm run build 通过
-- [ ] commit 命令自动追加 Prism-Change trailer
+- [x] 3 CLI 命令创建 + index.ts 注册
+- [x] npm run build 通过
+- [x] commit 命令自动追加 Prism-Change trailer
