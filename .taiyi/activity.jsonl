@@ -150,3 +150,6 @@
 {"ts":"2026-07-05T06:37:49.040Z","event":"quality:failed","slug":"c001-pipeline-json-prism-five-taiyi-state-json","phase":"review","error":"Quality gate failed: consistency, traceability — [Zod 校验失败] review.json: [\n  {\n    \"code\": \"custom\",\n    \"path\": [\n      \"verdict\"\n    ],\n    \"message\": \"verdict='approved' 禁止 0 findings — 反盖印: 实际审查过才能 approved\"\n  }\n]","hints":["[Zod 校验失败] review.json: [\n  {\n    \"code\": \"custom\",\n    \"path\": [\n      \"verdict\"\n    ],\n    \"message\": \"verdict='approved' 禁止 0 findings — 反盖印: 实际审查过才能 approved\"\n  }\n]"]}
 {"ts":"2026-07-05T06:38:04.912Z","event":"quality:passed","slug":"c001-pipeline-json-prism-five-taiyi-state-json","phase":"review","qualityScores":{"completeness":true,"consistency":true,"verifiability":true,"traceability":true,"engineering_quality":true},"hints":[]}
 {"ts":"2026-07-05T06:38:04.930Z","event":"phase:complete","slug":"c001-pipeline-json-prism-five-taiyi-state-json","phase":"review"}
+{"ts":"2026-07-05T06:38:05.529Z","event":"audit:blocked","slug":"c001-pipeline-json-prism-five-taiyi-state-json","findings":2}
+{"ts":"2026-07-05T06:38:16.852Z","event":"audit:blocked","slug":"c001-pipeline-json-prism-five-taiyi-state-json","findings":1}
+{"ts":"2026-07-05T06:38:26.523Z","event":"audit:blocked","slug":"c001-pipeline-json-prism-five-taiyi-state-json","findings":1}

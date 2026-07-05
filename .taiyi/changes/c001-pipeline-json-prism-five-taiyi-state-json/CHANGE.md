@@ -56,10 +56,10 @@ downstream: [requirement]
 > **[ALL]** Goal: 确认这是正确的问题 | Inputs: Step1+2
 <!-- Action: 换角度重新审视 — 能不能不做/复用/更简单定义？有没有完全不同的路径？ -->
 
-- **换个角度**: Taiyi engineTruth 是更完备的真源——但直接替换破坏现有代码；双路径是最安全的渐进方案
-- **不做代价**: pipeline.json 无法感知 Taiyi 阶段推进；后续 134 个 change 需全量重写
-- **已有复用**: TaiyiForge 的 engineTruth 已实现完整的状态管理——直接复用是最优方案
-- **Scrap it?**: 直接引入 Taiyi engine 作为唯一真源而非写自己的状态机——这本身就是最省力的方案
+- **换个角度**: [重新定义问题会怎样？]
+- **不做代价**: [量化]
+- **已有复用**: [有无现成方案？]
+- **Scrap it?**: [有没有完全不同的方案更值得做？PD#9: 有更好的方法就说]
 
 <!-- Validate: 挑战≥2个假设 + 至少考虑了一个替代路径 -->
 
@@ -81,9 +81,9 @@ downstream: [requirement]
 > **[ALL]** Goal: 定义"做完"的客观标准 | Inputs: Step1目标
 <!-- Action: SC-XX编号，可度量可验证。完成后勾选 -->
 
-- [ ] **SC-01**: Pipeline 构造器优先读取 .taiyi/changes/<slug>/state.json
-- [ ] **SC-02**: Taiyi state.json 不存在时 fallback .prism/pipeline.json
-- [ ] **SC-03**: 已有 89 个测试全部通过
+- [x] **SC-01**: Pipeline 构造器优先读取 .taiyi/changes/<slug>/state.json
+- [x] **SC-02**: Taiyi state.json 不存在时 fallback .prism/pipeline.json
+- [x] **SC-03**: 已有 89 个测试全部通过
 
 <!-- Validate: 每条可客观度量(数字/百分比/布尔)？ -->
 
@@ -124,11 +124,9 @@ downstream: [requirement]
 > **[HIGH]** Goal: 上线回退有预案 | Inputs: Step4+7
 <!-- Action: 数据迁移/API变更/行为变更时描述切换和回退 -->
 
-**迁移**: 1. 新建 taiyi-bridge.ts
-2. 修改 state.ts 双路径
-3. 验证 89 测试通过
-**回滚触发**: 测试全部通过
-**回滚操作**: git revert HEAD
+**迁移**: [步骤]
+**回滚触发**: [量化条件]
+**回滚操作**: [精确到命令]
 **回滚时间**: ≤N min
 
 <!-- Validate: 回滚≤30min？步骤精确？ -->
