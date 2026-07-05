@@ -1,7 +1,15 @@
 {
   "slug": "cli-prism-cancel-list-doctor-guide-check-sync-in",
-  "currentPhase": "change",
-  "completedPhases": [],
+  "currentPhase": "integration",
+  "completedPhases": [
+    "change",
+    "requirement",
+    "design",
+    "task",
+    "dev",
+    "test",
+    "review"
+  ],
   "profile": "api",
   "skippedPhases": [
     "ui-design"
@@ -10,7 +18,7 @@
   "autoHarness": false,
   "complexity": {
     "level": "low",
-    "score": 3,
+    "score": 5,
     "recommendedSkills": [
       "taiyi-intel-scan"
     ]
@@ -18,5 +26,5 @@
   "auxiliaryCompleted": [],
   "workflowStatus": "active",
   "createdAt": "2026-07-05T13:28:56.868Z",
-  "updatedAt": "2026-07-05T13:28:56.868Z"
+  "updatedAt": "2026-07-05T17:06:06.114Z"
 }
