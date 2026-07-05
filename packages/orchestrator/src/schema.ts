@@ -63,11 +63,12 @@ export const FeatureStateSchema = z.enum([
 ]);
 export type FeatureState = z.infer<typeof FeatureStateSchema>;
 
-// GateState
+// GateState — 5 gates: 4 human + 1 auto
 export const GateStateSchema = z.object({
   prototype_approved: z.boolean().default(false),
-  build_reviewed: z.boolean().default(false),
+  design_reviewed: z.boolean().default(false),
   sweep_passed: z.boolean().default(false),
+  review_approved: z.boolean().default(false),
   release_approved: z.boolean().default(false),
 });
 export type GateState = z.infer<typeof GateStateSchema>;
@@ -145,9 +146,13 @@ export const AgentDefinitionSchema = z.object({
 export type AgentDefinition = z.infer<typeof AgentDefinitionSchema>;
 
 export const AGENT_MAP: Record<AgentRole, AgentDefinition> = {
-  prototyper: { name: 'prism-prototype', role: 'prototyper', paradigm: 'Explorer', skillPath: '.prism/agents/prototyper.md' },
-  builder: { name: 'prism-build', role: 'builder', paradigm: 'Operator', skillPath: '.prism/agents/builder.md' },
-  sweeper: { name: 'prism-sweep', role: 'sweeper', paradigm: 'Scout', skillPath: '.prism/agents/sweeper.md' },
-  grower: { name: 'prism-grow', role: 'grower', paradigm: 'Analyst', skillPath: '.prism/agents/grower.md' },
-  maintainer: { name: 'prism-maintain', role: 'maintainer', paradigm: 'Guardian', skillPath: '.prism/agents/maintainer.md' },
+  prototyper: { name: 'prism-prototype', role: 'prototyper', paradigm: 'Explorer', skillPath: 'prototyper.md' },
+  builder: { name: 'prism-build', role: 'builder', paradigm: 'Operator', skillPath: 'builder.md' },
+  sweeper: { name: 'prism-sweep', role: 'sweeper', paradigm: 'Scout', skillPath: 'sweeper.md' },
+  grower: { name: 'prism-grow', role: 'grower', paradigm: 'Analyst', skillPath: 'grower.md' },
+  maintainer: { name: 'prism-maintain', role: 'maintainer', paradigm: 'Guardian', skillPath: 'maintainer.md' },
 };
+
+export function agentSkillPath(role: AgentRole, profile: ProfileName = 'develop'): string {
+  return `.prism/profiles/${profile}/${AGENT_MAP[role].skillPath}`;
+}

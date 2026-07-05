@@ -53,7 +53,7 @@ export class Pipeline {
       createdAt: now,
       updatedAt: now,
       stageHistory: [{ role: 'prototyper', enteredAt: now }],
-      gates: { prototype_approved: false, build_reviewed: false, sweep_passed: false, release_approved: false },
+      gates: { prototype_approved: false, design_reviewed: false, sweep_passed: false, review_approved: false, release_approved: false },
       artifacts: {},
     };
     this.state.features[slug] = feature;
@@ -76,13 +76,19 @@ export class Pipeline {
     const feature = this.state.features[slug];
     if (!feature) throw new Error(`feature "${slug}" not found`);
 
-    // Human gate: prototype_approved
+    // Human gate: prototype_approved (prototyper → builder)
     if (feature.currentRole === 'prototyper' && !feature.gates.prototype_approved) {
-      return {
-        feature,
-        nextRole: null,
-        gate: { passed: false, reason: 'human gate: prototype_approved required', requiresHuman: true },
-      };
+      return { feature, nextRole: null, gate: { passed: false, reason: 'human gate: prototype_approved required', requiresHuman: true } };
+    }
+
+    // Human gate: design_reviewed (builder → sweeper)
+    if (feature.currentRole === 'builder' && !feature.gates.design_reviewed) {
+      return { feature, nextRole: null, gate: { passed: false, reason: 'human gate: design_reviewed required', requiresHuman: true } };
+    }
+
+    // Human gate: review_approved (grower → maintainer)
+    if (feature.currentRole === 'grower' && !feature.gates.review_approved) {
+      return { feature, nextRole: null, gate: { passed: false, reason: 'human gate: review_approved required', requiresHuman: true } };
     }
 
     // Human gate: release_approved (maintainer → live)
