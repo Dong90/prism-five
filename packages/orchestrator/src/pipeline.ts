@@ -9,6 +9,7 @@ import {
 } from './schema';
 import { readPipeline, writePipeline, createInitialState } from './state';
 import { checkAutoGate, type GateResult } from './gate';
+import { saveCheckpoint } from './checkpoint';
 
 // Status transition map — role completed → status for next role
 const STATUS_MAP: Record<AgentRole, FeatureState> = {
@@ -132,6 +133,7 @@ export class Pipeline {
     }
 
     writePipeline(this.state, this.statePath);
+    saveCheckpoint(feature);
     return { feature, nextRole: next, gate: { passed: true, requiresHuman: false } };
   }
 

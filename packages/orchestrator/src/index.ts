@@ -9,3 +9,4 @@ export { QueueManager, type QueueItem, type Priority } from './queue';
 export { logger, setLogLevel, type LogLevel, type LogEntry } from './logger';
 export { checkUpstream, getRoleIndex, type UpstreamResult } from './upstream';
 export { writeAuditLog, readAuditLog } from './audit';
+export { saveCheckpoint, loadCheckpoint, deleteCheckpoint, type Checkpoint } from './checkpoint';
