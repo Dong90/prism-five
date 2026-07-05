@@ -1,0 +1,4 @@
+command: npm run build
+exitCode: 0
+
+dev complete: commit.ts, ship.ts, land.ts created. index.ts registered. Build clean.

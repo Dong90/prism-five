@@ -16,6 +16,9 @@ import { listCommand } from './commands/list';
 import { doctorCommand } from './commands/doctor';
 import { guideCommand } from './commands/guide';
 import { initCommand } from './commands/init';
+import { commitCommand } from './commands/commit';
+import { shipCommand } from './commands/ship';
+import { landCommand } from './commands/land';
 
 const program = new Command();
 program.name('prism').description('Pentad — 五重奏单功能串行管道 CLI').version('0.3.0');
@@ -36,5 +39,8 @@ program.addCommand(listCommand);
 program.addCommand(doctorCommand);
 program.addCommand(guideCommand);
 program.addCommand(initCommand);
+program.addCommand(commitCommand);
+program.addCommand(shipCommand);
+program.addCommand(landCommand);
 
 program.parse();

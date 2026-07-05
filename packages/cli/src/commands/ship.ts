@@ -1,0 +1,14 @@
+import { Command } from 'commander';
+import { spawnSync } from 'child_process';
+import { Pipeline } from '@prism-five/orchestrator';
+
+export const shipCommand = new Command('ship')
+  .alias('sh')
+  .description('Push feature changes')
+  .argument('<slug>', 'Feature slug')
+  .action(slug => {
+    const pipeline = new Pipeline();
+    if (!pipeline.getFeature(slug)) { console.log(`Feature "${slug}" not found`); process.exit(1); }
+    spawnSync('git', ['push'], { stdio: 'inherit' });
+    console.log(`Shipped "${slug}"`);
+  });
