@@ -1,12 +1,40 @@
-# Pentad 命令设计
+# prism-five 命令设计
 
-> 132 个 Agent × 5 个角色 × 4 层金字塔
+> 123 个 Agent × 5 个角色 × 9 个 Taiyi 阶段
 >
 > 状态: 已讨论 / 待落地 (本文档为设计 spec，不含已落地代码)
 >
 > 适用版本: prism-five v0.4.x 规划
 
 ---
+
+## 0. 架构决策：prism-five 不是独立 pipeline engine
+
+**prism-five 是 TaiyiForge 上的 5-role workflow skin。**
+
+| 旧架构 | 新架构 |
+|--------|--------|
+| `.prism/pipeline.json` 独立真源 | Taiyi `.taiyi/changes/<slug>/state.json` engineTruth |
+| `pipeline.continue()` 自建状态机 | Taiyi `continue` — 9 阶段引擎 |
+| `gate.ts` 自建门禁 | Taiyi `--approver` + `review-loop` |
+| `audit.ts` 审计日志 | Taiyi `activity-log` + `semantic-gate` |
+| 5 个角色独立流转 | 5 角色映射到 9 个 Taiyi 阶段 |
+
+**保留的 prism-five 独有能力**：`QueueManager`（feature 队列）、`AgentRuntime`（SKILL.md parser + prompt builder）、`prism` CLI、92 个 L3 Agent。
+
+## 5 角色 → 8 阶段映射（prism-five 视角）
+
+prism-five 的 Builder 的 design 阶段**内嵌 UI 设计**，不单独拆 ui-design。Taiyi 层面用 `--profile api` 跳过独立 ui-design 阶段（CLI 项目默认），UI 项目保留即可。
+
+```
+prism-five 角色           Taiyi 阶段                    默认 Agent 池
+─────────────────        ─────────────────             ──────────────
+Prototyper (Explorer) →  change + requirement          13 个（研究/原型/PRD）
+Builder     (Operator) →  design(含UI) + task + dev    27 个（架构/TDD/API/组件）
+Sweeper     (Scout)    →  test + review                22 个（审查/合规/审计）
+Grower      (Analyst)  →  integration                  36 个（分析/实验/增长）
+Maintainer  (Guardian) →  (commit/ship/land)           21 个（部署/监控/运维）
+```
 
 ## 目录
 
@@ -15,13 +43,15 @@
 3. [4 层金字塔](#3-4-层金字塔)
 4. [L1 主链层 5 命令](#4-l1-主链层-5-命令)
 5. [L2 阶段入口层 18 命令](#5-l2-阶段入口层-18-命令)
-6. [L3 Agent 层 132 命令](#6-l3-agent-层-132-命令)
+6. [L3 Agent 层 92 命令](#6-l3-agent-层-132-命令)
 7. [横切命令 12 个](#7-横切命令-12-个)
 8. [三种用户典型用法](#8-三种用户典型用法)
 9. [pipeline.json 状态映射](#9-pipelinejson-状态映射)
 10. [自动守护 Hook 设计](#10-自动守护-hook-设计)
 11. [参考与对比](#11-参考与对比)
-12. [待决策项](#12-待决策项)
+12. [架构决策（已决议）](#12-架构决策已决议)
+13. [阶段 → Agent 池映射](#13-阶段--agent-池映射)
+14. [Taiyi 能力迁入清单](#14-taiyi-能力迁入清单)
 
 ---
 
@@ -37,7 +67,7 @@ Pentad 的 5 个角色，对应一支装修队的 5 个工种：
 | **软装师** | Grower（增长者 · Analyst） | 家具配饰、数据增长 |
 | **物业** | Maintainer（维护者 · Guardian） | 住进去后修修补补 |
 
-每个工种需要不同工具（agent）。比如木工需要电锯、刨子、水平仪；水电工需要扳手、试电笔、压线钳。**132 个 agent = 132 把不同的工具**。
+每个工种需要不同工具（agent）。比如木工需要电锯、刨子、水平仪；水电工需要扳手、试电笔、压线钳。**92 个 agent = 132 把不同的工具**。
 
 `prism` CLI 就是这支装修队长的**对讲机**——你通过对讲机下指令，队长自动调度对应的工种和工具。
 
@@ -47,7 +77,7 @@ Pentad 的 5 个角色，对应一支装修队的 5 个工种：
 
 ### 2.1 核心矛盾
 
-- **用户不需要认识 132 把工具**——记不住，查不到，每次都得查文档
+- **用户不需要认识 92 把工具**——记不住，查不到，每次都得查文档
 - **特定场景下又必须能调单个工具**——比如"我只想重新刨一下这块板"
 
 ### 2.2 解决方案：4 层金字塔
@@ -115,21 +145,21 @@ L0（自然语言）自动 dispatch；L1 5 个主链覆盖 95% 场景；L2 18 �
 
 - 创建 feature + 跑完 Prototyper 全阶段
 - 默认全自动，13 个 Prototyper agent 并发执行
-- 输出 `.pentad/features/<slug>/raw/`
+- 输出 `.prism/features/<slug>/raw/`
 - 通过 Quality self-check 后自动 `gate.prototype_approved = true`
 - 失败重试 3 次或 escalate
 
 #### `prism build <slug>`
 
 - 读 raw/ 产出 → 跑 Builder 27 个 agent
-- 强制 TDD（`pentad-evidence-collector` 自动核查）
-- 输出 `.pentad/features/<slug>/built/`
+- 强制 TDD（`prism-evidence-collector` 自动核查）
+- 输出 `.prism/features/<slug>/built/`
 - 通过 `npm run build + test + lint` 三件套后自动 `gate.build_reviewed = true`
 
 #### `prism sweep <slug>`
 
 - 跑 Sweeper 22 个 agent
-- 输出 `.pentad/features/<slug>/swept/`
+- 输出 `.prism/features/<slug>/swept/`
 - 自动 gate 6 项必须 PASS（lint / typecheck / test / sec-scan / bundle / complexity）
 - 失败分类：critical/high 立即 halt；medium 写 SWEEP.md；low 入 queue
 
@@ -138,7 +168,7 @@ L0（自然语言）自动 dispatch；L1 5 个主链覆盖 95% 场景；L2 18 �
 - 跑 Grower 36 个 agent
 - 样本不够自动 `grow-idle` 等待，不擅自决策
 - 不显著的 A/B 自动 escalate，不强推结论
-- 输出 `.pentad/features/<slug>/grown/`
+- 输出 `.prism/features/<slug>/grown/`
 
 #### `prism ship <slug>`
 
@@ -157,54 +187,54 @@ L0（自然语言）自动 dispatch；L1 5 个主链覆盖 95% 场景；L2 18 �
 |------|------|-----------|
 | `prism discover` | brainstorm + research + sketch | 调研类 8 个 agent 并发 |
 | `prism prototype` | runnable code + PRD + tech spec | 实现类 5 个 agent |
-| `prism prd` | 单独补 PRD | `pentad-visual-storyteller` 等 |
+| `prism prd` | 单独补 PRD | `prism-visual-storyteller` 等 |
 | `prism discard` | 主动放弃（high discard 路径） | 标记 status=discarded |
 
 #### Builder（5 命令）
 
 | 命令 | 用途 | 触发 agent |
 |------|------|-----------|
-| `prism engineer` | plan-mode task 拆分 + 选型 | `pentad-planner` + `pentad-tool-evaluator` |
+| `prism engineer` | plan-mode task 拆分 + 选型 | `prism-planner` + `prism-tool-evaluator` |
 | `prism build` | (同 L1) 实际生产代码 | 实施类 22 agent |
-| `prism test` | TDD 红绿证据 | `pentad-test-api` + `pentad-evidence-collector` |
-| `prism benchmark` | 性能基线 | `pentad-performance-benchmarker` |
-| `prism doc` | 文档单独写 | `pentad-tech-writer` |
+| `prism test` | TDD 红绿证据 | `prism-test-api` + `prism-evidence-collector` |
+| `prism benchmark` | 性能基线 | `prism-performance-benchmarker` |
+| `prism doc` | 文档单独写 | `prism-tech-writer` |
 
 #### Sweeper（4 命令）
 
 | 命令 | 用途 | 触发 agent |
 |------|------|-----------|
-| `prism review` | 人工可读代码审查 | `pentad-reviewer` |
-| `prism inspect` | 6 项自动 gate | `pentad-integration-checker` + 等 |
-| `prism audit` | 跨 feature 审计 | `pentad-nyquist-auditor` + 等 12 个 |
-| `prism deprecate` | 标记 deprecated | `pentad-deprecator` + `pentad-version-sunset` |
+| `prism review` | 人工可读代码审查 | `prism-reviewer` |
+| `prism inspect` | 6 项自动 gate | `prism-integration-checker` + 等 |
+| `prism audit` | 跨 feature 审计 | `prism-nyquist-auditor` + 等 12 个 |
+| `prism deprecate` | 标记 deprecated | `prism-deprecator` + `prism-version-sunset` |
 
 #### Grower（3 命令）
 
 | 命令 | 用途 | 触发 agent |
 |------|------|-----------|
 | `prism analyze` | 多维度数据分析 | 维度类 10 个 agent |
-| `prism experiment` | A/B 实验 | `pentad-experiment-tracker` + `pentad-experiment-designer` + `pentab-stats-tester` |
-| `prism evolve` | 跨角色发 PR | `pentad-evolver` + `pentad-feedback-synthesizer-g` |
+| `prism experiment` | A/B 实验 | `prism-experiment-tracker` + `prism-experiment-designer` + `pentab-stats-tester` |
+| `prism evolve` | 跨角色发 PR | `prism-evolver` + `prism-feedback-synthesizer-g` |
 
 #### Maintainer（2 命令）
 
 | 命令 | 用途 | 触发 agent |
 |------|------|-----------|
 | `prism ship` | (同 L1) 真发布 | 部署类 13 agent |
-| `prism operate` | 运维规划（监控/告警/成本） | `pentad-monitor-setup` + `pentad-cost-optimizer` + `pentad-backup-manager` |
+| `prism operate` | 运维规划（监控/告警/成本） | `prism-monitor-setup` + `prism-cost-optimizer` + `prism-backup-manager` |
 
-### L3 — Agent 层（132 命令）
+### L3 — Agent 层（92 命令）
 
 直调式接口，前缀 `prism-agent` 隔离：
 
 ```bash
-prism-agent pentad-mobile-app-builder "<task>"
-prism-agent pentad-security-engineer "<audit scope>"
-prism-agent pentad-growth-hacker "<campaign>"
+prism-agent prism-mobile-app-builder "<task>"
+prism-agent prism-security-engineer "<audit scope>"
+prism-agent prism-growth-hacker "<campaign>"
 ```
 
-#### 132 个 agent 分组（共 5 角色 + 跨角色）
+#### 92 个 agent 分组（共 5 角色 + 跨角色）
 
 详见 [§6](#6-l3-agent-层-132-命令)。
 
@@ -222,7 +252,7 @@ prism-agent pentad-growth-hacker "<campaign>"
 | `--step` | 每 step 暂停，等用户回车继续 |
 | `--no-retry` | 失败立刻停，不重试 |
 | `--human` | 人工每步确认（极谨慎模式） |
-| `--agents <list>` | 只跑指定 agent（如 `--agents pentad-rapid-prototyper,pentad-ux-architect`） |
+| `--agents <list>` | 只跑指定 agent（如 `--agents prism-rapid-prototyper,prism-ux-architect`） |
 
 ### 4.2 `prism feature <slug> [message]`
 
@@ -234,19 +264,19 @@ prism-agent pentad-growth-hacker "<campaign>"
 ✓ Feature "user-auth" created
 ✓ Running Prototyper (13 agents)...
 
-[1/13] pentad-trend-researcher      → raw/RESEARCH.md (3 references)
-[2/13] pentad-ux-researcher         → raw/RESEARCH_USER.md
-[3/13] pentad-ux-architect          → raw/SKETCH.md (3 variants)
-[4/13] pentad-ui-designer           → raw/proto/visual.png
-[5/13] pentad-rapid-prototyper      → raw/proto/run-demo.ts (✓ runnable)
-[6/13] pentad-tech-writer           → raw/PRD.md
-[7/13] pentad-visual-storyteller    → raw/STORY.md
-[8/13] pentad-image-prompt-engineer → raw/proto/screens.md
-[9/13] pentad-office-hours          → DECISION: WORTH BUILDING (yes)
-[10/13] pentad-pattern-mapper       → raw/PATTERNS.md (2 reuse candidates)
-[11/13] pentad-codebase-mapper      → raw/CODEBASE_MAP.md
-[12/13] pentad-feedback-synthesizer → raw/FEEDBACK_BACKLOG.md
-[13/13] pentad-whimsy-injector      → raw/DELIGHT_NOTES.md
+[1/13] prism-trend-researcher      → raw/RESEARCH.md (3 references)
+[2/13] prism-ux-researcher         → raw/RESEARCH_USER.md
+[3/13] prism-ux-architect          → raw/SKETCH.md (3 variants)
+[4/13] prism-ui-designer           → raw/proto/visual.png
+[5/13] prism-rapid-prototyper      → raw/proto/run-demo.ts (✓ runnable)
+[6/13] prism-tech-writer           → raw/PRD.md
+[7/13] prism-visual-storyteller    → raw/STORY.md
+[8/13] prism-image-prompt-engineer → raw/proto/screens.md
+[9/13] prism-office-hours          → DECISION: WORTH BUILDING (yes)
+[10/13] prism-pattern-mapper       → raw/PATTERNS.md (2 reuse candidates)
+[11/13] prism-codebase-mapper      → raw/CODEBASE_MAP.md
+[12/13] prism-feedback-synthesizer → raw/FEEDBACK_BACKLOG.md
+[13/13] prism-whimsy-injector      → raw/DELIGHT_NOTES.md
 
 ✓ Quality self-check passed (6/6)
 ✓ gate.prototype_approved = true
@@ -255,7 +285,7 @@ prism-agent pentad-growth-hacker "<campaign>"
 
 **状态变化**：
 
-- `.pentad/pipeline.json` 新增 `features.user-auth`
+- `.prism/pipeline.json` 新增 `features.user-auth`
 - `feature.status = prototype_done`
 - `feature.currentRole = prototyper → builder`
 - `stageHistory[0] = {role: prototyper, completedAt: now}`
@@ -277,26 +307,26 @@ prism-agent pentad-growth-hacker "<campaign>"
 ```
 ▶ Building "user-auth" (TDD mode)
 
-[1/27] pentad-planner              → built/TASK.md (12 slices)
-[2/27] pentad-tech-writer          → built/API.md (OpenAPI 3.1)
-[3/27] pentad-tool-evaluator       → PICKED: zod 3.x for validation
-[4/27] pentad-frontend-developer   → src/auth/login.tsx (RED ✓)
-[5/27] pentad-frontend-developer   → src/auth/login.tsx (GREEN ✓)
-[6/27] pentad-frontend-developer   → src/auth/login.tsx (REFACTORED ✓)
+[1/27] prism-planner              → built/TASK.md (12 slices)
+[2/27] prism-tech-writer          → built/API.md (OpenAPI 3.1)
+[3/27] prism-tool-evaluator       → PICKED: zod 3.x for validation
+[4/27] prism-frontend-developer   → src/auth/login.tsx (RED ✓)
+[5/27] prism-frontend-developer   → src/auth/login.tsx (GREEN ✓)
+[6/27] prism-frontend-developer   → src/auth/login.tsx (REFACTORED ✓)
 ... (TDD 循环)
-[15/27] pentad-backend-architect  → src/api/auth.ts (routes ✓)
-[16/27] pentad-test-api           → tests/auth.test.ts (4 cases)
-[17/27] pentad-integration-checker → tests/integration/auth.test.ts
-[18/27] pentad-evidence-collector → built/EVIDENCE.md (RED→GREEN captured)
-[19/27] pentad-workflow-optimizer → built/WORKFLOW.md
-[20/27] pentad-performance-benchmarker → built/PERF.md (p95=185ms, target ≤200)
-[21/27] pentad-lsp-index-engineer → built/LSP_READY
-[22/27] pentad-cultural-intelligence → src/i18n/auth.zh-CN.ts
-[23/27] pentad-build-ui-spec        → built/UI_SPEC.md
-[24/27] pentad-test-results-analyzer → tests/coverage.xml (82%)
-[25/27] pentad-debug-builder        → built/RETRY_LOG.md (0 retries)
-[26/27] pentad-senior-developer    → built/SENIOR_NOTES.md
-[27/27] pentad-data-engineer-g     → built/DATA_SCHEMA.md
+[15/27] prism-backend-architect  → src/api/auth.ts (routes ✓)
+[16/27] prism-test-api           → tests/auth.test.ts (4 cases)
+[17/27] prism-integration-checker → tests/integration/auth.test.ts
+[18/27] prism-evidence-collector → built/EVIDENCE.md (RED→GREEN captured)
+[19/27] prism-workflow-optimizer → built/WORKFLOW.md
+[20/27] prism-performance-benchmarker → built/PERF.md (p95=185ms, target ≤200)
+[21/27] prism-lsp-index-engineer → built/LSP_READY
+[22/27] prism-cultural-intelligence → src/i18n/auth.zh-CN.ts
+[23/27] prism-build-ui-spec        → built/UI_SPEC.md
+[24/27] prism-test-results-analyzer → tests/coverage.xml (82%)
+[25/27] prism-debug-builder        → built/RETRY_LOG.md (0 retries)
+[26/27] prism-senior-developer    → built/SENIOR_NOTES.md
+[27/27] prism-data-engineer-g     → built/DATA_SCHEMA.md
 
 ✓ npm run build  → exit 0
 ✓ npm test        → 47/47 PASS, coverage 82%
@@ -316,28 +346,28 @@ prism-agent pentad-growth-hacker "<campaign>"
 ```
 ▶ Reviewing "user-auth"
 
-[1/22] pentad-reviewer             → swept/REVIEW.md (correctness 100%)
-[2/22] pentad-security-engineer    → swept/SECURITY.md (STRIDE, OWASP)
-[3/22] pentad-compliance-checker   → swept/COMPLIANCE.md
-[4/22] pentad-accessibility-auditor → swept/A11Y.md (WCAG 2.1 AA)
-[5/22] pentad-reality-checker      → REALITY ✓ (no fake claims)
-[6/22] pentad-test-results-analyzer → tests satisfied: 47/47
-[7/22] pentad-integration-checker  → integration PASS
-[8/22] pentad-nyquist-auditor      → coverage/n-requirements gap: 0
-[9/22] pentad-doc-verifier         → README ✓, API.md ✓
-[10/22] pentad-eval-auditor        → rating 4.2/5 ≥ 3.5 threshold
-[11/22] pentad-user-profiler        → personas-match: 0.84
-[12/22] pentad-agent-trust         → identity trust: PASS
-[13/22] pentad-security-auditor   → vulns: 0 critical, 0 high
-[14/22] pentad-ui-auditor          → UI consistency: PASS
-[15/22] pentad-physical-compat     → compat matrix ✓
-[16/22] pentad-data-consolidation → dedup: 0 redundant
-[17/22] pentad-debugger           → 0 latent issues
-[18/22] pentad-debug-session-manager → session clean
-[19/22] pentad-fix-build-issue    → no fixes needed (read-only)
-[20/22] pentad-deprecator         → (optional) mark old auth method
-[21/22] pentad-version-sunset     → scheduled: 2026-08-15
-[22/22] pentad-financial-tracker   → cost OK
+[1/22] prism-reviewer             → swept/REVIEW.md (correctness 100%)
+[2/22] prism-security-engineer    → swept/SECURITY.md (STRIDE, OWASP)
+[3/22] prism-compliance-checker   → swept/COMPLIANCE.md
+[4/22] prism-accessibility-auditor → swept/A11Y.md (WCAG 2.1 AA)
+[5/22] prism-reality-checker      → REALITY ✓ (no fake claims)
+[6/22] prism-test-results-analyzer → tests satisfied: 47/47
+[7/22] prism-integration-checker  → integration PASS
+[8/22] prism-nyquist-auditor      → coverage/n-requirements gap: 0
+[9/22] prism-doc-verifier         → README ✓, API.md ✓
+[10/22] prism-eval-auditor        → rating 4.2/5 ≥ 3.5 threshold
+[11/22] prism-user-profiler        → personas-match: 0.84
+[12/22] prism-agent-trust         → identity trust: PASS
+[13/22] prism-security-auditor   → vulns: 0 critical, 0 high
+[14/22] prism-ui-auditor          → UI consistency: PASS
+[15/22] prism-physical-compat     → compat matrix ✓
+[16/22] prism-data-consolidation → dedup: 0 redundant
+[17/22] prism-debugger           → 0 latent issues
+[18/22] prism-debug-session-manager → session clean
+[19/22] prism-fix-build-issue    → no fixes needed (read-only)
+[20/22] prism-deprecator         → (optional) mark old auth method
+[21/22] prism-version-sunset     → scheduled: 2026-08-15
+[22/22] prism-financial-tracker   → cost OK
 
 INSPECT 6 项:
   [✓] lint clean
@@ -362,48 +392,48 @@ INSPECT 6 项:
 ▶ Analyzing "user-auth" (live since 7d)
 
 ANALYZE 多维度:
-[1/36] pentad-analytics-reporter     → grown/ANALYZE_USAGE.md (DAU 1.2k, retention 71%)
-[2/36] pentad-support-analytics      → grown/ANALYZE_SUPPORT.md (tickets 14/wk)
-[3/36] pentad-finance-tracker        → grown/ANALYZE_FIN.md (ARR delta +$3k)
-[4/36] pentad-sales-extractor        → grown/SALES_IMPACT.md
-[5/36] pentad-user-researcher-g      → grown/USER_RESEARCH.md (3 themes)
-[6/36] pentad-feedback-collector     → grown/FEEDBACK.md (47 items)
-[7/36] pentad-data-engineer-g       → grown/DATA_PIPELINE.md (ETL idempotent)
-[8/36] pentad-data-consolidator     → consolidated 4 sources
-[9/36] pentad-lineage-tracker       → grown/LINEAGE.gv
-[10/36] pentad-dq-scorer            → grown/DQ.md (gold 99.94%)
-[11/36] pentad-usage-tracker        → grown/USAGE.md
-[12/36] pentad-quality-monitor      → grown/QUALITY.md
-[13/36] pentad-report-distributor   → grown/REPORT.md
-[14/36] pentad-feedback-synthesizer-g → key themes: 5
+[1/36] prism-analytics-reporter     → grown/ANALYZE_USAGE.md (DAU 1.2k, retention 71%)
+[2/36] prism-support-analytics      → grown/ANALYZE_SUPPORT.md (tickets 14/wk)
+[3/36] prism-finance-tracker        → grown/ANALYZE_FIN.md (ARR delta +$3k)
+[4/36] prism-sales-extractor        → grown/SALES_IMPACT.md
+[5/36] prism-user-researcher-g      → grown/USER_RESEARCH.md (3 themes)
+[6/36] prism-feedback-collector     → grown/FEEDBACK.md (47 items)
+[7/36] prism-data-engineer-g       → grown/DATA_PIPELINE.md (ETL idempotent)
+[8/36] prism-data-consolidator     → consolidated 4 sources
+[9/36] prism-lineage-tracker       → grown/LINEAGE.gv
+[10/36] prism-dq-scorer            → grown/DQ.md (gold 99.94%)
+[11/36] prism-usage-tracker        → grown/USAGE.md
+[12/36] prism-quality-monitor      → grown/QUALITY.md
+[13/36] prism-report-distributor   → grown/REPORT.md
+[14/36] prism-feedback-synthesizer-g → key themes: 5
 
 EXPERIMENT:
-[15/36] pentad-experiment-tracker   → grown/EXPERIMENT.md
-[16/36] pentad-experiment-designer  → hypothesis: SSO 提升留存
+[15/36] prism-experiment-tracker   → grown/EXPERIMENT.md
+[16/36] prism-experiment-designer  → hypothesis: SSO 提升留存
 [17/36] pentab-stats-tester        → required n=540, current=612 (POWER OK)
 
 EVOLVE:
-[18/36] pentad-evolver              → PR #234 to Builder queue
-[19/36] pentad-discovery-engine     → 3 new needs
+[18/36] prism-evolver              → PR #234 to Builder queue
+[19/36] prism-discovery-engine     → 3 new needs
 
 GROW:
-[20/36] pentad-sprint-prioritizer   → ranked 8 backlog items
-[21/36] pentad-growth-hacker        → 3 campaign concepts
-[22/36] pentad-content-creator      → 5 content drafts
-[23/36] pentad-social-strategist    → channels: 4 prioritized
-[24/36] pentad-app-store-optimizer  → ASO 14 keywords (3 high-value)
-[25/36] pentad-distribute-instagram → scheduled
-[26/36] pentad-distribute-twitter    → scheduled
-[27/36] pentad-distribute-reddit    → scheduled
-[28/36] pentad-distribute-tiktok     → scheduled
-[29/36] pentad-distribute-xiaohongshu → scheduled
-[30/36] pentad-distribute-zhihu      → scheduled
-[31/36] pentad-distribute-wechat     → scheduled
-[32/36] pentad-brand-guardian        → brand consistency 100%
-[33/36] pentad-developer-advocate   → 2 dev topics
-[34/36] pentad-storyteller           → updated story
-[35/36] pentad-whimsy-2              → delight plan
-[36/36] pentad-nudge-engine          → 2 behavioral nudges
+[20/36] prism-sprint-prioritizer   → ranked 8 backlog items
+[21/36] prism-growth-hacker        → 3 campaign concepts
+[22/36] prism-content-creator      → 5 content drafts
+[23/36] prism-social-strategist    → channels: 4 prioritized
+[24/36] prism-app-store-optimizer  → ASO 14 keywords (3 high-value)
+[25/36] prism-distribute-instagram → scheduled
+[26/36] prism-distribute-twitter    → scheduled
+[27/36] prism-distribute-reddit    → scheduled
+[28/36] prism-distribute-tiktok     → scheduled
+[29/36] prism-distribute-xiaohongshu → scheduled
+[30/36] prism-distribute-zhihu      → scheduled
+[31/36] prism-distribute-wechat     → scheduled
+[32/36] prism-brand-guardian        → brand consistency 100%
+[33/36] prism-developer-advocate   → 2 dev topics
+[34/36] prism-storyteller           → updated story
+[35/36] prism-whimsy-2              → delight plan
+[36/36] prism-nudge-engine          → 2 behavioral nudges
 
 → gate.analyze_complete = true
 → Next: prism ship user-auth
@@ -420,39 +450,39 @@ GROW:
 ▶ Shipping "user-auth"
 
 RELEASE-CHECK:
-[1/21] pentad-verifier            → CHANGELOG ✓ version ✓
-[2/21] pentad-doc-writer          → README synced
-[3/21] pentad-rollback-engine     → rollback script generated
-[4/21] pentad-monitor-setup       → Prometheus rule 12, Grafana dash 3
-[5/21] pentad-cost-optimizer      → projected $0.12/h
-[6/21] pentad-backup-manager      → GPG backup verified
+[1/21] prism-verifier            → CHANGELOG ✓ version ✓
+[2/21] prism-doc-writer          → README synced
+[3/21] prism-rollback-engine     → rollback script generated
+[4/21] prism-monitor-setup       → Prometheus rule 12, Grafana dash 3
+[5/21] prism-cost-optimizer      → projected $0.12/h
+[6/21] prism-backup-manager      → GPG backup verified
 
 CANARY 5%:
-[7/21] pentad-canary-controller   → 5% for 30min
-[8/21] pentad-monitor-setup       → error rate 0.8% (target <1%) ✓
-[9/21] pentad-monitor-setup       → p95 178ms (target <200) ✓
+[7/21] prism-canary-controller   → 5% for 30min
+[8/21] prism-monitor-setup       → error rate 0.8% (target <1%) ✓
+[9/21] prism-monitor-setup       → p95 178ms (target <200) ✓
 
 CANARY 25%:
-[10/21] pentad-canary-controller  → 25% for 30min
+[10/21] prism-canary-controller  → 25% for 30min
 [11/21] → metrics still OK
 
 FULL ROLLOUT:
-[12/21] pentad-devops-automator   → merge main + tag v1.4.0
-[13/21] pentad-executor-m         → deploy to prod
-[14/21] pentad-infra-maintainer   → DNS switch
+[12/21] prism-devops-automator   → merge main + tag v1.4.0
+[13/21] prism-executor-m         → deploy to prod
+[14/21] prism-infra-maintainer   → DNS switch
 
 OPERATE:
-[15/21] pentad-exec-summary       → weekly summary ready
-[16/21] pentad-runbook-generator  → runbook.md generated
-[17/21] pentad-cost-optimizer     → under budget
+[15/21] prism-exec-summary       → weekly summary ready
+[16/21] prism-runbook-generator  → runbook.md generated
+[17/21] prism-cost-optimizer     → under budget
 
 INCIDENT HANDLING (自动):
-[18/21] pentad-debugger-m         → active
-[19/21] pentad-debug-session-m   → ready
-[20/21] pentad-code-fixer-m      → ready
+[18/21] prism-debugger-m         → active
+[19/21] prism-debug-session-m   → ready
+[20/21] prism-code-fixer-m      → ready
 
 CLOSE:
-[21/21] pentad-learnings-curator  → LEARNINGS.md updated + queued next feature
+[21/21] prism-learnings-curator  → LEARNINGS.md updated + queued next feature
 
 ✓ Feature LIVE in production
 ✓ gate.release_approved = true
@@ -482,7 +512,7 @@ CLOSE:
 - 输出 `raw/proto/` 可运行代码
 
 #### `prism prd`
-- 单独产出 PRD（用 `pentad-tech-writer`）
+- 单独产出 PRD（用 `prism-tech-writer`）
 - 适用"已经调研好，只缺 PRD"场景
 
 #### `prism discard`
@@ -493,7 +523,7 @@ CLOSE:
 ### 5.2 Builder L2
 
 #### `prism engineer`
-- plan-mode 模式：只跑 `pentad-planner` + `pentad-tool-evaluator`
+- plan-mode 模式：只跑 `prism-planner` + `prism-tool-evaluator`
 - 输出 `built/TASK.md` + `built/PICKS.md`
 - 不写代码
 
@@ -502,34 +532,34 @@ CLOSE:
 - 区别于 L1 `prism build` —— L2 的 build 是 Builder 阶段内单跑实施类
 
 #### `prism test`
-- 仅跑测试相关：`pentad-test-api` + `pentad-evidence-collector` + `pentad-test-results-analyzer`
+- 仅跑测试相关：`prism-test-api` + `prism-evidence-collector` + `prism-test-results-analyzer`
 - 强制 TDD 红绿证据
 
 #### `prism benchmark`
-- 仅 `pentad-performance-benchmarker`
+- 仅 `prism-performance-benchmarker`
 - 写 `built/PERF.md`
 
 #### `prism doc`
-- 仅 `pentad-tech-writer`
+- 仅 `prism-tech-writer`
 - 输出 API doc / JSDoc / README
 
 ### 5.3 Sweeper L2
 
 #### `prism review`
-- 仅 `pentad-reviewer`
+- 仅 `prism-reviewer`
 - 输出人工可读的 `swept/REVIEW.md`
 
 #### `prism inspect`
-- 仅 `pentad-integration-checker` + 等 6 项自动 gate
+- 仅 `prism-integration-checker` + 等 6 项自动 gate
 - 极快，秒级反馈
 
 #### `prism audit`
 - 跨 feature 审计（不止当前 feature）
-- 涉及 `pentad-nyquist-auditor` + `pentad-doc-verifier` + `pentad-eval-auditor` + 等 12 个 agent
+- 涉及 `prism-nyquist-auditor` + `prism-doc-verifier` + `prism-eval-auditor` + 等 12 个 agent
 
 #### `prism deprecate`
 - 标 deprecated + 迁移指南
-- 涉及 `pentad-deprecator` + `pentad-version-sunset`
+- 涉及 `prism-deprecator` + `prism-version-sunset`
 
 ### 5.4 Grower L2
 
@@ -556,203 +586,88 @@ CLOSE:
 
 ---
 
-## 6. L3 Agent 层 132 命令
+## 6. L3 Agent 层 92 命令
+
+> 详细完整目录见 [GLOSSARY.md](./GLOSSARY.md)。本章列出核心 agent 职责摘要。
 
 ### 6.1 总览
 
-132 个 agent 全部用 `prism-agent` 前缀：
+| 角色 | agent 数 | 说明 |
+|------|:--:|------|
+| Prototyper | 12 | 研究、原型、PRD、可行性评估 |
+| Builder | 20 + 7 平台专属 | 架构、TDD、API、数据、性能、安全 |
+| Sweeper | 20 | 审查、合规、审计、测试生成 |
+| Grower | 16 + 1 社媒 | 分析、实验、增长、反馈 |
+| Maintainer | 16 | 部署、监控、事故、容量 |
+| 跨角色 | 8 | 编排、PM、队列、会话、审计 |
+| **总计** | **92 + 8 按需** | |
 
-```bash
-prism-agent <agent-name> [args]
+### 6.2 各角色 Agent 摘要
+
+完整 92 个 agent 的职责、产出、触发命令见 [GLOSSARY.md](./GLOSSARY.md) §3。此处仅列出核心 agent 概览：
+
+**Prototyper（12）**：`rapid-prototyper`、`problem-framer`、`market-intelligence`、`ux-researcher`、`ux-architect`、`ui-designer`、`visual-storyteller`、`stakeholder-interviewer`、`tech-feasibility`、`risk-assessor`、`feedback-synthesizer`、`pattern-analyzer`
+
+**Builder（20 + 7 按需）**：`frontend-developer`、`backend-architect`、`data-engineer`、`ai-engineer`、`senior-developer`、`tech-writer`、`planner`、`executor`、`tool-evaluator`、`workflow-optimizer`、`performance-engineer`、`db-schema-designer`、`api-contract-designer`、`dependency-auditor`、`feature-flag-engineer`、`state-machine-designer`、`resilience-designer`、`auth-engineer`、`ci-cd-designer`、`pattern-analyzer` + `mobile/metal/visionos/xr/terminal`（按需）
+
+**Sweeper（20）**：`reviewer`、`security-engineer`、`compliance-checker`、`accessibility-auditor`、`integration-checker`、`lifecycle-manager`、`debugger`、`regression-test-generator`、`load-test-engineer`、`api-contract-checker`、`dependency-updater`、`license-compliance`、`e2e-generator`、`chaos-engineer` + `eval-auditor`/`agent-trust`【AI专属】、`ui-auditor`【UI专属】
+
+**Grower（16 + 1）**：`analytics-reporter`、`retention-analyst`、`funnel-optimizer`、`adoption-tracker`、`metrics-designer`、`experiment-engineer`、`evolver`、`discovery-engine`、`feedback-engineer`、`data-engineer-g`、`sprint-prioritizer`、`revenue-analyst`、`churn-preventer` + `social-distributor`（平台分发）+ `sales-extractor`【B2B】、`brand-guardian`【营销】
+
+**Maintainer（16）**：`infra-maintainer`、`devops-automator`、`deployment-engineer`、`release-verifier`、`incident-responder`、`incident-coordinator`、`health-check-designer`、`capacity-planner`、`dr-tester`、`secrets-manager`、`cost-optimizer`、`monitor-setup`、`quality-monitor`、`postmortem-writer`、`doc-writer`、`halt-controller`
+
+**跨角色（8）**：`orchestrator`、`pm`、`program-manager`、`queue-manager`、`session-manager`、`lifecycle-manager`、`audit-reporter`、`onboard`
+
+### 6.3 串联验证
+
+一个 feature 从头跑到底，92 agent 之间的数据流衔接（完整版见 [GLOSSARY.md](./GLOSSARY.md) §3）：
+
+```
+prism feature user-login
+│
+├─ Prototyper（12 agent）
+│   market-intelligence → raw/TREND.md
+│   ux-researcher ─────→ raw/RESEARCH.md
+│   pattern-analyzer ──→ raw/PATTERNS.md + raw/CODEBASE_MAP.md
+│   problem-framer ────→ raw/PROBLEM.md
+│   rapid-prototyper ──→ raw/proto/（runnable）
+│   ui-designer ───────→ raw/proto/visual
+│
+├─ Builder（20 agent，读 raw/PRD.md）
+│   planner ───────────→ built/TASK.md
+│   api-contract-designer → built/API_CONTRACT.yaml
+│   backend-architect ─→ src/api/
+│   frontend-developer → src/components/
+│   executor ──────────→ 生产代码（TDD）
+│   performance-engineer → built/PERF.md
+│   auth-engineer ─────→ src/auth/
+│   ci-cd-designer ────→ .github/workflows/
+│
+├─ Sweeper（20 agent，读 built/SPEC.md + diff）
+│   reviewer ──────────→ swept/REVIEW.md
+│   security-engineer ─→ swept/SECURITY.md
+│   lifecycle-manager ─→ swept/DEPRECATION.md
+│   regression-test-generator → swept/REGRESSION_TESTS.md
+│   chaos-engineer ────→ swept/CHAOS.md
+│
+├─ Grower（16 agent，读 swept/INSPECT.md + 线上数据）
+│   analytics-reporter → grown/ANALYZE.md
+│   experiment-engineer → grown/EXPERIMENT.md
+│   feedback-engineer ─→ grown/FEEDBACK.md
+│   evolver ───────────→ PR → Builder 队列
+│   social-distributor ─→ 多平台分发
+│
+├─ Maintainer（16 agent，读 grown/ANALYZE.md）
+│   release-verifier ──→ live/RELEASE_CHECK.md
+│   deployment-engineer → live/SHIP.md
+│   incident-responder → live/INCIDENT.md
+│   postmortem-writer ─→ live/LEARNINGS.md
+│   secrets-manager ───→ live/SECRETS.md
+│
+└─ live（上线，close + dequeue 下一个）
 ```
 
-| 角色 | agent 数 |
-|------|----------|
-| Prototyper | 13 |
-| Builder | 27 |
-| Sweeper | 22 |
-| Grower | 36 |
-| Maintainer | 21 |
-| 跨角色 | 13 |
-| **总计** | **132** |
-
-### 6.2 Prototyper（13 个）
-
-| # | agent | 工作 | 触发命令 |
-|---|-------|------|----------|
-| 1 | `pentad-rapid-prototyper` | 3 天 MVP + analytics day 1 | `prototype` |
-| 2 | `pentad-ux-architect` | 信息架构 / 原型 | `discover` / `prototype --step /sketch` |
-| 3 | `pentad-ux-researcher` | 用户研究 | `discover` |
-| 4 | `pentad-ui-designer` | UI 设计 | `prototype --step /sketch` |
-| 5 | `pentad-visual-storyteller` | 视觉叙事 | `feature` |
-| 6 | `pentad-image-prompt-engineer` | 出图 prompt | `prototype` |
-| 7 | `pentad-inclusive-visuals-specialist` | 包容性视觉 | `prototype` |
-| 8 | `pentad-whimsy-injector` | 乐趣细节 | `discover` |
-| 9 | `pentad-trend-researcher` | 趋势调研 | `discover` |
-| 10 | `pentad-feedback-synthesizer` | 反馈综合 | `discover` |
-| 11 | `pentad-office-hours` | 值不值得做 | `discover` |
-| 12 | `pentad-pattern-mapper` | 复用模式 | `discover` |
-| 13 | `pentad-codebase-mapper` | 代码库制图 | `discover` |
-
-### 6.3 Builder（27 个）
-
-| # | agent | 工作 | 触发命令 |
-|---|-------|------|----------|
-| 1 | `pentad-frontend-developer` | 前端开发 | `build --sub frontend` |
-| 2 | `pentad-backend-architect` | 后端架构 | `build --sub backend` |
-| 3 | `pentad-mobile-app-builder` | 移动端原生 | `build --sub mobile` |
-| 4 | `pentad-data-engineer` | ETL / 数据管道 | `build --sub data` |
-| 5 | `pentad-ai-engineer` | AI/LLM | `build --sub ai` |
-| 6 | `pentad-senior-developer` | 高级开发 | `build --sub complex` |
-| 7 | `pentad-tech-writer` | API doc / JSDoc | `doc` |
-| 8 | `pentad-autonomous-optimization-architect` | 自动优化 | `build` 性能优化 |
-| 9 | `pentad-lsp-index-engineer` | LSP 索引 | `build` 工具链 |
-| 10 | `pentad-metal-engineer` | macOS Metal | `build --sub metal` |
-| 11 | `pentad-visionos-engineer` | visionOS | `build --sub visionos` |
-| 12 | `pentad-xr-immersive-developer` | XR 沉浸 | `build --sub xr` |
-| 13 | `pentad-xr-cockpit` | XR 互动 | `build --sub xr-cockpit` |
-| 14 | `pentad-xr-interface-architect` | XR 接口 | `build --sub xr-ui` |
-| 15 | `pentad-terminal-integration` | CLI/terminal | `build` CLI |
-| 16 | `pentad-cultural-intelligence` | i18n / 跨文化 | `build --sub i18n` |
-| 17 | `pentad-planner` | 任务拆分 | `engineer` |
-| 18 | `pentad-executor` | 实施代理 | `build` |
-| 19 | `pentad-build-ux-arch` | 信息架构 (build) | `build` |
-| 20 | `pentad-build-ui-spec` | UI spec (build) | `build` |
-| 21 | `pentad-performance-benchmarker` | 性能基线 | `benchmark` |
-| 22 | `pentad-test-api` | API 测试 | `test --sub api` |
-| 23 | `pentad-evidence-collector` | TDD 红绿证据 | `test` |
-| 24 | `pentad-tool-evaluator` | 选型决策 | `engineer` |
-| 25 | `pentad-workflow-optimizer` | 流程优化 | `build` |
-| 26 | `pentad-pattern-finder` | 复用查询 | `engineer` |
-| 27 | `pentad-debug-builder` | 失败重试 | `build --on-fail` |
-
-### 6.4 Sweeper（22 个）
-
-| # | agent | 工作 | 触发命令 |
-|---|-------|------|----------|
-| 1 | `pentad-reviewer` | 人工可读代码审查 | `review` |
-| 2 | `pentad-security-engineer` | STRIDE / OWASP | `audit --scope security` |
-| 3 | `pentad-compliance-checker` | 合规 (PCI/HIPAA/SOC2) | `audit --scope compliance` |
-| 4 | `pentad-accessibility-auditor` | WCAG 2.1 | `audit --scope a11y` |
-| 5 | `pentad-reality-checker` | 真伪检验 | `review` |
-| 6 | `pentad-test-results-analyzer` | 测试剖析 | `review` |
-| 7 | `pentad-integration-checker` | 集成校验 | `inspect` |
-| 8 | `pentad-nyquist-auditor` | 覆盖度 | `audit` |
-| 9 | `pentad-doc-verifier` | 文档验证 | `audit --scope docs` |
-| 10 | `pentad-eval-auditor` | 评估审计 | `audit` |
-| 11 | `pentad-user-profiler` | 用户档案 | `audit` |
-| 12 | `pentad-agent-trust` | AI 代理可信度 | `audit --scope trust` |
-| 13 | `pentad-security-auditor` | 安全审计 | `audit --scope security` |
-| 14 | `pentad-ui-auditor` | UI 一致性 | `audit --scope ui` |
-| 15 | `pentad-data-consolidation` | 数据去重 | `sweep --step /clean` |
-| 16 | `pentad-physical-compat` | 物理兼容 | `inspect` |
-| 17 | `pentad-financial-tracker` | 成本审计 | `audit --scope cost` |
-| 18 | `pentad-debugger` | 调试 | `sweep --step /review` |
-| 19 | `pentad-debug-session-manager` | 调试会话管理 | `sweep` |
-| 20 | `pentad-fix-build-issue` | 修复建议 | `sweep --step /clean` |
-| 21 | `pentad-deprecator` | deprecated 标记 | `deprecate` |
-| 22 | `pentad-version-sunset` | 版本 sunset 调度 | `deprecate` |
-
-### 6.5 Grower（36 个）
-
-| # | agent | 工作 | 触发命令 |
-|---|-------|------|----------|
-| 1 | `pentad-analytics-reporter` | 数据报告 | `analyze` |
-| 2 | `pentad-support-analytics` | 支持侧分析 | `analyze` |
-| 3 | `pentad-finance-tracker` | 财务追踪 | `analyze` |
-| 4 | `pentad-sales-extractor` | 销售数据提取 | `analyze` |
-| 5 | `pentad-experiment-tracker` | 实验追踪 | `experiment` |
-| 6 | `pentad-growth-hacker` | 增长黑客 | `grow` |
-| 7 | `pentad-app-store-optimizer` | ASO | `aso` |
-| 8 | `pentad-content-creator` | 内容创作 | `distribute` |
-| 9 | `pentad-social-strategist` | 社媒策略 | `distribute` |
-| 10 | `pentad-instagram-curator` | Instagram | `distribute --platform instagram` |
-| 11 | `pentad-twitter-engager` | Twitter | `distribute --platform twitter` |
-| 12 | `pentad-reddit-builder` | Reddit | `distribute --platform reddit` |
-| 13 | `pentad-tiktok-strategist` | TikTok | `distribute --platform tiktok` |
-| 14 | `pentad-xiaohongshu` | 小红书 | `distribute --platform xhs` |
-| 15 | `pentad-zhihu` | 知乎 | `distribute --platform zhihu` |
-| 16 | `pentad-wechat-official` | 公众号 | `distribute --platform wechat` |
-| 17 | `pentad-brand-guardian` | 品牌资产 | `brand` |
-| 18 | `pentad-developer-advocate` | 开发者推广 | `devrel` |
-| 19 | `pentad-storyteller` | 故事化 | `grow` |
-| 20 | `pentad-whimsy-2` | 趣味注入 | `grow` |
-| 21 | `pentad-nudge-engine` | 行为驱动 | `grow` |
-| 22 | `pentad-sprint-prioritizer` | 优先级 | `grow` |
-| 23 | `pentad-experiment-designer` | 实验设计 | `experiment` |
-| 24 | `pentab-stats-tester` | 显著性检验 | `experiment` |
-| 25 | `pentad-evolver` | 演化 PR | `evolve` |
-| 26 | `pentad-discovery-engine` | 需求发现 | `grow` |
-| 27 | `pentad-report-distributor` | 报告分发 | `grow` |
-| 28 | `pentad-feedback-synthesizer-g` | 反馈综合 (g) | `grow` |
-| 29 | `pentad-data-engineer-g` | ETL (g) | `grow` |
-| 30 | `pentad-data-consolidator` | 数据合并 | `grow --step /analyze` |
-| 31 | `pentad-lineage-tracker` | 数据血统 | `grow` |
-| 32 | `pentad-dq-scorer` | DQ 评分 | `grow` |
-| 33 | `pentad-user-researcher-g` | 用户研究 (g) | `analyze` |
-| 34 | `pentad-feedback-collector` | 反馈收集 | `analyze --dim feedback` |
-| 35 | `pentad-usage-tracker` | 使用追踪 | `analyze --dim usage` |
-| 36 | `pentad-quality-monitor` | 质量监控 | `analyze --dim quality` |
-
-### 6.6 Maintainer（21 个）
-
-| # | agent | 工作 | 触发命令 |
-|---|-------|------|----------|
-| 1 | `pentad-infra-maintainer` | 基础设施运维 | `operate` |
-| 2 | `pentad-devops-automator` | DevOps 自动化 | `ship` |
-| 3 | `pentad-support-responder` | 客户支持响应 | (独立响应命令) |
-| 4 | `pentad-exec-summary` | 高管摘要 | `operate` |
-| 5 | `pentad-doc-writer` | 文档写手 | `maintain --step /close` |
-| 6 | `pentad-debugger-m` | 调试 (m) | `incident` |
-| 7 | `pentad-debug-session-m` | 调试会话 (m) | `incident` |
-| 8 | `pentad-code-fixer-m` | 代码修复 (m) | `incident` |
-| 9 | `pentad-verifier` | 发布前验证 | `ship` |
-| 10 | `pentad-orchestrator-agent` | 编排 agent | `status --verbose` |
-| 11 | `pentad-executor-m` | 执行 (m) | `ship` |
-| 12 | `pentad-integration-checker-m` | 集成 (m) | `ship` |
-| 13 | `pentad-canary-controller` | 灰度控制 | `canary` |
-| 14 | `pentad-rollback-engine` | 回滚 | `rollback` |
-| 15 | `pentad-monitor-setup` | 监控初始化 | `operate` |
-| 16 | `pentad-cost-optimizer` | 成本优化 | `operate` |
-| 17 | `pentad-backup-manager` | 加密备份 | `operate` |
-| 18 | `pentad-runbook-generator` | runbook 生成 | `operate` |
-| 19 | `pentad-postmortem-writer` | postmortem | `postmortem` |
-| 20 | `pentad-learnings-curator` | LEARNINGS 更新 | `learnings` |
-| 21 | `pentad-halt-controller` | 全停控制器 | `halt` |
-
-### 6.7 跨角色（13 个）
-
-| # | agent | 工作 | 触发命令 |
-|---|-------|------|----------|
-| 1 | `pentad-orchestrator` | 顶层编排 | `status` |
-| 2 | `pentad-pm-senior` | 高级 PM | `pm` |
-| 3 | `pentad-project-shepherd` | 项目牧羊 | `shepherd` |
-| 4 | `pentad-studio-ops` | 工作室运营 | `studio-ops` |
-| 5 | `pentad-studio-producer` | 工作室制作 | `produce` |
-| 6 | `pentad-onboard` | 入门引导 | `onboard` |
-| 7 | `pentad-intake-new` | 新建 feature | `new` |
-| 8 | `pentad-queue-mgr` | 队列管理 | `queue` |
-| 9 | `pentad-next-mgr` | 出队 | `next` |
-| 10 | `pentad-pause-mgr` | 暂停 | `pause` |
-| 11 | `pentad-resume-mgr` | 恢复 | `resume` |
-| 12 | `pentad-cancel-mgr` | 取消 | `cancel` |
-| 13 | `pentad-promote-mgr` | 产品生命周期 | `promote` |
-
-### 6.8 L3 使用接口
-
-```bash
-# 直调单个 agent
-$ prism-agent pentad-security-engineer "审计 src/auth"
-
-# 列所有 agent
-$ prism-agent list
-
-# 按角色过滤
-$ prism-agent list --role prototyper
-
-# 看 agent 完整 prompt
-$ prism-agent pentad-rapid-prototyper --prompt
-```
+### 6.4 L3 使用接口
 
 ---
 
@@ -767,8 +682,8 @@ $ prism-agent pentad-rapid-prototyper --prompt
 | 3 | `prism list [--all]` | 列所有 features | 读 pipeline.json |
 | 4 | `prism queue` | 队列管理（add/remove/priority） | `state.queue` |
 | 5 | `prism next` | 出队下一 feature | `state.queue` |
-| 6 | `prism pause` | 暂停，写 HANDOFF.md | `.pentad/HANDOFF.md` |
-| 7 | `prism resume` | 读 HANDOFF.md 恢复 | 读 `.pentad/HANDOFF.md` |
+| 6 | `prism pause` | 暂停，写 HANDOFF.md | `.prism/HANDOFF.md` |
+| 7 | `prism resume` | 读 HANDOFF.md 恢复 | 读 `.prism/HANDOFF.md` |
 | 8 | `prism cancel` | 取消当前 feature | 清理 artifacts |
 | 9 | `prism promote <stage>` | 推进产品生命周期 | `state.productStage` |
 | 10 | `prism escalate <to-role> --reason` | 升级到某角色 | 写 INCIDENT.md |
@@ -817,7 +732,7 @@ $ prism ship --canary 5 --duration 30m
 ```yaml
 # .github/workflows/e2e.yml
 - name: Security audit
-  run: prism-agent pentad-security-engineer "./src"
+  run: prism-agent prism-security-engineer "./src"
 
 # .github/workflows/deploy.yml
 - name: Canary deploy
@@ -957,7 +872,7 @@ $ prism ship --canary 5 --duration 30m
 
 | 维度 | ECC | Pentad |
 |------|-----|--------|
-| Slash 数 | 92 | 35 + 132 工具 |
+| Slash 数 | 92 | 35 + 92 工具 |
 | 链式 | prp-* 7 命令 | 5 命令 |
 | Hook | 11 类 | 3 类（精简） |
 | Skills | 369 个 | 132 agents |
@@ -980,7 +895,7 @@ $ prism ship --canary 5 --duration 30m
 
 | 维度 | gstack | Pentad |
 |------|--------|--------|
-| 命令数 | ~50 | 35 + 132 |
+| 命令数 | ~50 | 35 + 92 |
 | 命名 | persona 风格 | 角色 + 工具 |
 | 路由 | 自然语言 router | L0 自动 |
 | 模式 | plan-mode 显式 | L1/L2 隐式 |
@@ -999,41 +914,119 @@ $ prism ship --canary 5 --duration 30m
 
 ---
 
-## 12. 待决策项
+## 12. 架构决策（已决议）
+
+### 12.0 prism-five 是 Taiyi 的 workflow skin ✅ 已决议
+
+prism-five 不再自建 pipeline engine。直接使用 TaiyiForge 9 阶段引擎：
+- `.prism/pipeline.json` → 退役，换 Taiyi `state.json`
+- `gate.ts` / `audit.ts` / `upstream.ts` → 退役，换 Taiyi 原生
+- 人门 `prototype_approved` / `release_approved` → 换 Taiyi `--approver`
+- 保留 QueueManager、AgentRuntime、prism CLI、132 L3 Agent
 
 ### 12.1 主链命名
 
 | 选项 | 取名 |
 |------|------|
-| A | `feature / build / sweep / grow / ship`（推荐，动词式） |
-| B | `new / prototype / build / sweep / grow / maintain`（保留 `new` 与 `maintain`） |
+| A | `prism feature / build / sweep / grow / ship`（动词式） |
+
+**选 A**，对齐 `prism-five` 命名。
 
 ### 12.2 L3 前缀
 
 | 选项 | 取名 |
 |------|------|
-| A | `prism-agent xxx`（子命令，干净） |
-| B | `prism agent xxx`（平铺，简单） |
+| A | `prism-agent xxx`（子命令） |
+
+**选 A**。
 
 ### 12.3 一键串到底命令
 
-| 选项 | 命令 |
-|------|------|
-| A | `prism chain <slug>`（跑完 5 阶段） |
-| B | `prism fast-forward <slug>`（跳过 grow） |
-| C | 都不加，靠 L1 5 命令自动接力 |
+Taiyi `continue` 已处理阶段推进，不需要额外 `chain` 命令。`prism fast-forward` 保留给 Grower 跳过场景。
 
-### 12.4 默认全自动 vs 半自动
+### 12.4 默认全自动
 
-| 选项 | 行为 |
-|------|------|
-| A | 默认全自动，flag `--step` 暂停（推荐） |
-| B | 默认每阶段暂停，flag `--auto` 才全自动 |
-| C | Builder 默认半自动，其余默认全自动 |
+**选 A**：默认全自动 + `--step` 暂停。Taiyi 引擎自带。
 
 ---
 
-## 附录 A：完整命令清单（35 + 132）
+## 13. 阶段 → Agent 池映射
+
+每个阶段自动 dispatch 对应角色的默认 agent 池。L3 的所有 agent 可跨池直调。
+
+```
+阶段                 角色            默认 Agent 池（自动）        可跨池直调
+──────────          ────────        ──────────────────────      ──────────
+change              Prototyper      13 个研究/原型/PRD           prism-agent xxx
+requirement         Prototyper      13 个（同上）               prism-agent xxx
+design (含UI)       Builder         27 个架构/TDD/API/组件      prism-agent xxx
+task                Builder         27 个（同上）               prism-agent xxx
+dev                 Builder         27 个（同上）               prism-agent xxx
+test                Sweeper         22 个审查/合规/审计         prism-agent xxx
+review              Sweeper         22 个（同上）               prism-agent xxx
+integration         Grower          36 个分析/实验/增长         prism-agent xxx
+(commit/ship/land)  Maintainer      21 个部署/监控/运维         prism-agent xxx
+```
+
+**三种调用方式**：
+
+| 方式 | 例 | 说明 |
+|------|-----|------|
+| 阶段默认 | `prism continue` → dev 阶段自动调 Builder 池 | Taiyi 引擎驱动 |
+| 角色切换 | `prism prototype` → 切到 Prototyper 池 | prism CLI |
+| 跨池直调 | `prism-agent prism-security-engineer "审计"` | 任何时候任何角色 |
+
+---
+
+## 14. Taiyi 能力迁入清单
+
+prism-five = TaiyiForge workflow skin（§0 已决议）。Taiyi 的 15 个独特设计，10 个通过 `prism` CLI 包给用户，3 个引擎自动生效，2 个不暴露。
+
+### 14.1 包一层（11 个）
+
+| Taiyi 设计 | prism-five 命令 | 说明 |
+|-----------|---------------|------|
+| DAG / change tree | `prism deps <feature>` | 展示 feature 间依赖关系图 |
+| Activity log | `prism history <feature>` | 读 `activity.jsonl` 展示操作记录 |
+| Token budget | `prism status` 底部 | 显示 token 用量 + 预算剩余 |
+| Delivery chain | `prism commit/ship/land` | 一键提交→PR→合并→部署 |
+| Plan file | `prism plan <file>` | 项目 PRD→多个 change 规划 |
+| Continuous learning | `prism learnings` | 读 LEARNINGS.md 跨 change 知识 |
+| Review loop | `prism review` | Sweeper 阶段机器审查循环 |
+| Wave allocator | `prism build --parallel 3` | Builder 27 个 agent 分波并发执行 |
+| Preflight | `prism check` | 已有，读 SKILL.md Pre-flight 段 |
+| Engine truth | `prism status` | 已有 |
+| Semantic gate | 自动（引擎） | 6 项自动检查 |
+
+### 14.2 引擎自动（3 个，不需要包）
+
+| Taiyi 设计 | 说明 |
+|-----------|------|
+| Phase guard | 自动，dev 前拦代码改动 |
+| Harness | Taiyi 引擎内建，prism-five 不重复 |
+| Strategic compact | token 超阈值自动压缩 |
+
+### 14.3 不暴露（1 个）
+
+| Taiyi 设计 | 理由 |
+|-----------|------|
+| Profile 系统 | prism-five 统一用 `api` profile |
+
+### 14.4 能力对照
+
+```
+prism-five 状态机（退役前）        Taiyi 替代
+──────────────────────────        ──────
+pipeline.json 真源          →     state.json engineTruth
+pipeline.continue()         →     taiyi continue
+checkHumanGate()            →     taiyi --approver
+checkAutoGate()             →     semantic gate
+gate.ts                     →     taiyi gates/
+audit.ts                    →     activity.jsonl
+upstream.ts                 →     preflight artifact check
+QueueManager                →     保留（feature 队列独有）
+AgentRuntime                →     保留（SKILL.md → prompt 转换）
+```
 
 ```
 用户面 L1（5）：
@@ -1088,7 +1081,7 @@ L3（132）：
 当前已存在 5 个核心：
 
 ```
-.pentad/agents/
+.prism/agents/
 ├── prototyper.md       (existing)
 ├── builder.md          (existing)
 ├── sweeper.md          (existing)
@@ -1100,8 +1093,8 @@ L3（132）：
 
 **Phase 1**：补全 L1 主链 dispatch 的 36 个核心 agent
 **Phase 2**：补全 L2 阶段入口的 18 个
-**Phase 3**：补全 L3 工具箱的 127 个
+**Phase 3**：补全 Agent 清单见 GLOSSARY.md；
 
 ---
 
-> 最后更新: 2026-07-04 · 状态: 已讨论，待落地
+> 最后更新: 2026-07-04 · 已决议: prism-five = Taiyi workflow skin

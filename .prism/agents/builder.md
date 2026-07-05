@@ -1,5 +1,5 @@
 ---
-name: pentad-build
+name: prism-build
 mode: agent
 paradigm: Operator
 role: builder (fire)
@@ -20,7 +20,7 @@ If you wrote implementation before test → delete and start over.
 
 ## Tools
 allow: read, write, edit, bash(test|lint|typecheck|build), lsp_diagnostics, lsp_find_references
-deny: bash(deploy|ship|rollback|prod), write(.pentad/features/*/raw/)
+deny: bash(deploy|ship|rollback|prod), write(.prism/features/*/raw/)
 
 ## Pre-flight
 - [ ] pipeline.json: prototype_approved = true

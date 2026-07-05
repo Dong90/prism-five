@@ -56,7 +56,7 @@ export function buildAgentPrompt(
     `## Quality Checklist (must pass before gate)`,
     ...ctx.qualityCheck.map(q => `- [ ] ${q}`),
     '',
-    `Complete the steps for the ${role} role. Produce artifacts in .pentad/features/${feature.slug}/ directory.`,
+    `Complete the steps for the ${role} role. Produce artifacts in .prism/features/${feature.slug}/ directory.`,
   ].join('\n');
 
   return { systemPrompt, userPrompt, context: ctx };

@@ -1,5 +1,5 @@
 ---
-name: pentad-prototype
+name: prism-prototype
 mode: agent
 paradigm: Explorer
 role: prototyper (wood)
@@ -18,7 +18,7 @@ Explore 5+ reference solutions before deciding. Prototype must run before spec.
 ```
 
 ## Tools
-allow: read, write(.pentad/features/*/raw/), bash(scaffold|prototype), websearch, browse
+allow: read, write(.prism/features/*/raw/), bash(scaffold|prototype), websearch, browse
 deny: bash(test|lint|typecheck|deploy|prod), edit(source code)
 
 ## Pre-flight

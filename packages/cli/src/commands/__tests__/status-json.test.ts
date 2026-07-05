@@ -11,9 +11,9 @@ describe('prism status --json', () => {
 
   beforeEach(() => {
     const tmp = mkdtempSync(path.join(os.tmpdir(), 'prism-status-'));
-    const pentadDir = path.join(tmp, '.pentad');
-    mkdirSync(pentadDir, { recursive: true });
-    const pipelinePath = path.join(pentadDir, 'pipeline.json');
+    const prismDir = path.join(tmp, '.prism');
+    mkdirSync(prismDir, { recursive: true });
+    const pipelinePath = path.join(prismDir, 'pipeline.json');
     const initial = {
       version: '0.1.0',
       productStage: 'exploring',

@@ -5,7 +5,7 @@ import { disperse } from '@prism-five/dispersion';
 import { absorb } from '@prism-five/absorption';
 import { emit, EmitError } from '@prism-five/emission';
 
-describe('pentad e2e: incident → refract → disperse → absorb → emit', () => {
+describe('prism-five e2e: incident → refract → disperse → absorb → emit', () => {
   it('flows a simple event through the full pipeline', async () => {
     const evt = incident({ type: 'user.login', payload: { id: 1, name: 'Alice' } });
 

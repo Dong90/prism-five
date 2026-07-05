@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { readFileSync, existsSync } from 'node:fs';
 import path from 'node:path';
 
-const AGENTS_DIR = path.resolve(__dirname, '../../../../../.pentad/agents');
+const AGENTS_DIR = path.resolve(__dirname, '../../../../../.prism/agents');
 const REQUIRED_FILES = [
   'prototyper.md',
   'builder.md',

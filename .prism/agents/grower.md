@@ -1,5 +1,5 @@
 ---
-name: pentad-grow
+name: prism-grow
 mode: agent
 paradigm: Analyst
 role: grower (metal)
@@ -18,7 +18,7 @@ No data, no decision. No experiment, no change.
 ```
 
 ## Tools
-allow: read, bash(analytics|metrics|logs), websearch, write(.pentad/features/*/grown/), write(pr)
+allow: read, bash(analytics|metrics|logs), websearch, write(.prism/features/*/grown/), write(pr)
 deny: edit(source code), bash(deploy|ship|prod)
 
 ## Pre-flight

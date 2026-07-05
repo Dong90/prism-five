@@ -8,9 +8,9 @@ const CLI = path.resolve(__dirname, '../../../dist/index.js');
 
 function setupPipeline(): string {
   const tmp = mkdtempSync(path.join(os.tmpdir(), 'prism-agent-'));
-  const pentadDir = path.join(tmp, '.pentad');
-  mkdirSync(pentadDir, { recursive: true });
-  const pipelinePath = path.join(pentadDir, 'pipeline.json');
+  const prismDir = path.join(tmp, '.prism');
+  mkdirSync(prismDir, { recursive: true });
+  const pipelinePath = path.join(prismDir, 'pipeline.json');
   const initial = {
     version: '0.1.0',
     productStage: 'exploring',
@@ -48,7 +48,7 @@ describe('prism agent', () => {
 
   it('agent <name> resolves an existing agent', () => {
     cwd = setupPipeline();
-    const result = spawnSync('node', [CLI, 'agent', 'pentad-prototype'], {
+    const result = spawnSync('node', [CLI, 'agent', 'prism-prototype'], {
       encoding: 'utf8',
       cwd,
     });
@@ -58,7 +58,7 @@ describe('prism agent', () => {
 
   it('agent <name> rejects unknown agent names', () => {
     cwd = setupPipeline();
-    const result = spawnSync('node', [CLI, 'agent', 'pentad-does-not-exist'], {
+    const result = spawnSync('node', [CLI, 'agent', 'prism-does-not-exist'], {
       encoding: 'utf8',
       cwd,
     });

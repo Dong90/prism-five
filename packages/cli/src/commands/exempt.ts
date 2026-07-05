@@ -28,12 +28,14 @@ export const exemptCommand = new Command('exempt')
         approver: opts.approver,
       }];
       p.getState().features[f.slug] = f;
+      p.persist();
       console.log(`Granted exemption for ${role} (${opts.days}d)`);
       return;
     }
     if (action === 'revoke' && role) {
       f.exemptions = (f.exemptions ?? []).filter(e => e.stage !== role);
       p.getState().features[f.slug] = f;
+      p.persist();
       console.log(`Revoked exemption for ${role}`);
       return;
     }

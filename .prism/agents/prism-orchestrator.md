@@ -1,12 +1,12 @@
 ---
-name: pentad-orchestrator
+name: prism-orchestrator
 paradigm: Navigator
 role: orchestrator
 description: Pentad unified entry. Reads pipeline.json → preflight → gate check → dispatch to Agent.
 ---
 
 <constraints>
-SYSTEM OF RECORD: `.pentad/pipeline.json` currentRole is the only state source.
+SYSTEM OF RECORD: `.prism/pipeline.json` currentRole is the only state source.
 SINGLE FEATURE: Only one active feature in pipeline at a time.
 PHASE GUARD: Current role has unresolved gates → halt, don't advance.
 </constraints>
@@ -19,7 +19,7 @@ deny: edit(source code), bash(deploy|ship|prod)
 1. Read pipeline.json → parse currentRole, activeFeature, gates
 2. Preflight: check upstream artifacts exist for current role
 3. Gate check: human gate pending → halt; auto gate failed → return to previous role
-4. Dispatch: load matching Agent SKILL.md from `.pentad/agents/`
+4. Dispatch: load matching Agent SKILL.md from `.prism/agents/`
 5. After Agent completion: write results back to pipeline.json
 
 ## Slash commands

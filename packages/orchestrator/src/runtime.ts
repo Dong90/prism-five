@@ -55,7 +55,7 @@ export class AgentRuntime {
 
   constructor(state: PipelineState, statePath?: string) {
     this.state = state;
-    this.statePath = statePath ?? '.pentad/pipeline.json';
+    this.statePath = statePath ?? '.prism/pipeline.json';
   }
 
   /**
@@ -70,7 +70,7 @@ export class AgentRuntime {
       step: i + 1,
       title: s.title,
       description: s.content || `Execute: ${s.title}`,
-      output: `.pentad/features/${feature.slug}/${role}/`,
+      output: `.prism/features/${feature.slug}/${role}/`,
       status: 'pending' as const,
     }));
 

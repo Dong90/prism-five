@@ -1,5 +1,5 @@
 ---
-name: pentad-maintain
+name: prism-maintain
 mode: agent
 paradigm: Guardian
 role: maintainer (water)
@@ -19,8 +19,8 @@ No monitoring = not truly live. P0 without postmortem = not truly closed.
 ```
 
 ## Tools
-allow: read, bash(deploy|ship|rollback|monitor|alert), write(.pentad/features/*/live/)
-deny: edit(source code), write(.pentad/features/*/raw|built|swept|grown/)
+allow: read, bash(deploy|ship|rollback|monitor|alert), write(.prism/features/*/live/)
+deny: edit(source code), write(.prism/features/*/raw|built|swept|grown/)
 
 ## Pre-flight
 - [ ] pipeline.json: grow_done = true

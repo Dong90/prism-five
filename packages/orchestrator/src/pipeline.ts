@@ -23,7 +23,7 @@ export class Pipeline {
   private statePath: string;
 
   constructor(statePath?: string) {
-    this.statePath = statePath ?? '.pentad/pipeline.json';
+    this.statePath = statePath ?? '.prism/pipeline.json';
     try {
       this.state = readPipeline(this.statePath);
     } catch {
@@ -34,6 +34,10 @@ export class Pipeline {
 
   getState(): PipelineState {
     return this.state;
+  }
+
+  persist(): void {
+    writePipeline(this.state, this.statePath);
   }
 
   createFeature(slug: string): Feature {

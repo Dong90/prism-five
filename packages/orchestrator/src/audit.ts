@@ -1,7 +1,7 @@
 import { writeFileSync, readFileSync, existsSync } from 'node:fs';
 import path from 'node:path';
 
-const AUDIT_LOG_PATH = '.pentad/audit-log.json';
+const AUDIT_LOG_PATH = '.prism/audit-log.json';
 
 export interface AuditEntry {
   timestamp: string; slug: string;

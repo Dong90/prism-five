@@ -7,7 +7,7 @@ import { join } from 'path';
 import { tmpdir } from 'os';
 
 function tmpFile(): string {
-  return join(mkdtempSync(join(tmpdir(), 'pentad-test-')), 'pipeline.json');
+  return join(mkdtempSync(join(tmpdir(), 'prism-test-')), 'pipeline.json');
 }
 
 describe('Pipeline', () => {

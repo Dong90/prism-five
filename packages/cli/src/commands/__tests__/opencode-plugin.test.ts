@@ -30,7 +30,7 @@ describe('manifest produces OpenCode-compatible manifest', () => {
     expect(toolNames).toBeGreaterThanOrEqual(9);
   });
 
-  it('manifest CLI emits JSON with skills from .pentad/agents/', () => {
+  it('manifest CLI emits JSON with skills from .prism/agents/', () => {
     const idx = readFileSync(path.join(PLUGIN_DIR, 'index.ts'), 'utf8');
     expect(idx).toMatch(/loadSkills/);
     expect(idx).toMatch(/SKILLS_DIR/);

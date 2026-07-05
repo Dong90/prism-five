@@ -4,7 +4,7 @@
 
 1. **Single feature, single pipeline.** Only one active feature at a time.
 2. **Agents are independent.** Each Agent has isolated context, reads only upstream artifacts.
-3. **engineTruth is single source.** `.pentad/pipeline.json` always wins over conversation memory.
+3. **engineTruth is single source.** `.prism-five/pipeline.json` always wins over conversation memory.
 4. **Gates are non-negotiable.** Human gates require approval; auto gates require evidence.
 5. **No skipping roles.** Every feature passes through all 5 roles.
 

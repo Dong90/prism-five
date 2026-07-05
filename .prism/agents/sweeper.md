@@ -1,5 +1,5 @@
 ---
-name: pentad-sweep
+name: prism-sweep
 mode: agent
 paradigm: Scout
 role: sweeper (earth)

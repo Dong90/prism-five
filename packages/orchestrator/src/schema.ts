@@ -101,33 +101,33 @@ export type AgentDefinition = z.infer<typeof AgentDefinitionSchema>;
 
 export const AGENT_MAP: Record<AgentRole, AgentDefinition> = {
   prototyper: {
-    name: 'pentad-prototype',
+    name: 'prism-prototype',
     role: 'prototyper',
     paradigm: 'Explorer',
-    skillPath: '.pentad/agents/prototyper.md',
+    skillPath: '.prism/agents/prototyper.md',
   },
   builder: {
-    name: 'pentad-build',
+    name: 'prism-build',
     role: 'builder',
     paradigm: 'Operator',
-    skillPath: '.pentad/agents/builder.md',
+    skillPath: '.prism/agents/builder.md',
   },
   sweeper: {
-    name: 'pentad-sweep',
+    name: 'prism-sweep',
     role: 'sweeper',
     paradigm: 'Scout',
-    skillPath: '.pentad/agents/sweeper.md',
+    skillPath: '.prism/agents/sweeper.md',
   },
   grower: {
-    name: 'pentad-grow',
+    name: 'prism-grow',
     role: 'grower',
     paradigm: 'Analyst',
-    skillPath: '.pentad/agents/grower.md',
+    skillPath: '.prism/agents/grower.md',
   },
   maintainer: {
-    name: 'pentad-maintain',
+    name: 'prism-maintain',
     role: 'maintainer',
     paradigm: 'Guardian',
-    skillPath: '.pentad/agents/maintainer.md',
+    skillPath: '.prism/agents/maintainer.md',
   },
 };

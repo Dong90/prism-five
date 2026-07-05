@@ -12,7 +12,7 @@ import { fileURLToPath } from 'node:url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const REPO_ROOT = path.resolve(__dirname, '../..');
-const SKILLS_DIR = path.join(REPO_ROOT, '.pentad/agents');
+const SKILLS_DIR = path.join(REPO_ROOT, '.prism/agents');
 
 const TOOLS = [
   { name: 'prism-new',       description: 'Create a new Pentad feature in the pipeline' },

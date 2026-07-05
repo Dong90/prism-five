@@ -106,11 +106,11 @@ agent-identity → iron-law → constraints → tools → fatal-constraints
 
 ### E. 状态持久化（`packages/orchestrator/src/state.ts`）
 
-**已有**：`.pentad/pipeline.json` 读写。
+**已有**：`.prism/pipeline.json` 读写。
 
 **可强化**：
 - 加 atomic write（写 tmp, rename，避免半路中断坏掉）
-- 加 `.pentad/pipeline.json.bak` 自动备份
+- 加 `.prism/pipeline.json.bak` 自动备份
 - 启动时自动 reconcile（基于 backup 恢复）
 
 ---
@@ -195,7 +195,7 @@ Stop:
 **现状**：每次跑都重新读 SKILL.md / 重新解析。
 
 **待加**：
-- SKILL.md 解析结果 cache 到 `.pentad/cache/`
+- SKILL.md 解析结果 cache 到 `.prism/cache/`
 - LLM 调用结果 cache（如 `pentad-ux-architect` 短时相同输入 = 同输出）
 
 ### M. Routing / Intent Recognition（L0）
@@ -251,7 +251,7 @@ Stop:
 ```
 tool call → "this succeeded / failed / was unoptimized"
                             ↓
-                  update .pentad/LEARNINGS.md
+                  update .prism/LEARNINGS.md
                             ↓
           next run sees LEARNINGS.md, behaves smarter
 ```
@@ -387,7 +387,7 @@ input_fingerprint + agent + timestamp → execution_id
 
 | # | 机制 | 落地内容 |
 |---|------|---------|
-| 10 | Caching | `.pentad/cache/` |
+| 10 | Caching | `.prism/cache/` |
 | 11 | Continuous learning | hook post:tool 实现 |
 | 12 | Strategic compact | CONTEXT-COMPACT.md 自动写 |
 | 13 | Verification loop | builder ↔ verify 自愈 |
@@ -559,7 +559,7 @@ packages/
         │   └── history.ts
         └── registry.ts      # 注册表
 
-.pentad/
+.prism/
 ├── pipeline.json            # 已有
 ├── pipeline.json.bak        # 新建（atomic 写备份）
 ├── cache/                   # 新建

@@ -1,5 +1,5 @@
 {
-  "slug": "exempt-prism-exempt-force-skip",
+  "slug": "c001-pipeline-json-prism-five-taiyi-state-json",
   "currentPhase": "integration",
   "completedPhases": [
     "change",
@@ -17,14 +17,14 @@
   "autoHarness": false,
   "complexity": {
     "level": "low",
-    "score": 7,
+    "score": 3,
     "recommendedSkills": [
       "taiyi-intel-scan"
     ]
   },
   "auxiliaryCompleted": [],
   "workflowStatus": "active",
-  "createdAt": "2026-07-04T15:04:27.004Z",
-  "updatedAt": "2026-07-04T15:09:25.539Z",
-  "version": 12
+  "createdAt": "2026-07-05T06:31:33.911Z",
+  "updatedAt": "2026-07-05T06:38:04.913Z",
+  "version": 13
 }
