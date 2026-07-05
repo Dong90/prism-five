@@ -40,7 +40,7 @@ export class Pipeline {
     writePipeline(this.state, this.statePath);
   }
 
-  createFeature(slug: string): Feature {
+  createFeature(slug: string, profile: string = 'develop'): Feature {
     if (this.state.features[slug]) {
       throw new Error(`feature "${slug}" already exists`);
     }
@@ -49,15 +49,12 @@ export class Pipeline {
       slug,
       status: 'draft',
       currentRole: 'prototyper',
+      profile: profile as Feature['profile'],
       createdAt: now,
       updatedAt: now,
       stageHistory: [{ role: 'prototyper', enteredAt: now }],
-      gates: {
-        prototype_approved: false,
-        build_reviewed: false,
-        sweep_passed: false,
-        release_approved: false,
-      },
+      gates: { prototype_approved: false, build_reviewed: false, sweep_passed: false, release_approved: false },
+      artifacts: {},
     };
     this.state.features[slug] = feature;
     this.state.activeFeature = slug;
@@ -84,11 +81,7 @@ export class Pipeline {
       return {
         feature,
         nextRole: null,
-        gate: {
-          passed: false,
-          reason: 'human gate: prototype_approved required',
-          requiresHuman: true,
-        },
+        gate: { passed: false, reason: 'human gate: prototype_approved required', requiresHuman: true },
       };
     }
 
@@ -142,7 +135,7 @@ export class Pipeline {
     return `[${f.slug}] role=${f.currentRole}(${agentDef.paradigm}) status=${f.status} stage=${this.state.productStage}`;
   }
 
-  approveGate(slug: string, gateName: 'prototype_approved' | 'release_approved'): Feature {
+  approveGate(slug: string, gateName: keyof Feature['gates']): Feature {
     const feature = this.state.features[slug];
     if (!feature) throw new Error(`feature "${slug}" not found`);
     feature.gates[gateName] = true;

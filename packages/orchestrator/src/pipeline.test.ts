@@ -43,6 +43,24 @@ describe('PipelineStateSchema', () => {
     const valid = createInitialState();
     const result = PipelineStateSchema.safeParse(valid);
     expect(result.success).toBe(true);
+    expect(valid.version).toBe('0.2.0');
+  });
+
+  it('sets activeProfile default', () => {
+    const state = createInitialState();
+    expect(state.activeProfile).toBe('develop');
+  });
+
+  it('includes tokenBudget defaults', () => {
+    const state = createInitialState();
+    expect(state.tokenBudget.prototyper).toBe(30000);
+    expect(state.tokenBudget.builder).toBe(80000);
+  });
+
+  it('includes artifactManifest defaults', () => {
+    const state = createInitialState();
+    expect(state.artifactManifest.prototyper).toContain('raw/PRD.md');
+    expect(state.artifactManifest.maintainer).toContain('live/CHANGELOG.md');
   });
 
   it('rejects invalid state', () => {

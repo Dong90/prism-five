@@ -26,10 +26,26 @@ export function writePipeline(state: PipelineState, filePath?: string): void {
 export function createInitialState(): PipelineState {
   const now = new Date().toISOString();
   return {
-    version: '0.1.0',
+    version: '0.2.0',
     productStage: 'exploring',
+    activeProfile: 'develop',
     activeFeature: null,
     features: {},
+    tokenBudget: {
+      prototyper: 30000,
+      builder: 80000,
+      sweeper: 20000,
+      grower: 30000,
+      maintainer: 20000,
+      used: {},
+    },
+    artifactManifest: {
+      prototyper: ['raw/RESEARCH.md', 'raw/PRD.md', 'raw/INITIATE.md'],
+      builder: ['built/DESIGN.md', 'built/TASK.md'],
+      sweeper: ['swept/REVIEW.md', 'swept/INSPECT.md'],
+      grower: ['grown/ANALYZE.md'],
+      maintainer: ['live/RELEASE_CHECK.md', 'live/CHANGELOG.md'],
+    },
     queue: [],
     updated: now,
   };
