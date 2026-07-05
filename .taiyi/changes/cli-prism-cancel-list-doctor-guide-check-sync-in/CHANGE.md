@@ -12,5 +12,5 @@ Prism CLI 需补齐 TaiyiForge 常用命令，遵循现有 Commander.js 模式�
 无——遵循 approve.ts/new.ts 模式，零依赖。
 
 ## Success Criteria
-- [ ] 7 命令文件创建，index.ts 注册
-- [ ] npm run build 通过
+- [x] 7 命令文件创建，index.ts 注册
+- [x] npm run build 通过
