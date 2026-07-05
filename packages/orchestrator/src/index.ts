@@ -12,3 +12,4 @@ export { writeAuditLog, readAuditLog } from './audit';
 export { saveCheckpoint, loadCheckpoint, deleteCheckpoint, type Checkpoint } from './checkpoint';
 export { checkHarness, type HarnessCheck, type HarnessResult } from './harness';
 export { planFromDoc, type PlanFeature, type PlanResult } from './plan';
+export { syncSkills, type Platform } from './ci';
