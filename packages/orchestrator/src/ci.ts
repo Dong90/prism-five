@@ -28,7 +28,7 @@ export function syncSkills(platform: Platform, profileDir = '.prism/profiles/dev
       fs.writeFileSync(dest, `# Synced by Prism CI\n${content}`, 'utf-8');
       synced.push(name);
     } catch {
-      /* skip corrupted/unreadable source files */
+      synced.push(`${name} (skipped: unreadable)`);
     }
   }
   return synced;
