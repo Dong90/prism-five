@@ -153,3 +153,6 @@
 {"ts":"2026-07-05T06:38:05.529Z","event":"audit:blocked","slug":"c001-pipeline-json-prism-five-taiyi-state-json","findings":2}
 {"ts":"2026-07-05T06:38:16.852Z","event":"audit:blocked","slug":"c001-pipeline-json-prism-five-taiyi-state-json","findings":1}
 {"ts":"2026-07-05T06:38:26.523Z","event":"audit:blocked","slug":"c001-pipeline-json-prism-five-taiyi-state-json","findings":1}
+{"ts":"2026-07-05T06:38:36.562Z","event":"quality:passed","slug":"c001-pipeline-json-prism-five-taiyi-state-json","phase":"integration","qualityScores":{"completeness":true,"consistency":true,"verifiability":true,"traceability":true,"engineering_quality":true},"hints":[]}
+{"ts":"2026-07-05T06:38:36.731Z","event":"phase:complete","slug":"c001-pipeline-json-prism-five-taiyi-state-json","phase":"integration"}
+{"ts":"2026-07-05T06:38:37.104Z","event":"change:archived","slug":"c001-pipeline-json-prism-five-taiyi-state-json","reason":"✖ Error: No OpenSpec changes directory found. Run 'openspec init' first.\n"}

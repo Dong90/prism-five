@@ -1,0 +1,24 @@
+{
+  "slug": "schema-ts-profile-token-budget-artifact",
+  "currentPhase": "change",
+  "completedPhases": [],
+  "profile": "lite",
+  "skippedPhases": [
+    "design",
+    "ui-design",
+    "task"
+  ],
+  "strictDev": false,
+  "autoHarness": false,
+  "complexity": {
+    "level": "low",
+    "score": 3,
+    "recommendedSkills": [
+      "taiyi-intel-scan"
+    ]
+  },
+  "auxiliaryCompleted": [],
+  "workflowStatus": "active",
+  "createdAt": "2026-07-05T13:15:51.058Z",
+  "updatedAt": "2026-07-05T13:15:51.058Z"
+}

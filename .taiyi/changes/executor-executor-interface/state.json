@@ -1,0 +1,24 @@
+{
+  "slug": "executor-executor-interface",
+  "currentPhase": "change",
+  "completedPhases": [],
+  "profile": "lite",
+  "skippedPhases": [
+    "design",
+    "ui-design",
+    "task"
+  ],
+  "strictDev": false,
+  "autoHarness": false,
+  "complexity": {
+    "level": "low",
+    "score": 3,
+    "recommendedSkills": [
+      "taiyi-intel-scan"
+    ]
+  },
+  "auxiliaryCompleted": [],
+  "workflowStatus": "active",
+  "createdAt": "2026-07-05T13:15:49.170Z",
+  "updatedAt": "2026-07-05T13:15:49.170Z"
+}

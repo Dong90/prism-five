@@ -1,0 +1,22 @@
+{
+  "slug": "plan-taiyi-plan-prism-plan-feature-dag",
+  "currentPhase": "change",
+  "completedPhases": [],
+  "profile": "api",
+  "skippedPhases": [
+    "ui-design"
+  ],
+  "strictDev": false,
+  "autoHarness": false,
+  "complexity": {
+    "level": "low",
+    "score": 3,
+    "recommendedSkills": [
+      "taiyi-intel-scan"
+    ]
+  },
+  "auxiliaryCompleted": [],
+  "workflowStatus": "active",
+  "createdAt": "2026-07-05T13:21:19.725Z",
+  "updatedAt": "2026-07-05T13:21:19.725Z"
+}

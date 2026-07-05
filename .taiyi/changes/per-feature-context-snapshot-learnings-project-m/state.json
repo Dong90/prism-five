@@ -1,0 +1,22 @@
+{
+  "slug": "per-feature-context-snapshot-learnings-project-m",
+  "currentPhase": "change",
+  "completedPhases": [],
+  "profile": "api",
+  "skippedPhases": [
+    "ui-design"
+  ],
+  "strictDev": false,
+  "autoHarness": false,
+  "complexity": {
+    "level": "low",
+    "score": 3,
+    "recommendedSkills": [
+      "taiyi-intel-scan"
+    ]
+  },
+  "auxiliaryCompleted": [],
+  "workflowStatus": "active",
+  "createdAt": "2026-07-05T13:28:58.832Z",
+  "updatedAt": "2026-07-05T13:28:58.832Z"
+}
