@@ -44,6 +44,25 @@ export const DEFAULT_ARTIFACT_MANIFEST: ArtifactManifest = {
 export const AgentRoleSchema = z.enum(['prototyper', 'builder', 'sweeper', 'grower', 'maintainer']);
 export type AgentRole = z.infer<typeof AgentRoleSchema>;
 
+// Profile variant — controls which roles execute
+export const ProfileVariantSchema = z.enum(['full', 'api', 'lite', 'ui', 'spike', 'micro', 'nano', 'audit']);
+export type ProfileVariant = z.infer<typeof ProfileVariantSchema>;
+
+export const VARIANT_ROLE_MAP: Record<ProfileVariant, AgentRole[]> = {
+  full: ['prototyper', 'builder', 'sweeper', 'grower', 'maintainer'],
+  api: ['prototyper', 'builder', 'sweeper', 'grower', 'maintainer'],
+  lite: ['prototyper', 'builder', 'maintainer'],
+  ui: ['prototyper', 'builder', 'sweeper', 'grower'],
+  spike: ['prototyper'],
+  micro: ['builder', 'sweeper'],
+  nano: ['prototyper'],
+  audit: ['sweeper'],
+};
+
+export function isRoleInVariant(role: AgentRole, variant: ProfileVariant): boolean {
+  return VARIANT_ROLE_MAP[variant].includes(role);
+}
+
 // FeatureState
 export const FeatureStateSchema = z.enum([
   'draft',
@@ -79,6 +98,7 @@ export const FeatureSchema = z.object({
   status: FeatureStateSchema,
   currentRole: AgentRoleSchema,
   profile: ProfileNameSchema.default('develop'),
+  variant: ProfileVariantSchema.default('full'),
   createdAt: z.string(),
   updatedAt: z.string(),
   stageHistory: z.array(

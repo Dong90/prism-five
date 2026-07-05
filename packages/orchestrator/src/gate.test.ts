@@ -8,6 +8,7 @@ function makeFeature(overrides?: Partial<Feature>): Feature {
     status: 'draft',
     currentRole: 'prototyper',
     profile: 'develop',
+    variant: 'full',
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
     stageHistory: [{ role: 'prototyper', enteredAt: new Date().toISOString() }],

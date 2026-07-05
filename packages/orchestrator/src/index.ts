@@ -1,5 +1,5 @@
 export { Pipeline } from './pipeline';
-export { AGENT_MAP, agentSkillPath, ROLE_ORDER, DEFAULT_ARTIFACT_MANIFEST, type PipelineState, type Feature, type AgentRole, type GateState, type AgentDefinition, type ProfileName, type TokenBudget, type ArtifactManifest } from './schema';
+export { AGENT_MAP, agentSkillPath, isRoleInVariant, VARIANT_ROLE_MAP, ROLE_ORDER, DEFAULT_ARTIFACT_MANIFEST, type PipelineState, type Feature, type AgentRole, type GateState, type AgentDefinition, type ProfileName, type ProfileVariant, type TokenBudget, type ArtifactManifest } from './schema';
 export { checkHumanGate, checkAutoGate } from './gate';
 export { readPipeline, writePipeline } from './state';
 export { loadAgent, agentSummary, type AgentContext, type AgentSection } from './agent';

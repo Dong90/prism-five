@@ -43,7 +43,7 @@ export class Pipeline {
     writePipeline(this.state, this.statePath);
   }
 
-  createFeature(slug: string, profile: string = 'develop'): Feature {
+  createFeature(slug: string, profile: string = 'develop', variant: string = 'full'): Feature {
     if (this.state.features[slug]) {
       throw new Error(`feature "${slug}" already exists`);
     }
@@ -53,6 +53,7 @@ export class Pipeline {
       status: 'draft',
       currentRole: 'prototyper',
       profile: profile as Feature['profile'],
+      variant: variant as Feature['variant'],
       createdAt: now,
       updatedAt: now,
       stageHistory: [{ role: 'prototyper', enteredAt: now }],
