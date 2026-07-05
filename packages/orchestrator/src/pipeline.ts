@@ -10,6 +10,7 @@ import {
 import { readPipeline, writePipeline, createInitialState } from './state';
 import { checkAutoGate, type GateResult } from './gate';
 import { saveCheckpoint } from './checkpoint';
+import { writeActivity } from './logger';
 
 // Status transition map — role completed → status for next role
 const STATUS_MAP: Record<AgentRole, FeatureState> = {
@@ -62,6 +63,7 @@ export class Pipeline {
     this.state.activeFeature = slug;
     this.state.queue.push(slug);
     writePipeline(this.state, this.statePath);
+    writeActivity({ event: 'feature_created', slug, role: 'prototyper', timestamp: now, result: 'success' });
     return feature;
   }
 
@@ -101,6 +103,7 @@ export class Pipeline {
     // Auto gate
     const autoGate = checkAutoGate(feature);
     if (!autoGate.passed) {
+      writeActivity({ event: 'gate_blocked', slug, role: feature.currentRole, timestamp: new Date().toISOString(), result: 'blocked', reason: autoGate.reason });
       return { feature, nextRole: null, gate: autoGate };
     }
 
@@ -116,6 +119,7 @@ export class Pipeline {
     const next = nextRole(currentRole);
 
     if (next) {
+      writeActivity({ event: 'role_advanced', slug, role: next, timestamp: new Date().toISOString(), result: 'success' });
       const now = new Date().toISOString();
       const currentStage = feature.stageHistory.find(s => s.role === currentRole && !s.completedAt);
       if (currentStage) currentStage.completedAt = now;
