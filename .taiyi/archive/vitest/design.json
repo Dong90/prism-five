@@ -1,0 +1,8 @@
+{
+  "title": "测试基础设施 — vitest 配置 + 核心包单元测试",
+  "options": [
+    { "id": "A", "name": "vitest", "pros": ["TypeScript 原生集成", "零配置", "内置覆盖率"], "cons": ["需安装依赖"] },
+    { "id": "B", "name": "jest", "pros": ["生态成熟", "广泛使用"], "cons": ["需 ts-jest 配置", "较慢"] }
+  ],
+  "decision": { "chosen": "A", "reason": "TypeScript 原生支持，零配置即可运行" }
+}

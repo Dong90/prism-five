@@ -1,0 +1,34 @@
+{
+  "slug": "prism-five-cli-commands-agent-runtime-agent",
+  "currentPhase": "integration",
+  "completedPhases": [
+    "change",
+    "requirement",
+    "design",
+    "ui-design",
+    "task",
+    "dev",
+    "test",
+    "review",
+    "integration"
+  ],
+  "profile": "full",
+  "skippedPhases": [],
+  "strictDev": false,
+  "autoHarness": true,
+  "complexity": {
+    "level": "low",
+    "score": 7,
+    "recommendedSkills": [
+      "taiyi-intel-scan"
+    ]
+  },
+  "auxiliaryCompleted": [
+    "taiyi-intel-scan",
+    "taiyi-architect",
+    "taiyi-health"
+  ],
+  "workflowStatus": "completed",
+  "createdAt": "2026-07-04T06:32:06.396Z",
+  "updatedAt": "2026-07-04T06:39:37.423Z"
+}

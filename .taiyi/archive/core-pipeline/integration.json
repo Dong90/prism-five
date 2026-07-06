@@ -1,0 +1,10 @@
+{
+  "title": "Core pipeline 包增强 — 函数桩到完整实现",
+  "changelog_entries": [
+    { "type": "feat", "description": "prototyper: incident() schema 校验 + PrototyperError" },
+    { "type": "feat", "description": "builder: refract() try/catch + map + RefractError" },
+    { "type": "feat", "description": "sweeper: disperse() async + per-target isolation" },
+    { "type": "feat", "description": "grower: absorb.unique + absorb.reduce" },
+    { "type": "feat", "description": "maintainer: emit() Promise + async sink + EmitError" }
+  ]
+}

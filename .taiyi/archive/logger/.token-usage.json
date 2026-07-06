@@ -1,0 +1,18 @@
+{
+  "version": 1,
+  "slug": "logger",
+  "totalTokens": 50,
+  "estimatedCostUsd": 0.00015,
+  "byPhase": {
+    "change": 50
+  },
+  "entries": [
+    {
+      "at": "2026-07-04T07:44:46.095Z",
+      "phase": "change",
+      "kind": "scan",
+      "tokens": 50,
+      "label": "1 files"
+    }
+  ]
+}

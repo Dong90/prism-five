@@ -1,0 +1,33 @@
+{
+  "slug": "pentad-rename-project-from-prism-five-to-pentad",
+  "currentPhase": "integration",
+  "completedPhases": [
+    "change",
+    "requirement",
+    "design",
+    "dev",
+    "review",
+    "integration"
+  ],
+  "profile": "audit",
+  "skippedPhases": [
+    "ui-design",
+    "task",
+    "test"
+  ],
+  "strictDev": false,
+  "autoHarness": true,
+  "complexity": {
+    "level": "low",
+    "score": 7,
+    "recommendedSkills": [
+      "taiyi-intel-scan"
+    ]
+  },
+  "auxiliaryCompleted": [
+    "taiyi-intel-scan"
+  ],
+  "workflowStatus": "completed",
+  "createdAt": "2026-07-04T06:51:43.390Z",
+  "updatedAt": "2026-07-04T06:57:37.127Z"
+}

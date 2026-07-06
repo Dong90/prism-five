@@ -1,0 +1,34 @@
+{
+  "slug": "core-pipeline",
+  "currentPhase": "integration",
+  "completedPhases": [
+    "change",
+    "requirement",
+    "design",
+    "task",
+    "dev",
+    "test",
+    "review",
+    "integration"
+  ],
+  "profile": "api",
+  "skippedPhases": [
+    "ui-design"
+  ],
+  "strictDev": false,
+  "autoHarness": false,
+  "complexity": {
+    "level": "low",
+    "score": 4,
+    "recommendedSkills": [
+      "taiyi-intel-scan"
+    ]
+  },
+  "auxiliaryCompleted": [
+    "taiyi-intel-scan"
+  ],
+  "workflowStatus": "completed",
+  "createdAt": "2026-07-04T07:23:39.647Z",
+  "updatedAt": "2026-07-04T07:31:29.385Z",
+  "version": 7
+}

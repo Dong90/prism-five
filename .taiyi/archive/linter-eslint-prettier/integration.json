@@ -1,0 +1,8 @@
+{
+  "title": "Linter + 代码质量工具 — ESLint + Prettier",
+  "changelog_entries": [
+    { "type": "feat", "description": "ESLint flat config with typescript-eslint" },
+    { "type": "feat", "description": "Prettier 配置" },
+    { "type": "chore", "description": "npm run lint 脚本" }
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "slug": "prism-commit-ship-land",
+  "currentPhase": "integration",
+  "completedPhases": [
+    "change",
+    "requirement",
+    "design",
+    "task",
+    "dev",
+    "test",
+    "review",
+    "integration"
+  ],
+  "profile": "api",
+  "skippedPhases": [
+    "ui-design"
+  ],
+  "strictDev": false,
+  "autoHarness": false,
+  "complexity": {
+    "level": "low",
+    "score": 4,
+    "recommendedSkills": [
+      "taiyi-intel-scan"
+    ]
+  },
+  "auxiliaryCompleted": [],
+  "workflowStatus": "completed",
+  "createdAt": "2026-07-05T13:28:57.800Z",
+  "updatedAt": "2026-07-05T17:18:12.797Z"
+}

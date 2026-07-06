@@ -1,0 +1,6 @@
+{
+  "title": "Orchestrator + CLI 测试覆盖",
+  "changelog_entries": [
+    { "type": "test", "description": "orchestrator pipeline + gate 测试" }
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "slug": "ci-cd-pipeline-github-actions",
+  "currentPhase": "integration",
+  "completedPhases": [
+    "change",
+    "dev",
+    "integration"
+  ],
+  "profile": "micro",
+  "skippedPhases": [
+    "requirement",
+    "design",
+    "ui-design",
+    "task",
+    "test",
+    "review"
+  ],
+  "strictDev": false,
+  "autoHarness": false,
+  "complexity": {
+    "level": "low",
+    "score": 3,
+    "recommendedSkills": [
+      "taiyi-intel-scan"
+    ]
+  },
+  "auxiliaryCompleted": [],
+  "workflowStatus": "completed",
+  "createdAt": "2026-07-04T07:42:21.298Z",
+  "updatedAt": "2026-07-04T07:43:26.499Z",
+  "version": 4
+}

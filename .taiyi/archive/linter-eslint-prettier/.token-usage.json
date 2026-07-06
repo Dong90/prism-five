@@ -1,0 +1,18 @@
+{
+  "version": 1,
+  "slug": "linter-eslint-prettier",
+  "totalTokens": 106,
+  "estimatedCostUsd": 0.000318,
+  "byPhase": {
+    "integration": 106
+  },
+  "entries": [
+    {
+      "at": "2026-07-04T07:41:15.698Z",
+      "phase": "integration",
+      "kind": "scan",
+      "tokens": 106,
+      "label": "2 files"
+    }
+  ]
+}

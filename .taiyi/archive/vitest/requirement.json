@@ -1,0 +1,7 @@
+{
+  "acceptance_criteria": [
+    { "id": "US-1", "description": "npm test runs vitest and passes" },
+    { "id": "US-2", "description": "5 core packages each have unit tests" },
+    { "id": "US-3", "description": "15 AC from core-pipeline all covered" }
+  ]
+}

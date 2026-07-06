@@ -1,0 +1,4 @@
+command: npx vitest run
+exitCode: 0
+
+dev complete: ci.ts created with syncSkills(platform, profileDir). 2 tests pass, build clean.

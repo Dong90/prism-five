@@ -1,0 +1,6 @@
+{
+  "exitCode": 0,
+  "command": "npm test",
+  "timestamp": "2026-07-04T07:36:00.000Z",
+  "summary": "vitest 已安装配置，5 个核心包共 22 条单元测试全部通过"
+}
