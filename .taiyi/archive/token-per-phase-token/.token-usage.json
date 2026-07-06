@@ -1,0 +1,18 @@
+{
+  "version": 1,
+  "slug": "token-per-phase-token",
+  "totalTokens": 1354,
+  "estimatedCostUsd": 0.004062,
+  "byPhase": {
+    "change": 1354
+  },
+  "entries": [
+    {
+      "at": "2026-07-06T03:13:12.463Z",
+      "phase": "change",
+      "kind": "scan",
+      "tokens": 1354,
+      "label": "1 files"
+    }
+  ]
+}

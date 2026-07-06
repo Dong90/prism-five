@@ -1,0 +1,15 @@
+{
+  "title": "M15 Token test",
+  "test_plan": [
+    {
+      "id": "T-01",
+      "description": "token-budget.test.ts: track/check/usage/bump/estimate (7 tests)",
+      "status": "passed"
+    },
+    {
+      "id": "T-02",
+      "description": "Full regression: 136 tests across 21 files, all green",
+      "status": "passed"
+    }
+  ]
+}
