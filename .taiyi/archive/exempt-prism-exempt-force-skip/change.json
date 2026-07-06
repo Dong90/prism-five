@@ -1,0 +1,112 @@
+{
+  "title": "上游强制 + exempt 豁免机制",
+  "motivation": "Pentad 5 角色按顺序依赖上游产出。Builder 需 PRD，Sweeper 需 build 产物。当前 pipeline.continue() 只看 gate 不验证上游阶段是否跑过。每次手动检查耗时 5-10min。",
+  "scope": {
+    "includes": [
+      "pipeline.json schema 加 exemptions 字段",
+      "packages/orchestrator/src/upstream.ts: checkUpstreamForRole 校验",
+      "packages/cli/src/commands/exempt.ts: prism exempt grant/list/revoke",
+      "L1/L2 命令加 --force-skip flag",
+      "packages/orchestrator/src/audit.ts: .pentad/audit-log.json"
+    ],
+    "excludes": [
+      "不引入 Taiyi 9 阶段",
+      "不重写 pipeline.continue()",
+      "不改变现有 gate 机制"
+    ]
+  },
+  "success_criteria": [
+    {
+      "id": "SC-01",
+      "description": "prism build 在 prototyper 未完成时拒绝执行",
+      "is_checked": true
+    },
+    {
+      "id": "SC-02",
+      "description": "prism ship --force-skip 临时绕过并写审计日志",
+      "is_checked": true
+    },
+    {
+      "id": "SC-03",
+      "description": "prism exempt grant 永久豁免某阶段",
+      "is_checked": true
+    },
+    {
+      "id": "SC-04",
+      "description": "prism exempt list 列出所有豁免",
+      "is_checked": true
+    },
+    {
+      "id": "SC-05",
+      "description": "豁免过期后恢复检查",
+      "is_checked": true
+    },
+    {
+      "id": "SC-06",
+      "description": "audit-log.json 记录所有操作",
+      "is_checked": true
+    }
+  ],
+  "do_nothing_cost": "用户可从 maintainer 误启动，跳过前置阶段造成空 artifact 执行失败",
+  "target_state": "5 角色按顺序受上游校验保护；例外可通过 exempt 永久豁免或 --force-skip 临时绕过",
+  "premise_redefine": "不施加上游强制而是信任用户——但这违背 Pentad 的阶段接力原则",
+  "premise_cost": "加 3 个文件约 200 LOC，增加 CLI 复杂度",
+  "premise_existing": "现有 pipeline.json schema + commander.js CLI 可直接扩展",
+  "premise_scrap": "改用 Taiyi 9 阶段 gate 方案（已排除）",
+  "migration_steps": "无数据迁移；加 schema 字段向后兼容",
+  "rollback_trigger": "upstream check 误拦正常流程",
+  "rollback_ops": "git revert HEAD",
+  "rollback_time": "10min",
+  "impact_map": [
+    {
+      "module": "packages/orchestrator/src/schema.ts",
+      "impact": "加 exemptions 字段",
+      "owner": "shixiaocai"
+    },
+    {
+      "module": "packages/orchestrator/src/upstream.ts (new)",
+      "impact": "校验逻辑",
+      "owner": "shixiaocai"
+    },
+    {
+      "module": "packages/cli/src/commands/exempt.ts (new)",
+      "impact": "CLI 命令",
+      "owner": "shixiaocai"
+    },
+    {
+      "module": "packages/orchestrator/src/audit.ts (new)",
+      "impact": "审计日志",
+      "owner": "shixiaocai"
+    }
+  ],
+  "risks": [
+    {
+      "risk": "豁免过期后用户忘了重新申请",
+      "probability": "medium",
+      "impact": "用户体验降级",
+      "mitigation": "过期前 7 天 status 提醒"
+    },
+    {
+      "risk": "exemptions 数据膨胀 pipeline.json",
+      "probability": "low",
+      "impact": "加载变慢",
+      "mitigation": "过期后自动清理"
+    }
+  ],
+  "visual_tone": "N/A - CLI only",
+  "visual_reason": "CLI change; no visual surface",
+  "visual_references": "N/A",
+  "visual_excluded": "任何浏览器/web UI 改动",
+  "stakeholders": [
+    {
+      "role": "PM",
+      "name": "shixiaocai",
+      "needs": "5 角色接力不被跳过"
+    },
+    {
+      "role": "TechLead",
+      "name": "claude",
+      "needs": "审计日志完整可追溯"
+    }
+  ]
+}

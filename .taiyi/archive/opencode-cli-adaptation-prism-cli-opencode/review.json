@@ -1,0 +1,129 @@
+{
+  "title": "OpenCode plugin 集成评审",
+  "review_date": "2026-07-04",
+  "verdict": "approve-with-minor-suggestions",
+  "code_quality": [
+    {
+      "dimension": "functional",
+      "score": "5",
+      "note": "All 5 ACs covered by tests; status --json output schema-valid; prism agent 4 tests pass; OpenCode plugin manifest loads 5 SKILL.md; 35 frontmatter checks pass"
+    },
+    {
+      "dimension": "architecture",
+      "score": "4",
+      "note": "OpenCode plugin properly decoupled (separate dir + package.json); AGENT_MAP re-export non-breaking; matches DESIGN.md option A"
+    },
+    {
+      "dimension": "testing",
+      "score": "5",
+      "note": "TDD red-green chain evidence in .dev-complete; 89 tests pass; path injection + unknown agent name + boundaries covered by negative tests"
+    },
+    {
+      "dimension": "documentation",
+      "score": "4",
+      "note": "Auto-generated TEST.md + .dev-complete + DESIGN.md etc. recorded. But docs/COMMAND-DESIGN.md and docs/AUTOMATION.md pre-date this change."
+    },
+    {
+      "dimension": "maintainability",
+      "score": "4",
+      "note": "agent.ts reuses AGENT_MAP (no reinvention); status.ts uses mutually-exclusive branches; plugin manifest centralized"
+    }
+  ],
+  "test_coverage": [
+    {
+      "layer": "CLI core (pre-existing)",
+      "passed": "45",
+      "total": "45",
+      "coverage": "100%",
+      "status": "passed"
+    },
+    {
+      "layer": "OpenCode integration (new)",
+      "passed": "44",
+      "total": "44",
+      "coverage": "100%",
+      "status": "passed"
+    },
+    {
+      "layer": "Combined",
+      "passed": "89",
+      "total": "89",
+      "coverage": "100%",
+      "status": "passed"
+    }
+  ],
+  "findings": [
+    {
+      "id": "FR-1",
+      "severity": "minor",
+      "description": "agent.ts uses Map for role grouping; could be Record. No functional issue.",
+      "file": "packages/cli/src/commands/agent.ts",
+      "line": "32",
+      "action": "Optional: refactor to typed object if team prefers",
+      "resolved": false
+    },
+    {
+      "id": "FR-2",
+      "severity": "minor",
+      "description": "OpenCode plugin manifest emitted via console.log JSON; could be a separate bin script",
+      "file": ".opencode-plugin/index.ts",
+      "line": "85",
+      "action": "Future: ESM export + separate bin entry",
+      "resolved": false
+    },
+    {
+      "id": "AR-1",
+      "severity": "minor",
+      "description": "orchestrator/src/index.ts re-exports ROLE_ORDER which is not used in cli (potential unused export)",
+      "file": "packages/orchestrator/src/index.ts",
+      "line": "2",
+      "action": "Could mark ROLE_ORDER as internal in future major",
+      "resolved": false
+    },
+    {
+      "id": "TR-1",
+      "severity": "minor",
+      "description": "Performance benchmark for status --json (under 50ms target) listed but not measured precisely",
+      "file": "tests/test.json",
+      "line": "performance_tests",
+      "action": "Add explicit timing test in v0.5",
+      "resolved": false
+    },
+    {
+      "id": "DR-1",
+      "severity": "minor",
+      "description": "docs/COMMAND-DESIGN.md + docs/AUTOMATION.md pre-existed this change. Future readers may be confused about authorship.",
+      "file": "docs/COMMAND-DESIGN.md",
+      "line": "1",
+      "action": "Add a header note or move content into CHANGELOG.md provenance",
+      "resolved": false
+    }
+  ],
+  "blocking_items": [],
+  "suggestion_items": [
+    "Consider adding OpenCode plugin bin command to cli package.json",
+    "In v0.5, add NFR-PERF-01 measurement (status --json sub-50ms) as benchmark",
+    "When 132 L3 agents are added, group by sub-role in agent list output"
+  ],
+  "security_audit": [
+    "prism agent rejects path injection (../etc/passwd returns exit 1)",
+    "prism agent rejects names starting with -",
+    "prism agent resolves only against AGENT_MAP whitelist (no shell-out)",
+    "OpenCode plugin manifest loadSkills only reads from .pentad/agents/",
+    "orchestrator re-exports are non-breaking (additive)",
+    "status --json does not expose secrets beyond pipeline.json content"
+  ],
+  "performance_audit": [
+    {
+      "item": "test suite execution time",
+      "status": "passed",
+      "note": "508ms for 13 files / 89 tests within NFR-PERF-02 budget"
+    },
+    {
+      "item": "status --json cold start",
+      "status": "deferred",
+      "note": "spawnSync overhead included in test; isolated benchmark recommended in v0.5"
+    }
+  ],
+  "summary": "Change complete. All 5 ACs implemented and tested. 89/89 tests pass, 13/13 files. 5 minor findings, 0 critical/major. Star rating 4.4/5.0. Approve to merge."
+}

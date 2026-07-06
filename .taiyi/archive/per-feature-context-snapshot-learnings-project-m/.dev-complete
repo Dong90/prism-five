@@ -1,0 +1,14 @@
+command: npx vitest run
+exitCode: 0
+
+## TDD Evidence
+GREEN: npx vitest run — 129 tests passed (20 files)
+New tests: context.test.ts (5), learnings.test.ts (4), memory.test.ts (5) = 14 new, all green
+
+## 0.x Checks
+- [x] 0.1 grep: same fs+process.cwd() pattern as checkpoint.ts/logger.ts
+- [x] 0.2 LESSONS: no conflicts
+- [x] 0.5 breaking changes: none
+
+## Self-review R1-R11: all OK
+## Deviation: Est 115min / Actual ~20min

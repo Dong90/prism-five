@@ -1,0 +1,194 @@
+{
+  "title": "OpenCode 可识别的 prism CLI 命令与 skill 加载",
+  "one_liner": "9 个 prism CLI 命令在 OpenCode 终端可被识别、dispatch、状态可被 OpenCode 模型 parse",
+  "features": [
+    "prism status 命令支持 --json 输出，让 OpenCode 模型 parse pipeline 状态",
+    "9 个 prism CLI 命令在 OpenCode slash 菜单中可见并可触发",
+    "5 个 SKILL.md (.pentad/agents/*.md) 通过 OpenCode skill loader 加载并 dispatch 到对应 agent",
+    "新增 prism-agent list / prism-agent <name> 子命令支持 L3 直调",
+    "OpenCode 集成测试：单 session 走完 prototyper → builder → sweeper → grower → maintainer 5 角色全流程"
+  ],
+  "scope_out": [
+    "不引入 taiyi 的 9 阶段工作流引擎（保留 Pentad 5 角色独立模型）",
+    "不重写 .pentad/pipeline.json schema（仅加 OpenCode-facing 输出字段）",
+    "不动 5 角色 SKILL.md 的实质内容（仅做 OpenCode-frontmatter 适配）",
+    "不提供 MCP server（v0.5 再做）",
+    "不重构现有 commander.js CLI（保留 9 命令作为子命令）"
+  ],
+  "functional_requirements": [
+    {
+      "module": "packages/cli",
+      "items": [
+        {
+          "id": "FR-CLI-01",
+          "description": "status 命令接受 --json flag，输出 machine-readable JSON（含 pipeline.json 全字段 + activeFeature + 队列）"
+        },
+        {
+          "id": "FR-CLI-02",
+          "description": "新增 prism-agent 子命令：list（列全部 132 agent）/ <name> \"<prompt>\"（直调单个 agent）"
+        },
+        {
+          "id": "FR-CLI-03",
+          "description": "所有现有命令（new/status/continue/approve/check/promote/run/queue/next）保持原行为不变"
+        }
+      ]
+    },
+    {
+      "module": ".opencode-plugin",
+      "items": [
+        {
+          "id": "FR-OC-01",
+          "description": "注册 OpenCode plugin（taiyi-style），通过 .opencode/plugin.json 或类似 manifest 暴露"
+        },
+        {
+          "id": "FR-OC-02",
+          "description": "plugin 把 9 个 prism CLI 命令映射成 OpenCode tp（tool provider）或 slash interface"
+        },
+        {
+          "id": "FR-OC-03",
+          "description": "plugin 实现 on_session_start hook，调用 prism status --json 把 pipeline 状态注入 OpenCode 上下文"
+        }
+      ]
+    },
+    {
+      "module": ".pentad/agents",
+      "items": [
+        {
+          "id": "FR-SK-01",
+          "description": "5 个核心 SKILL.md (prototyper/builder/sweeper/grower/maintainer) frontmatter 增加 OpenCode 兼容字段（mode/paradigm）"
+        },
+        {
+          "id": "FR-SK-02",
+          "description": "SKILL.md 描述字段满足 OpenCode skill loader 的 description pattern（trigger phrase）"
+        }
+      ]
+    }
+  ],
+  "non_functional": {
+    "performance": [
+      {
+        "id": "NFR-PERF-01",
+        "description": "prism status --json 输出耗时 < 50ms (文件读取 + JSON.parse)"
+      },
+      {
+        "id": "NFR-PERF-02",
+        "description": "OpenCode plugin 启动开销 < 100ms (不阻塞 IDE 启动)"
+      }
+    ],
+    "security": [
+      {
+        "id": "NFR-SEC-01",
+        "description": "plugin 不读取 .pentad/ 之外的任何路径"
+      },
+      {
+        "id": "NFR-SEC-02",
+        "description": "prism-agent <name> 不允许 shell-out，仅在 agent SKILL.md 限定的工具范围运行"
+      }
+    ],
+    "availability": [
+      {
+        "id": "NFR-AVAIL-01",
+        "description": "9 个命令在 OpenCode 不可用时仍可在 standalone 模式下使用（prism CLI 二进制独立工作）"
+      }
+    ]
+  },
+  "acceptance_criteria": [
+    {
+      "id": "AC-01",
+      "description": "在 OpenCode 终端运行 `prism status --json` 输出 machine-readable JSON；包含 activeFeature / queue / stageHistory / gates 全字段。\nGiven: 已初始化 .pentad/pipeline.json（含至少 1 个 active feature）\nWhen: 在 OpenCode 终端执行 prism status --json\nThen: 输出是合法 JSON，含 type=success，stdout 含 pipeline.json 全部字段",
+      "is_checked": false,
+      "verify": "cd /Users/shixiaocai/prism-five && npx prism status --json | python3 -c 'import sys,json; print(json.load(sys.stdin)[\"features\"][\"user-auth\"][\"currentRole\"])'"
+    },
+    {
+      "id": "AC-02",
+      "description": "OpenCode slash 菜单列出 prism 开头的 9 个命令；任一命令点击可执行。\nGiven: OpenCode 已加载 .opencode-plugin\nWhen: 打开 slash 菜单\nThen: 列出 prism-new, prism-status, prism-continue, prism-approve, prism-check, prism-promote, prism-run, prism-queue, prism-next",
+      "is_checked": false,
+      "verify": "opencode --list-slash | grep '^prism-' | wc -l  # 应 = 9"
+    },
+    {
+      "id": "AC-03",
+      "description": ".pentad/agents/prototyper.md 等 5 个 SKILL.md 被 OpenCode skill loader 加载；可通过 /skill pentad-prototyper 触发。\nGiven: 5 个 SKILL.md 存在于 .pentad/agents/\nWhen: OpenCode 启动\nThen: skill loader 识别这 5 个；trigger phrase 匹配用户自然语言",
+      "is_checked": false,
+      "verify": "opencode --list-skills | grep '^pentad-' | wc -l  # 应 = 5"
+    },
+    {
+      "id": "AC-04",
+      "description": "prism-agent list 输出 132 个 agent（按角色分组）；prism-agent pentad-rapid-prototyper \"<task>\" 调度单个 agent 执行。\nGiven: agent catalog 已注册 132 个\nWhen: 执行 prism-agent list\nThen: 输出 132 个 agent，5 角色分组；执行 prism-agent pentad-rapid-prototyper \"design login UI\"\nThen: dispatch 到该 agent 并出 prompt/plan",
+      "is_checked": false,
+      "verify": "npx prism agent list | wc -l  # 应 ≥ 132\nnpx prism agent pentad-rapid-prototyper 'design login UI'"
+    },
+    {
+      "id": "AC-05",
+      "description": "OpenCode 单 session 内走完 5 角色接力，全自动 + 2 个人工门 (prototype_approved + release_approved)；无 manual terminal 介入。\nGiven: 一个 OpenCode session\nWhen: 跑 /prism-new auth && /prism-prototype && /prism-approve prototype_approved && /prism-build && /prism-sweep && /prism-grow && /prism-ship --canary 5\nThen: feature 从 draft → live；含 canary 步骤；release_approved 需 human",
+      "is_checked": false,
+      "verify": "scripts/e2e-opencode-pentad.sh  # E2E 脚本应存在并通过"
+    }
+  ],
+  "error_rescue_map": [
+    {
+      "error": "OpenCode 未安装或 plugin 未注册",
+      "trigger": "opencode 启动时报 .opencode-plugin/ 找不到",
+      "catch": "plugin loader 捕获",
+      "user_sees": "warning: prism OpenCode plugin 未加载，9 命令仍可在 standalone 终端用",
+      "recovery": "用户安装 plugin：`npm link @prism-five/opencode-plugin` 后重启 OpenCode"
+    },
+    {
+      "error": ".pentad/pipeline.json 不存在或损坏",
+      "trigger": "prism status 读 JSON.parse 失败",
+      "catch": "state.ts 的 readPipeline try-catch",
+      "user_sees": "✗ pipeline.json not found at .pentad/pipeline.json，运行 prism new <slug> 创建",
+      "recovery": "运行 prism new <slug> 重新初始化"
+    },
+    {
+      "error": "SKILL.md format 不符合 OpenCode skill loader",
+      "trigger": "OpenCode skill loader skip / 报错",
+      "catch": "frontmatter validator",
+      "user_sees": "warning: pentad-prototyper.md frontmatter invalid (missing 'description'), 见 docs/SKILL-FORMAT.md",
+      "recovery": "添加 description 字段满足 OpenCode pattern"
+    }
+  ],
+  "shadow_paths": [
+    {
+      "flow": "prism status --json 在 pipeline.json 不存在时",
+      "happy_input": "pipeline.json 存在",
+      "happy_expected": "输出 JSON",
+      "nil_input": "pipeline.json 不存在",
+      "nil_expected": "输出 JSON 含 error field，exit code 1",
+      "empty_input": "pipeline.json 是空文件",
+      "empty_expected": "输出 JSON parse error message",
+      "upstream_input": "pipeline.json 字段缺失（如无 activeFeature）",
+      "upstream_expected": "输出 JSON 含 null activeFeature 但其他字段正常"
+    },
+    {
+      "flow": "prism-agent <unknown-name>",
+      "happy_input": "<name> 在 AGENT_MAP 中",
+      "happy_expected": "调度该 agent",
+      "nil_input": "<name> 不存在",
+      "nil_expected": "exit 1，错误信息 'no such agent'",
+      "empty_input": "<name> 是空字符串",
+      "empty_expected": "exit 1，错误信息",
+      "upstream_input": "<name> 是 path 注入 (\"../etc/passwd\")",
+      "upstream_expected": "exit 1，blocked by input validation"
+    }
+  ],
+  "dependencies": [
+    {
+      "dependency": "OpenCode CLI v0.3+",
+      "type": "external",
+      "status": "available",
+      "risk": "OpenCode 插件 API 可能变动；锁版本"
+    },
+    {
+      "dependency": "commander.js 12.x",
+      "type": "internal",
+      "status": "available",
+      "risk": "low; 现有 9 命令已用它"
+    },
+    {
+      "dependency": "Node.js >= 18",
+      "type": "external",
+      "status": "available",
+      "risk": "low"
+    }
+  ]
+}

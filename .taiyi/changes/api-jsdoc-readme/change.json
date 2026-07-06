@@ -1,1 +1,0 @@
-{"title":"API 文档","motivation":"缺少 JSDoc","scope":{"includes":["JSDoc","README"]},"success_criteria":[{"id":"SC1","description":"各包 JSDoc 补齐"}]}

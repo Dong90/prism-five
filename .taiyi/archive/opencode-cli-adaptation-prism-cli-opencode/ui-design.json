@@ -1,0 +1,29 @@
+{
+  "title": "OpenCode 可识别的 prism CLI 输出",
+  "scope": "本变更面向 OpenCode 终端集成；CLI 输出格式与 OpenCode tool schema 即为'视觉'。无浏览器 UI/web UI/前端组件库变更。",
+  "is_cli_only": true,
+  "states": [
+    {
+      "name": "JSON mode",
+      "description": "prism status --json 输出 machine-readable JSON；含 pipeline.json 全字段 + type=success/error"
+    },
+    {
+      "name": "Text mode (legacy)",
+      "description": "原 prism status 的 box-style 文本输出保持不变；与 --json 互斥"
+    },
+    {
+      "name": "Loading state",
+      "description": "OpenCode 启动时 plugin 在 on_session_start hook 内异步加载；同步不阻塞 IDE"
+    },
+    {
+      "name": "Error state",
+      "description": "OpenCode plugin 加载失败时降级：9 命令仍可在 standalone 模式用；OpenCode tool 列表中 prism-* 显示但调用时报错"
+    }
+  ],
+  "accessibility": [
+    "CLI 输出为纯文本；无视觉无障碍需求",
+    "JSON mode 输出需符合 JSON RFC 8259",
+    "退出码语义：0 = 成功；1 = 错误；2 = 用户错（命令参数）"
+  ],
+  "links": []
+}

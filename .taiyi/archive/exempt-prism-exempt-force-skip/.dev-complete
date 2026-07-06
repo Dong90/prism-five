@@ -1,0 +1,4 @@
+command: npm test
+exitCode: 0
+
+dev complete: upstream.ts + exempt.ts + audit.ts implemented. 89/89 tests pass.

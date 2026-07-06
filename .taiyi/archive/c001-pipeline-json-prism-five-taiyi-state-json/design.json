@@ -1,0 +1,1 @@
+{"title":"双路径状态读取","options":[{"id":"A","name":"Taiyi优先+pipeline兜底","pros":["不破坏现有","渐进迁移"],"cons":["两份schema"],"cost":"50LOC"},{"id":"B","name":"全换Taiyi","pros":["最简"],"cons":["破坏现有"],"cost":"200LOC"}],"decision":{"chosen":"A","reason":"不破坏89测试+渐进迁移+可用性"},"existingArchitecture":{"touchedModules":["state.ts","pipeline.ts"],"newModules":["taiyi-bridge.ts"]}}

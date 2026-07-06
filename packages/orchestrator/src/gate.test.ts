@@ -7,14 +7,16 @@ function makeFeature(overrides?: Partial<Feature>): Feature {
     slug: 'test',
     status: 'draft',
     currentRole: 'prototyper',
+    profile: 'develop',
+    variant: 'full',
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
     stageHistory: [{ role: 'prototyper', enteredAt: new Date().toISOString() }],
-    gates: {
-      prototype_approved: false,
-      build_reviewed: false,
-      sweep_passed: false,
-      release_approved: false,
+    gates: { prototype_approved: false, design_reviewed: false, sweep_passed: false, review_approved: false, release_approved: false },
+    artifacts: {
+      'raw/RESEARCH.md': ['done'],
+      'raw/PRD.md': ['done'],
+      'raw/INITIATE.md': ['done'],
     },
     ...overrides,
   };
@@ -36,8 +38,30 @@ describe('checkHumanGate', () => {
 });
 
 describe('checkAutoGate', () => {
-  it('passes valid feature', () => {
+  it('passes valid feature with artifacts', () => {
     const f = makeFeature();
     expect(checkAutoGate(f).passed).toBe(true);
+  });
+
+  it('fails when artifacts missing', () => {
+    const f = makeFeature({ artifacts: {} });
+    expect(checkAutoGate(f).passed).toBe(false);
+  });
+
+  it('names missing artifact in reason', () => {
+    const f = makeFeature({ artifacts: {} });
+    expect(checkAutoGate(f).reason).toContain('artifact');
+  });
+
+  it('checks role-specific artifacts for builder', () => {
+    const f = makeFeature({ currentRole: 'builder', artifacts: {} });
+    const r = checkAutoGate(f);
+    expect(r.passed).toBe(false);
+    expect(r.reason).toContain('built/DESIGN.md');
+  });
+
+  it('blocks on token budget exceeded', () => {
+    const f = makeFeature();
+    expect(checkAutoGate(f, { used: 50000, limit: 30000 }).passed).toBe(false);
   });
 });

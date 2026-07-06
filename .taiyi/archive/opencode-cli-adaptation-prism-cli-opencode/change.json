@@ -1,0 +1,86 @@
+{
+  "title": "把 prism CLI 适配 OpenCode 终端命令工作流",
+  "motivation": "prism-five 当前 9 个 CLI 命令（new/status/continue/approve/check/promote/run/queue/next）仅在裸 terminal 里跑。在 OpenCode 终端里跑时，需要 OpenCode 模型能识别这些命令、能 dispatch、能读到当前 pipeline 状态、并把命令输出作为 skill/tool 输出展示给用户。本次变更让 9 个 CLI 命令 + 5 个核心角色全部在 OpenCode 工作可用，能 slash 触发、能 agent-driven dispatch、能被 superpowers harness 串接。",
+  "scope": {
+    "includes": [
+      "新增 OpenCode plugin/extension 注册 (taiyi-style)",
+      "把 9 个 prism CLI 命令映射成 OpenCode 可识别的工具/tp 接口",
+      "把 5 个 SKILL.md (.pentad/agents/) 暴露为 OpenCode 可加载 skill",
+      "在 packages/cli/src/ 改造 OpenCode-aware 的输出格式（JSON mode、machine-readable stdout）",
+      "新增 prism 命令用于 OpenCode 上下文输出 pipeline.json 状态"
+    ],
+    "excludes": [
+      "不引入 taiyi 的 9 阶段 workflow 引擎（保留 Pentad 5 角色独立模型）",
+      "不重写 .pentad/pipeline.json schema（仅加 OpenCode-facing 字段）",
+      "不动 5 角色 SKILL.md 的实质内容（仅做 OpenCode-frontmatter 适配）"
+    ]
+  },
+  "success_criteria": [
+    {
+      "id": "SC-01",
+      "description": "在 OpenCode 终端里运行 `prism status --json` 输出 machine-readable 状态，OpenCode 模型能 parse",
+      "is_checked": true
+    },
+    {
+      "id": "SC-02",
+      "description": "OpenCode 能识别 `prism` 开头的所有 9 个命令，并通过 slash 或 tp interface 触发",
+      "is_checked": true
+    },
+    {
+      "id": "SC-03",
+      "description": "5 个 SKILL.md（.pentad/agents/*.md）能通过 OpenCode 的 skill loader 加载，并被 dispatch 到对应 agent",
+      "is_checked": true
+    },
+    {
+      "id": "SC-04",
+      "description": "新增 prism-agent list / prism-agent <name> 子命令，使其能在 OpenCode 工具调用里被调用",
+      "is_checked": true
+    },
+    {
+      "id": "SC-05",
+      "description": "OpenCode 集成测试通过：打开 OpenCode → 输入 slash → 走完 5 角色接力，全程无 manual terminal 介入",
+      "is_checked": true
+    }
+  ],
+  "do_nothing_cost": "继续手动在 OpenCode terminal / 裸 terminal 间切换，每次 5 步接力要 30+ 次手动输入；新团队成员学习成本高",
+  "target_state": "用户在 OpenCode 终端一个 session 内完成 5 角色全流程；prism 命令作为 OpenCode tool/tp 暴露，由 slash / agent dispatch 触发",
+  "premise_redefine": "prism 不应该只是 CLI 二进制；它应该是 OpenCode 可编排的 skill/tool 集合",
+  "premise_cost": "现有 9 命令+5 SKILL.md 已能完成基本接力；适配 OpenCode 是工具级体验优化而非本质瓶颈",
+  "premise_existing": "现有 commander.js CLI + 5 个 SKILL.md frontmatter (.pentad/agents/) + OpenCode 的 skill loader 全部已存在",
+  "premise_scrap": "改用 taiyi 9 阶段工作流引擎替代 Pentad 5 角色（已排除，scope.excludes）",
+  "migration_steps": "无需迁移（纯增层）；保留原 9 命令不变，新增 OpenCode plugin 作为 wrapper",
+  "rollback_trigger": "OpenCode plugin 与现有 command 冲突导致 5+ 关键命令不可用",
+  "rollback_ops": "git revert <commit>; npm uninstall @prism-five/opencode-plugin; 9 命令全部回退到 standalone 模式",
+  "rollback_time": "≤10min",
+  "impact_map": [
+    {
+      "module": "packages/cli/",
+      "impact": "OpenCode-aware 输出 + JSON mode",
+      "owner": "shixiaocai"
+    },
+    {
+      "module": ".pentad/agents/",
+      "impact": "SKILL.md frontmatter 增加 OpenCode 字段",
+      "owner": "shixiaocai"
+    },
+    {
+      "module": "新增 .opencode-plugin/",
+      "impact": "OpenCode plugin 注册 + tp interface",
+      "owner": "shixiaocai"
+    }
+  ],
+  "risks": [
+    {
+      "risk": "OpenCode plugin API 与现有 commander.js CLI 冲突",
+      "probability": "medium",
+      "impact": "需额外适配层，可能延迟",
+      "mitigation": "保留 command 作为子命令，同时输出 JSON mode；OpenCode plugin 只做 wrapper"
+    },
+    {
+      "risk": "SKILL.md frontmatter 与 OpenCode skill format 不一致",
+      "probability": "low",
+      "impact": "skill 加载失败",
+      "mitigation": "frontmatter 增加 OpenCode 字段 (paradigm/mode)，保留现有 description/tools 字段"
+    }
+  ]
+}

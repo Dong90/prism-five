@@ -1,0 +1,105 @@
+{
+  "title": "M14 状态扩展：per-feature context snapshot + LEARNINGS + project memory",
+  "one_liner": "为 Prism 新增三种状态持久化：per-feature CONTEXT.md、跨 feature LEARNINGS.md、全局 project-memory.json",
+  "user_stories": [
+    {
+      "as_a": "开发者",
+      "i_want": "跨会话恢复时能看到上次停在哪、产出什么、卡在哪里、下一步做什么",
+      "so_that": "复工成本从 5-10 分钟降到 30 秒内",
+      "priority": "P0"
+    },
+    {
+      "as_a": "开发者 / AI Agent",
+      "i_want": "记录和查询跨 feature 的成功模式、失败教训、可复用方案",
+      "so_that": "同类问题不反复踩坑，知识可积累传承",
+      "priority": "P0"
+    },
+    {
+      "as_a": "开发者 / AI Agent",
+      "i_want": "在统一位置读写项目技术栈、惯例、约束信息",
+      "so_that": "新加入者或 AI agent 不需要搜索多个文档就能了解项目上下文",
+      "priority": "P0"
+    }
+  ],
+  "scope_v1": [
+    "context.ts: saveContext()/loadContext() — 生成和读取 per-feature CONTEXT.md",
+    "learnings.ts: add()/list() — 追加和查询 LEARNINGS.md",
+    "memory.ts: write()/read()/delete() — 读写 project-memory.json",
+    "pipeline.ts 集成: createFeature() 和 continue() 自动调用 context.saveContext()",
+    "activity.jsonl 审计: learnings.add() 和 memory.write() 操作自动记录",
+    "TypeScript 类型定义和 Zod schema 验证",
+    "单元测试覆盖 80%+"
+  ],
+  "scope_v2": [
+    "CLI 用户交互界面（prism context/learnings/memory 完整命令由 M5 统一实现）"
+  ],
+  "scope_out": [
+    "LEARNINGS 自动推理/模式发现（仅提供读写 API，不包含 AI 分析）",
+    "project memory 的自动采集（仅提供读写 API，由 agent 调用）",
+    "跨项目 memory 同步",
+    "UI 相关功能（api profile 跳过 ui-design）"
+  ],
+  "functional_requirements": [
+    {
+      "module": "context.ts",
+      "items": [
+        { "id": "FR-C01", "description": "saveContext(feature): 读取 feature 对象，生成 markdown 格式的 CONTEXT.md 到 .prism/features/<slug>/" },
+        { "id": "FR-C02", "description": "CONTEXT.md 包含 4 个章节: Current Role, Artifacts, Blockers, Next Action" },
+        { "id": "FR-C03", "description": "loadContext(slug): 读取 CONTEXT.md 并解析为结构化的 Context 对象" },
+        { "id": "FR-C04", "description": "解析时基于 markdown 章节标题分割字段，无对应章节时返回默认值 '(none)'" }
+      ]
+    },
+    {
+      "module": "learnings.ts",
+      "items": [
+        { "id": "FR-L01", "description": "add(entry): 追加 LearningEntry 到 .prism/LEARNINGS.md" },
+        { "id": "FR-L02", "description": "list(filter?): 读取并返回所有条目，支持按 category 过滤" },
+        { "id": "FR-L03", "description": "使用 append-only 模式，不覆盖已有记录" },
+        { "id": "FR-L04", "description": "add() 成功后自动写入 activity.jsonl（event: learning_added）" }
+      ]
+    },
+    {
+      "module": "memory.ts",
+      "items": [
+        { "id": "FR-M01", "description": "write(key, value): 写入键值对到 .prism/project-memory.json，更新 updated 时间戳" },
+        { "id": "FR-M02", "description": "read(key?): 读取指定键，无参时返回全部。主文件损坏时自动回退到 backup" },
+        { "id": "FR-M03", "description": "delete(key): 删除指定键" },
+        { "id": "FR-M04", "description": "write() 前自动备份到 memory.backup.json，写入成功则删除备份" },
+        { "id": "FR-M05", "description": "写入时通过 ProjectMemorySchema Zod 验证" }
+      ]
+    },
+    {
+      "module": "pipeline.ts 集成",
+      "items": [
+        { "id": "FR-P01", "description": "createFeature() 成功后调用 context.saveContext() 创建初始 CONTEXT.md" },
+        { "id": "FR-P02", "description": "continue() 在 status 更新后调用 context.saveContext() 更新 CONTEXT.md" },
+        { "id": "FR-P03", "description": "context 调用失败记录到 log 但不阻塞 pipeline 正常流程（error logged, not thrown）" }
+      ]
+    }
+  ],
+  "non_functional": {
+    "performance": [
+      { "id": "NFR-P01", "description": "context.saveContext() 耗时 < 50ms" },
+      { "id": "NFR-P02", "description": "learnings.add() 追加写入耗时 < 20ms" },
+      { "id": "NFR-P03", "description": "memory.write() 含备份操作的耗时 < 100ms" }
+    ],
+    "security": [
+      { "id": "NFR-S01", "description": "无硬编码路径——所有路径基于 process.cwd() 或配置参数" },
+      { "id": "NFR-S02", "description": "写入失败时保留已有数据不丢失（atomic write pattern）" }
+    ]
+  },
+  "acceptance_criteria": [
+    { "id": "AC-01", "description": "context.saveContext(feature) 在 .prism/features/<slug>/CONTEXT.md 生成包含 Current Role/Artifacts/Blockers/Next Action 的可读摘要", "is_checked": false },
+    { "id": "AC-02", "description": "context.saveContext() 在 artifact 为空时输出 '(none)' 而不是空白", "is_checked": false },
+    { "id": "AC-03", "description": "context.loadContext(slug) 返回结构化 Context 对象", "is_checked": false },
+    { "id": "AC-04", "description": "learnings.add(entry) 追加到 .prism/LEARNINGS.md，不覆盖已有内容", "is_checked": false },
+    { "id": "AC-05", "description": "learnings.list({category:'fix'}) 仅返回 category 为 fix 的条目", "is_checked": false },
+    { "id": "AC-06", "description": "memory.write(key, value) 写入 .prism/project-memory.json 且 schema 验证通过", "is_checked": false },
+    { "id": "AC-07", "description": "memory.read(key) 读取指定键，memory.read() 无参时返回全部", "is_checked": false },
+    { "id": "AC-08", "description": "pipeline.continue() 后 CONTEXT.md 自动更新为新 role 状态", "is_checked": false },
+    { "id": "AC-09", "description": "pipeline.createFeature() 自动创建初始 CONTEXT.md", "is_checked": false },
+    { "id": "AC-10", "description": "learnings.add() 和 memory.write() 操作自动记录到 activity.jsonl", "is_checked": false },
+    { "id": "AC-11", "description": "memory.write() 前备份到 memory.backup.json，主文件损坏时 read() 自动回退到 backup", "is_checked": false },
+    { "id": "AC-12", "description": "npm test 通过，新增模块覆盖率 >= 80%", "is_checked": false }
+  ]
+}

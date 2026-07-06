@@ -1,0 +1,1 @@
+{"title":"exempt v0.4.1","changelog_entries":[{"type":"feat","description":"upstream check: build/sweep/grow/ship 拒止未完成上游"},{"type":"feat","description":"prism exempt grant/list/revoke（支持过期）"},{"type":"feat","description":"--force-skip + audit-log.json"}]}

@@ -1,0 +1,4 @@
+command: npm run build
+exitCode: 0
+
+dev complete: 5 CLI commands created (cancel, list, doctor, guide, init). index.ts registered. Build clean.

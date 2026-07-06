@@ -1,6 +1,0 @@
-{
-  "exitCode": 0,
-  "command": "npm run build && npm run typecheck",
-  "timestamp": "2026-07-04T07:31:30.000Z",
-  "summary": "5 个核心包全部增强完成：prototyper schema 校验 + PrototyperError, builder try/catch + map + RefractError, sweeper 异步 disperse, grower unique/reduce, maintainer async emit + EmitError"
-}

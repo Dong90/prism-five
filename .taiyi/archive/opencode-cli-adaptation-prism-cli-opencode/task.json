@@ -1,0 +1,150 @@
+{
+  "title": "OpenCode plugin 集成 prism CLI",
+  "total_slices": 4,
+  "estimated_days": "1-2",
+  "max_parallel": 3,
+  "slices": [
+    {
+      "id": "S1",
+      "label": "扩展 status 命令支持 JSON 输出",
+      "risk": "low",
+      "level": 0,
+      "description": "给 packages/cli/src/commands/status.ts 加 --json flag，输出 machine-readable JSON",
+      "files": ["packages/cli/src/commands/status.ts"],
+      "write_files": ["packages/cli/src/commands/status.ts"],
+      "test_command": "npm run build && npx prism status --json | python3 -c 'import sys,json; d=json.load(sys.stdin); assert d.get(\"type\") in (\"success\",\"error\")'",
+      "verification": "AC-01: prism status --json 输出 JSON 含 activeFeature/queue/stageHistory/gates",
+      "time_estimate": "30min H",
+      "physical_verification": "git diff --name-only packages/cli/src/commands/status.ts",
+      "parallelizable": true
+    },
+    {
+      "id": "S2",
+      "label": "新增 prism-agent 子命令",
+      "risk": "low",
+      "level": 1,
+      "description": "新增 packages/cli/src/commands/agent.ts：list 列 132 agent（按角色分组）/ <name> \"<prompt>\" 直调单个 agent",
+      "files": ["packages/cli/src/commands/agent.ts"],
+      "write_files": [
+        "packages/cli/src/commands/agent.ts",
+        "packages/cli/src/index.ts（注册 subCommand）"
+      ],
+      "dependencies": "S1",
+      "test_command": "npm run build && npx prism agent list 2>&1 | head -10 ; echo \"---\" ; npx prism agent pentad-rapid-prototyper 'design login UI' 2>&1 | head -20",
+      "verification": "AC-04: list 输出 132 agent 分 5 角色；<name> dispatch 成功",
+      "time_estimate": "1h H",
+      "physical_verification": "git diff --name-only packages/cli/src/commands/agent.ts packages/cli/src/index.ts",
+      "parallelizable": false
+    },
+    {
+      "id": "S3",
+      "label": "写 OpenCode plugin manifest",
+      "risk": "medium",
+      "level": 2,
+      "description": "创建 .opencode-plugin/ 目录，写 plugin manifest 注册 9 tools + 5 skills",
+      "files": [
+        ".opencode-plugin/index.ts",
+        ".opencode-plugin/tools/prism-commands.ts",
+        ".opencode-plugin/skills/loader.ts"
+      ],
+      "write_files": [
+        ".opencode-plugin/index.ts",
+        ".opencode-plugin/tools/prism-commands.ts",
+        ".opencode-plugin/skills/loader.ts",
+        ".opencode-plugin/package.json"
+      ],
+      "dependencies": "S1, S2",
+      "test_command": "cd .opencode-plugin && npm install && npx tsc --noEmit",
+      "verification": "AC-02 + AC-03: OpenCode 列出 9 个 prism-* tool + 5 个 pentad-* skill",
+      "time_estimate": "2h M",
+      "physical_verification": "ls -la .opencode-plugin/ && cat .opencode-plugin/package.json",
+      "parallelizable": false
+    },
+    {
+      "id": "S4",
+      "label": "改造 5 个 SKILL.md frontmatter",
+      "risk": "low",
+      "level": 1,
+      "description": "5 个核心 SKILL.md (.pentad/agents/*.md) frontmatter 加 mode/paradigm 字段满足 OpenCode skill loader",
+      "files": [
+        ".pentad/agents/prototyper.md",
+        ".pentad/agents/builder.md",
+        ".pentad/agents/sweeper.md",
+        ".pentad/agents/grower.md",
+        ".pentad/agents/maintainer.md"
+      ],
+      "write_files": [
+        ".pentad/agents/prototyper.md",
+        ".pentad/agents/builder.md",
+        ".pentad/agents/sweeper.md",
+        ".pentad/agents/grower.md",
+        ".pentad/agents/maintainer.md"
+      ],
+      "dependencies": "S3",
+      "test_command": "grep -l 'mode:' .pentad/agents/*.md | wc -l  # 应 = 5",
+      "verification": "AC-03: 5 SKILL.md 全部含 OpenCode 兼容 frontmatter",
+      "time_estimate": "1h H",
+      "physical_verification": "git diff --name-only .pentad/agents/",
+      "parallelizable": true
+    }
+  ],
+  "waves": [
+    {
+      "name": "Wave 1: baseline",
+      "slices": [
+        { "slice_id": "S1", "description": "扩展 status 加 --json" }
+      ]
+    },
+    {
+      "name": "Wave 2: extending CLI",
+      "slices": [
+        { "slice_id": "S2", "description": "prism-agent 子命令" }
+      ]
+    },
+    {
+      "name": "Wave 3: OpenCode integration",
+      "slices": [
+        { "slice_id": "S3", "description": "OpenCode plugin manifest" },
+        { "slice_id": "S4", "description": "SKILL.md frontmatter 改造" }
+      ]
+    }
+  ],
+  "slice_risks": [
+    {
+      "slice": "S3",
+      "risk": "OpenCode plugin API 与 commander.js 冲突",
+      "probability": "medium",
+      "mitigation": "plugin 是独立 package.json，与 prism CLI 解耦；plugin 失败时 fallback standalone"
+    }
+  ],
+  "slice_rollbacks": [
+    {
+      "slice": "S1",
+      "rollback": "git revert S1 commit",
+      "time": "≤5min",
+      "data_impact": "none"
+    },
+    {
+      "slice": "S3",
+      "rollback": "rm -rf .opencode-plugin/",
+      "time": "≤1min",
+      "data_impact": "none（plugin 不动 pipeline.json）"
+    }
+  ],
+  "scores": {
+    "coverage": 9,
+    "completeness": 8,
+    "clarity": 9
+  },
+  "completeness_score": 8,
+  "evolutionSuggestions": [
+    {
+      "type": "tech-decision",
+      "description": "记录 SKILL.md frontmatter 扩展字段为 ADR-001"
+    },
+    {
+      "type": "reusable-abstraction",
+      "description": ".opencode-plugin/ 结构可复用到 claude-code/cursor 等其他 IDE"
+    }
+  ]
+}

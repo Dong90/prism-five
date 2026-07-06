@@ -1,0 +1,4 @@
+command: npm test
+exitCode: 0
+
+dev complete: taiyi-bridge.ts created. Pipeline now reads Taiyi state.json as primary source.

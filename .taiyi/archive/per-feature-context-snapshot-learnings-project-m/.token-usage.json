@@ -1,0 +1,18 @@
+{
+  "version": 1,
+  "slug": "per-feature-context-snapshot-learnings-project-m",
+  "totalTokens": 1549,
+  "estimatedCostUsd": 0.004647,
+  "byPhase": {
+    "change": 1549
+  },
+  "entries": [
+    {
+      "at": "2026-07-06T01:45:35.744Z",
+      "phase": "change",
+      "kind": "scan",
+      "tokens": 1549,
+      "label": "1 files"
+    }
+  ]
+}

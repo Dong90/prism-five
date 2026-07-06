@@ -1,0 +1,1 @@
+{"title":"taiyi-bridge tests","test_plan":[{"id":"T-01","description":"readTaiyiState returns null when no state.json","status":"passed"},{"id":"T-02","description":"mapTaiyiToPipeline maps workflowStatus to productStage","status":"passed"}]}

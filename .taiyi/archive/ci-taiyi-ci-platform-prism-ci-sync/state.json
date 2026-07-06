@@ -1,0 +1,31 @@
+{
+  "slug": "ci-taiyi-ci-platform-prism-ci-sync",
+  "currentPhase": "integration",
+  "completedPhases": [
+    "change",
+    "requirement",
+    "design",
+    "task",
+    "dev",
+    "test",
+    "review",
+    "integration"
+  ],
+  "profile": "api",
+  "skippedPhases": [
+    "ui-design"
+  ],
+  "strictDev": false,
+  "autoHarness": false,
+  "complexity": {
+    "level": "low",
+    "score": 6,
+    "recommendedSkills": [
+      "taiyi-intel-scan"
+    ]
+  },
+  "auxiliaryCompleted": [],
+  "workflowStatus": "completed",
+  "createdAt": "2026-07-05T13:21:20.294Z",
+  "updatedAt": "2026-07-05T16:42:02.344Z"
+}

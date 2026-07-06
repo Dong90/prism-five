@@ -1,0 +1,22 @@
+{
+  "slug": "pipeline-json-profile-token",
+  "currentPhase": "change",
+  "completedPhases": [],
+  "profile": "api",
+  "skippedPhases": [
+    "ui-design"
+  ],
+  "strictDev": false,
+  "autoHarness": false,
+  "complexity": {
+    "level": "low",
+    "score": 3,
+    "recommendedSkills": [
+      "taiyi-intel-scan"
+    ]
+  },
+  "auxiliaryCompleted": [],
+  "workflowStatus": "active",
+  "createdAt": "2026-07-05T13:14:29.004Z",
+  "updatedAt": "2026-07-05T13:14:29.004Z"
+}

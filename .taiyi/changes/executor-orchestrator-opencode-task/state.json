@@ -1,0 +1,22 @@
+{
+  "slug": "executor-orchestrator-opencode-task",
+  "currentPhase": "change",
+  "completedPhases": [],
+  "profile": "api",
+  "skippedPhases": [
+    "ui-design"
+  ],
+  "strictDev": false,
+  "autoHarness": false,
+  "complexity": {
+    "level": "low",
+    "score": 3,
+    "recommendedSkills": [
+      "taiyi-intel-scan"
+    ]
+  },
+  "auxiliaryCompleted": [],
+  "workflowStatus": "active",
+  "createdAt": "2026-07-05T13:14:06.627Z",
+  "updatedAt": "2026-07-05T13:14:06.627Z"
+}

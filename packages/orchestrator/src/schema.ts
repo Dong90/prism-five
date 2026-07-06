@@ -1,8 +1,67 @@
 import { z } from 'zod';
 
+// ─── Profile ─────────────────────────────────────────────────
+
+/** Supported profile names. Each maps to .prism/profiles/<name>/ with 5 agent files. */
+export const ProfileNameSchema = z.enum([
+  'develop',
+  'observability',
+  'security',
+  'video',
+  'collab',
+  'experiment',
+]);
+export type ProfileName = z.infer<typeof ProfileNameSchema>;
+
+/** Token budget per agent role (in tokens). */
+export const TokenBudgetSchema = z.object({
+  prototyper: z.number().int().min(1).default(30000),
+  builder: z.number().int().min(1).default(80000),
+  sweeper: z.number().int().min(1).default(20000),
+  grower: z.number().int().min(1).default(30000),
+  maintainer: z.number().int().min(1).default(20000),
+  used: z.record(z.string(), z.number()).default({}),
+});
+export type TokenBudget = z.infer<typeof TokenBudgetSchema>;
+
+/** Artifacts that must exist for each role to pass gate. */
+export const ArtifactManifestSchema = z.record(
+  z.string(),
+  z.array(z.string()),
+);
+export type ArtifactManifest = z.infer<typeof ArtifactManifestSchema>;
+
+/** Default artifact manifest — what each role must produce. */
+export const DEFAULT_ARTIFACT_MANIFEST: ArtifactManifest = {
+  prototyper: ['raw/RESEARCH.md', 'raw/PRD.md', 'raw/INITIATE.md'],
+  builder: ['built/DESIGN.md', 'built/TASK.md'],
+  sweeper: ['swept/REVIEW.md', 'swept/INSPECT.md'],
+  grower: ['grown/ANALYZE.md'],
+  maintainer: ['live/RELEASE_CHECK.md', 'live/CHANGELOG.md'],
+};
+
 // AgentRole
 export const AgentRoleSchema = z.enum(['prototyper', 'builder', 'sweeper', 'grower', 'maintainer']);
 export type AgentRole = z.infer<typeof AgentRoleSchema>;
+
+// Profile variant — controls which roles execute
+export const ProfileVariantSchema = z.enum(['full', 'api', 'lite', 'ui', 'spike', 'micro', 'nano', 'audit']);
+export type ProfileVariant = z.infer<typeof ProfileVariantSchema>;
+
+export const VARIANT_ROLE_MAP: Record<ProfileVariant, AgentRole[]> = {
+  full: ['prototyper', 'builder', 'sweeper', 'grower', 'maintainer'],
+  api: ['prototyper', 'builder', 'sweeper', 'grower', 'maintainer'],
+  lite: ['prototyper', 'builder', 'maintainer'],
+  ui: ['prototyper', 'builder', 'sweeper', 'grower'],
+  spike: ['prototyper'],
+  micro: ['builder', 'sweeper'],
+  nano: ['prototyper'],
+  audit: ['sweeper'],
+};
+
+export function isRoleInVariant(role: AgentRole, variant: ProfileVariant): boolean {
+  return VARIANT_ROLE_MAP[variant].includes(role);
+}
 
 // FeatureState
 export const FeatureStateSchema = z.enum([
@@ -23,11 +82,12 @@ export const FeatureStateSchema = z.enum([
 ]);
 export type FeatureState = z.infer<typeof FeatureStateSchema>;
 
-// GateState
+// GateState — 5 gates: 4 human + 1 auto
 export const GateStateSchema = z.object({
   prototype_approved: z.boolean().default(false),
-  build_reviewed: z.boolean().default(false),
+  design_reviewed: z.boolean().default(false),
   sweep_passed: z.boolean().default(false),
+  review_approved: z.boolean().default(false),
   release_approved: z.boolean().default(false),
 });
 export type GateState = z.infer<typeof GateStateSchema>;
@@ -37,6 +97,8 @@ export const FeatureSchema = z.object({
   slug: z.string().min(1).max(64),
   status: FeatureStateSchema,
   currentRole: AgentRoleSchema,
+  profile: ProfileNameSchema.default('develop'),
+  variant: ProfileVariantSchema.default('full'),
   createdAt: z.string(),
   updatedAt: z.string(),
   stageHistory: z.array(
@@ -47,6 +109,14 @@ export const FeatureSchema = z.object({
     }),
   ),
   gates: GateStateSchema,
+  artifacts: z.record(z.string(), z.array(z.string())).default({}),
+  exemptions: z.array(z.object({
+    stage: AgentRoleSchema,
+    reason: z.string(),
+    createdAt: z.string(),
+    expiresAt: z.string().optional(),
+    approver: z.string().optional(),
+  })).optional(),
 });
 export type Feature = z.infer<typeof FeatureSchema>;
 
@@ -56,10 +126,13 @@ export type ProductStage = z.infer<typeof ProductStageSchema>;
 
 // PipelineState
 export const PipelineStateSchema = z.object({
-  version: z.string().default('0.1.0'),
+  version: z.string().default('0.2.0'),
   productStage: ProductStageSchema,
+  activeProfile: ProfileNameSchema.default('develop'),
   activeFeature: z.string().nullable(),
   features: z.record(z.string(), FeatureSchema),
+  tokenBudget: TokenBudgetSchema.default({}),
+  artifactManifest: ArtifactManifestSchema.default(DEFAULT_ARTIFACT_MANIFEST),
   queue: z
     .array(
       z.union([
@@ -93,34 +166,13 @@ export const AgentDefinitionSchema = z.object({
 export type AgentDefinition = z.infer<typeof AgentDefinitionSchema>;
 
 export const AGENT_MAP: Record<AgentRole, AgentDefinition> = {
-  prototyper: {
-    name: 'pentad-prototype',
-    role: 'prototyper',
-    paradigm: 'Explorer',
-    skillPath: '.pentad/agents/prototyper.md',
-  },
-  builder: {
-    name: 'pentad-build',
-    role: 'builder',
-    paradigm: 'Operator',
-    skillPath: '.pentad/agents/builder.md',
-  },
-  sweeper: {
-    name: 'pentad-sweep',
-    role: 'sweeper',
-    paradigm: 'Scout',
-    skillPath: '.pentad/agents/sweeper.md',
-  },
-  grower: {
-    name: 'pentad-grow',
-    role: 'grower',
-    paradigm: 'Analyst',
-    skillPath: '.pentad/agents/grower.md',
-  },
-  maintainer: {
-    name: 'pentad-maintain',
-    role: 'maintainer',
-    paradigm: 'Guardian',
-    skillPath: '.pentad/agents/maintainer.md',
-  },
+  prototyper: { name: 'prism-prototype', role: 'prototyper', paradigm: 'Explorer', skillPath: 'prototyper.md' },
+  builder: { name: 'prism-build', role: 'builder', paradigm: 'Operator', skillPath: 'builder.md' },
+  sweeper: { name: 'prism-sweep', role: 'sweeper', paradigm: 'Scout', skillPath: 'sweeper.md' },
+  grower: { name: 'prism-grow', role: 'grower', paradigm: 'Analyst', skillPath: 'grower.md' },
+  maintainer: { name: 'prism-maintain', role: 'maintainer', paradigm: 'Guardian', skillPath: 'maintainer.md' },
 };
+
+export function agentSkillPath(role: AgentRole, profile: ProfileName = 'develop'): string {
+  return `.prism/profiles/${profile}/${AGENT_MAP[role].skillPath}`;
+}

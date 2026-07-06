@@ -1,8 +1,8 @@
 import fs from 'fs';
 import path from 'path';
-import { PipelineStateSchema, type PipelineState } from './schema';
+import { PipelineStateSchema, DEFAULT_ARTIFACT_MANIFEST, type PipelineState } from './schema';
 
-const DEFAULT_PATH = path.resolve(process.cwd(), '.pentad/pipeline.json');
+const DEFAULT_PATH = path.resolve(process.cwd(), '.prism/pipeline.json');
 
 export function readPipeline(filePath?: string): PipelineState {
   const p = filePath ?? DEFAULT_PATH;
@@ -26,10 +26,20 @@ export function writePipeline(state: PipelineState, filePath?: string): void {
 export function createInitialState(): PipelineState {
   const now = new Date().toISOString();
   return {
-    version: '0.1.0',
+    version: '0.2.0',
     productStage: 'exploring',
+    activeProfile: 'develop',
     activeFeature: null,
     features: {},
+    tokenBudget: {
+      prototyper: 30000,
+      builder: 80000,
+      sweeper: 20000,
+      grower: 30000,
+      maintainer: 20000,
+      used: {},
+    },
+    artifactManifest: DEFAULT_ARTIFACT_MANIFEST,
     queue: [],
     updated: now,
   };

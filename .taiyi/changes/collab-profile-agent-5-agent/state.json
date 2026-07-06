@@ -1,0 +1,22 @@
+{
+  "slug": "collab-profile-agent-5-agent",
+  "currentPhase": "change",
+  "completedPhases": [],
+  "profile": "api",
+  "skippedPhases": [
+    "ui-design"
+  ],
+  "strictDev": false,
+  "autoHarness": false,
+  "complexity": {
+    "level": "low",
+    "score": 3,
+    "recommendedSkills": [
+      "taiyi-intel-scan"
+    ]
+  },
+  "auxiliaryCompleted": [],
+  "workflowStatus": "active",
+  "createdAt": "2026-07-05T13:14:21.842Z",
+  "updatedAt": "2026-07-05T13:14:21.842Z"
+}

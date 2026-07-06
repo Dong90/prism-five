@@ -1,0 +1,13 @@
+{
+  "title": "M15 Token Integration",
+  "changelog_entries": [
+    {
+      "type": "feat",
+      "description": "M15: add TokenBudget class with track/check/usage/bump/estimate for per-role token management"
+    },
+    {
+      "type": "feat",
+      "description": "M15: pipeline.continue() integrated token budget check \u2014 exceeds quota \u2192 gate blocked"
+    }
+  ]
+}

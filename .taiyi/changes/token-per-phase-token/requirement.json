@@ -1,0 +1,122 @@
+{
+  "title": "M15 Token \u7ba1\u7406\u9700\u6c42",
+  "one_liner": "TokenBudget \u6a21\u5757\u63d0\u4f9b per-role token \u8ffd\u8e2a\u3001\u8d85\u9650\u62e6\u622a\u548c\u4f7f\u7528\u5206\u6790",
+  "user_stories": [
+    {
+      "as_a": "\u5f00\u53d1\u8005",
+      "i_want": "\u6bcf\u4e2a feature \u7684 token \u6d88\u8017\u81ea\u52a8\u8bb0\u5f55",
+      "so_that": "\u4e86\u89e3\u5404 feature \u7684\u6210\u672c",
+      "priority": "P0"
+    },
+    {
+      "as_a": "AI Agent",
+      "i_want": "\u8d85\u914d\u989d\u65f6\u81ea\u52a8\u505c\u6b62\u6267\u884c",
+      "so_that": "\u4e0d\u4f1a\u65e0\u9650\u6d88\u8017 token \u8d85\u51fa\u9884\u7b97",
+      "priority": "P0"
+    },
+    {
+      "as_a": "PM",
+      "i_want": "\u67e5\u8be2\u5404 feature \u7684 token \u4f7f\u7528\u5206\u5e03",
+      "so_that": "\u8bc4\u4f30\u6210\u672c\u5e76\u4f18\u5316\u9884\u7b97\u5206\u914d",
+      "priority": "P1"
+    }
+  ],
+  "scope_v1": [
+    "TokenBudget.track(slug,role,amount) \u8bb0\u5f55\u6d88\u8017",
+    "TokenBudget.check(slug,role) \u8d85\u9650\u68c0\u67e5",
+    "TokenBudget.usage(slug) \u4f7f\u7528\u5206\u6790",
+    "TokenBudget.bump(slug,amount) \u8ffd\u52a0\u914d\u989d",
+    "pipeline.continue() \u96c6\u6210\u8d85\u9650\u95e8\u7981"
+  ],
+  "scope_v2": [
+    "CLI \u4ea4\u4e92\u754c\u9762\uff08prism token status/scan \u2014\u2014 M5 \u7edf\u4e00\u5b9e\u73b0\uff09",
+    "Token \u538b\u7f29\u7f16\u6392\uff08\u540e\u7eed change\uff09"
+  ],
+  "scope_out": [
+    "\u4e0e LLM provider \u7684\u5b9e\u9645 token API \u96c6\u6210",
+    "\u8de8 feature \u8d8b\u52bf\u5206\u6790",
+    "UI \u4eea\u8868\u76d8"
+  ],
+  "functional_requirements": [
+    {
+      "module": "token-budget.ts",
+      "items": [
+        {
+          "id": "FR-T01",
+          "description": "track(slug,role,amount) \u66f4\u65b0 pipeline.json tokenBudget.used"
+        },
+        {
+          "id": "FR-T02",
+          "description": "check(slug,role) \u6bd4\u8f83 used vs quota, \u8d85\u9650\u8fd4\u56de blocked+reason"
+        },
+        {
+          "id": "FR-T03",
+          "description": "usage(slug) \u8fd4\u56de {total,byRole,quota}"
+        },
+        {
+          "id": "FR-T04",
+          "description": "bump(slug,amount) \u8ffd\u52a0\u914d\u989d"
+        },
+        {
+          "id": "FR-T05",
+          "description": "estimate(text) \u542f\u53d1\u5f0f\u4f30\u7b97 token \u6570\uff08\u5b57\u7b26\u6570/4\uff09"
+        }
+      ]
+    },
+    {
+      "module": "pipeline.ts",
+      "items": [
+        {
+          "id": "FR-P01",
+          "description": "continue() \u524d\u8c03\u7528 check(), \u8d85\u9650 \u2192 gate blocked"
+        }
+      ]
+    }
+  ],
+  "non_functional": {
+    "performance": [
+      {
+        "id": "NFR-P01",
+        "description": "track() \u64cd\u4f5c < 5ms\uff08\u7eaf\u5185\u5b58\u64cd\u4f5c\uff09"
+      }
+    ],
+    "security": []
+  },
+  "acceptance_criteria": [
+    {
+      "id": "AC-01",
+      "description": "track() \u5199\u5165 pipeline.json used \u5b57\u6bb5\u4e14\u53ef\u901a\u8fc7 readPipeline \u8bfb\u53d6",
+      "is_checked": false
+    },
+    {
+      "id": "AC-02",
+      "description": "check() \u914d\u989d\u8017\u5c3d\u8fd4\u56de {passed:false, reason:\"token exceeded\"}",
+      "is_checked": false
+    },
+    {
+      "id": "AC-03",
+      "description": "check() \u914d\u989d\u5145\u8db3\u8fd4\u56de {passed:true}",
+      "is_checked": false
+    },
+    {
+      "id": "AC-04",
+      "description": "usage() \u8fd4\u56de per-role \u6d88\u8017\u548c\u914d\u989d",
+      "is_checked": false
+    },
+    {
+      "id": "AC-05",
+      "description": "bump() \u8ffd\u52a0\u914d\u989d\u540e check() \u53d8\u4e3a passed",
+      "is_checked": false
+    },
+    {
+      "id": "AC-06",
+      "description": "pipeline.continue() \u8d85\u9650\u65f6 gate blocked",
+      "is_checked": false
+    },
+    {
+      "id": "AC-07",
+      "description": "npm test \u901a\u8fc7\uff0c\u65b0\u589e\u8986\u76d6\u7387 >= 80%",
+      "is_checked": false
+    }
+  ]
+}

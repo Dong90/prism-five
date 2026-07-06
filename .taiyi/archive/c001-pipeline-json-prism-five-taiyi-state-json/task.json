@@ -1,0 +1,1 @@
+{"title":"C001实现","total_slices":2,"slices":[{"id":"S1","description":"新建 taiyi-bridge.ts+state.ts双路径","write_files":["packages/orchestrator/src/taiyi-bridge.ts"],"test_command":"npx vitest run","time_estimate":"15min"},{"id":"S2","description":"测试双路径读取+fallback","write_files":["tests"],"test_command":"npx vitest run","time_estimate":"10min","dependencies":"S1"}]}

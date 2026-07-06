@@ -1,0 +1,22 @@
+{
+  "slug": "profile-variant-ui-spike-micro-nano-audit",
+  "currentPhase": "change",
+  "completedPhases": [],
+  "profile": "api",
+  "skippedPhases": [
+    "ui-design"
+  ],
+  "strictDev": false,
+  "autoHarness": false,
+  "complexity": {
+    "level": "low",
+    "score": 3,
+    "recommendedSkills": [
+      "taiyi-intel-scan"
+    ]
+  },
+  "auxiliaryCompleted": [],
+  "workflowStatus": "active",
+  "createdAt": "2026-07-05T13:29:05.636Z",
+  "updatedAt": "2026-07-05T13:29:05.636Z"
+}

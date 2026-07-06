@@ -1,0 +1,25 @@
+{
+  "title": "M14 test: context / learnings / memory",
+  "test_plan": [
+    {
+      "id": "T-01",
+      "description": "context.test.ts: saveContext/loadContext roundtrip + edge cases (5 tests)",
+      "status": "passed"
+    },
+    {
+      "id": "T-02",
+      "description": "learnings.test.ts: add/list with category filter (4 tests)",
+      "status": "passed"
+    },
+    {
+      "id": "T-03",
+      "description": "memory.test.ts: CRUD + backup mechanism (5 tests)",
+      "status": "passed"
+    },
+    {
+      "id": "T-04",
+      "description": "Full regression: 129 tests across 20 files, all green",
+      "status": "passed"
+    }
+  ]
+}

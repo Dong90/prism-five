@@ -1,0 +1,22 @@
+{
+  "slug": "pre-flight-agent-md-pre-flight",
+  "currentPhase": "change",
+  "completedPhases": [],
+  "profile": "api",
+  "skippedPhases": [
+    "ui-design"
+  ],
+  "strictDev": false,
+  "autoHarness": false,
+  "complexity": {
+    "level": "low",
+    "score": 3,
+    "recommendedSkills": [
+      "taiyi-intel-scan"
+    ]
+  },
+  "auxiliaryCompleted": [],
+  "workflowStatus": "active",
+  "createdAt": "2026-07-05T13:38:18.383Z",
+  "updatedAt": "2026-07-05T13:38:18.383Z"
+}

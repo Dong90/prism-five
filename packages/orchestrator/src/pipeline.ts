@@ -5,9 +5,14 @@ import {
   type FeatureState,
   nextRole,
   AGENT_MAP,
+  DEFAULT_ARTIFACT_MANIFEST,
 } from './schema';
 import { readPipeline, writePipeline, createInitialState } from './state';
 import { checkAutoGate, type GateResult } from './gate';
+import { saveCheckpoint } from './checkpoint';
+import { writeActivity } from './logger';
+import { saveContext } from './context';
+import { TokenBudget } from './token-budget';
 
 // Status transition map — role completed → status for next role
 const STATUS_MAP: Record<AgentRole, FeatureState> = {
@@ -23,7 +28,7 @@ export class Pipeline {
   private statePath: string;
 
   constructor(statePath?: string) {
-    this.statePath = statePath ?? '.pentad/pipeline.json';
+    this.statePath = statePath ?? '.prism/pipeline.json';
     try {
       this.state = readPipeline(this.statePath);
     } catch {
@@ -36,7 +41,11 @@ export class Pipeline {
     return this.state;
   }
 
-  createFeature(slug: string): Feature {
+  persist(): void {
+    writePipeline(this.state, this.statePath);
+  }
+
+  createFeature(slug: string, profile: string = 'develop', variant: string = 'full'): Feature {
     if (this.state.features[slug]) {
       throw new Error(`feature "${slug}" already exists`);
     }
@@ -45,20 +54,20 @@ export class Pipeline {
       slug,
       status: 'draft',
       currentRole: 'prototyper',
+      profile: profile as Feature['profile'],
+      variant: variant as Feature['variant'],
       createdAt: now,
       updatedAt: now,
       stageHistory: [{ role: 'prototyper', enteredAt: now }],
-      gates: {
-        prototype_approved: false,
-        build_reviewed: false,
-        sweep_passed: false,
-        release_approved: false,
-      },
+      gates: { prototype_approved: false, design_reviewed: false, sweep_passed: false, review_approved: false, release_approved: false },
+      artifacts: {},
     };
     this.state.features[slug] = feature;
     this.state.activeFeature = slug;
     this.state.queue.push(slug);
     writePipeline(this.state, this.statePath);
+    writeActivity({ event: 'feature_created', slug, role: 'prototyper', timestamp: now, result: 'success' });
+    try { saveContext(feature); } catch { /* context save is best-effort */ }
     return feature;
   }
 
@@ -75,42 +84,54 @@ export class Pipeline {
     const feature = this.state.features[slug];
     if (!feature) throw new Error(`feature "${slug}" not found`);
 
-    // Human gate: prototype_approved
+    // Human gate: prototype_approved (prototyper → builder)
     if (feature.currentRole === 'prototyper' && !feature.gates.prototype_approved) {
-      return {
-        feature,
-        nextRole: null,
-        gate: {
-          passed: false,
-          reason: 'human gate: prototype_approved required',
-          requiresHuman: true,
-        },
-      };
+      return { feature, nextRole: null, gate: { passed: false, reason: 'human gate: prototype_approved required', requiresHuman: true } };
+    }
+
+    // Human gate: design_reviewed (builder → sweeper)
+    if (feature.currentRole === 'builder' && !feature.gates.design_reviewed) {
+      return { feature, nextRole: null, gate: { passed: false, reason: 'human gate: design_reviewed required', requiresHuman: true } };
+    }
+
+    // Human gate: review_approved (grower → maintainer)
+    if (feature.currentRole === 'grower' && !feature.gates.review_approved) {
+      return { feature, nextRole: null, gate: { passed: false, reason: 'human gate: review_approved required', requiresHuman: true } };
     }
 
     // Human gate: release_approved (maintainer → live)
     if (feature.currentRole === 'maintainer' && !feature.gates.release_approved) {
-      return {
-        feature,
-        nextRole: null,
-        gate: {
-          passed: false,
-          reason: 'human gate: release_approved required',
-          requiresHuman: true,
-        },
-      };
+      return { feature, nextRole: null, gate: { passed: false, reason: 'human gate: release_approved required', requiresHuman: true } };
+    }
+
+    // Token budget check
+    const tokenBudget = new TokenBudget(this);
+    const tokenCheck = tokenBudget.check(slug, feature.currentRole);
+    if (!tokenCheck.passed) {
+      writeActivity({ event: 'gate_blocked', slug, role: feature.currentRole, timestamp: new Date().toISOString(), result: 'blocked', reason: tokenCheck.reason });
+      return { feature, nextRole: null, gate: { passed: false, reason: tokenCheck.reason!, requiresHuman: false } };
     }
 
     // Auto gate
     const autoGate = checkAutoGate(feature);
     if (!autoGate.passed) {
+      writeActivity({ event: 'gate_blocked', slug, role: feature.currentRole, timestamp: new Date().toISOString(), result: 'blocked', reason: autoGate.reason });
       return { feature, nextRole: null, gate: autoGate };
+    }
+
+    // Track artifacts on gate pass
+    const expectedArtifacts = DEFAULT_ARTIFACT_MANIFEST[feature.currentRole];
+    if (expectedArtifacts) {
+      for (const artifact of expectedArtifacts) {
+        if (!feature.artifacts[artifact]) feature.artifacts[artifact] = ['auto'];
+      }
     }
 
     const currentRole = feature.currentRole;
     const next = nextRole(currentRole);
 
     if (next) {
+      writeActivity({ event: 'role_advanced', slug, role: next, timestamp: new Date().toISOString(), result: 'success' });
       const now = new Date().toISOString();
       const currentStage = feature.stageHistory.find(s => s.role === currentRole && !s.completedAt);
       if (currentStage) currentStage.completedAt = now;
@@ -128,6 +149,8 @@ export class Pipeline {
     }
 
     writePipeline(this.state, this.statePath);
+    saveCheckpoint(feature);
+    try { saveContext(feature); } catch { /* context save is best-effort */ }
     return { feature, nextRole: next, gate: { passed: true, requiresHuman: false } };
   }
 
@@ -138,7 +161,7 @@ export class Pipeline {
     return `[${f.slug}] role=${f.currentRole}(${agentDef.paradigm}) status=${f.status} stage=${this.state.productStage}`;
   }
 
-  approveGate(slug: string, gateName: 'prototype_approved' | 'release_approved'): Feature {
+  approveGate(slug: string, gateName: keyof Feature['gates']): Feature {
     const feature = this.state.features[slug];
     if (!feature) throw new Error(`feature "${slug}" not found`);
     feature.gates[gateName] = true;

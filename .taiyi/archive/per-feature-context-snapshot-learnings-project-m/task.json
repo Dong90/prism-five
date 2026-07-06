@@ -1,0 +1,67 @@
+{
+  "title": "M14 任务拆解：context / learnings / memory 三模块实现",
+  "slices": [
+    {
+      "id": "S1",
+      "label": "context.ts — per-feature CONTEXT.md 生成与读取",
+      "description": "新增 context.ts：saveContext(feature) 生成 CONTEXT.md；loadContext(slug) 解析为结构化对象",
+      "time_estimate": "30min",
+      "read_files": ["packages/orchestrator/src/schema.ts", "packages/orchestrator/src/checkpoint.ts"],
+      "write_files": ["packages/orchestrator/src/context.ts", "packages/orchestrator/src/context.test.ts"],
+      "dependencies": "无",
+      "parallelizable": true
+    },
+    {
+      "id": "S2",
+      "label": "learnings.ts — LEARNINGS.md 读写",
+      "description": "新增 learnings.ts：add(entry) append-only 写 LEARNINGS.md；list(filter?) 查询。add() 自动写 activity.jsonl",
+      "time_estimate": "20min",
+      "read_files": ["packages/orchestrator/src/logger.ts"],
+      "write_files": ["packages/orchestrator/src/learnings.ts", "packages/orchestrator/src/learnings.test.ts"],
+      "dependencies": "无",
+      "parallelizable": true
+    },
+    {
+      "id": "S3",
+      "label": "memory.ts — project-memory.json 读写（含备份）",
+      "description": "新增 memory.ts：write/read/delete，写前备份 memory.backup.json，主文件损坏自动 fallback，Zod 验证",
+      "time_estimate": "30min",
+      "read_files": ["packages/orchestrator/src/schema.ts", "packages/orchestrator/src/state.ts"],
+      "write_files": ["packages/orchestrator/src/memory.ts", "packages/orchestrator/src/memory.test.ts"],
+      "dependencies": "无",
+      "parallelizable": true
+    },
+    {
+      "id": "S4",
+      "label": "pipeline.ts 集成 — createFeature/continue 自动写 CONTEXT.md",
+      "description": "修改 pipeline.ts：createFeature/continue 中 try/catch 调用 saveContext()，失败不抛异常",
+      "time_estimate": "20min",
+      "read_files": ["packages/orchestrator/src/pipeline.ts", "packages/orchestrator/src/context.ts"],
+      "write_files": ["packages/orchestrator/src/pipeline.ts"],
+      "dependencies": "S1",
+      "parallelizable": false
+    },
+    {
+      "id": "S5",
+      "label": "index.ts 导出 + 全量测试通过",
+      "description": "修改 index.ts 导出新模块；npm test 全量通过",
+      "time_estimate": "15min",
+      "read_files": ["packages/orchestrator/src/index.ts"],
+      "write_files": ["packages/orchestrator/src/index.ts"],
+      "dependencies": "S1, S2, S3, S4",
+      "parallelizable": false
+    }
+  ],
+  "waves": [
+    { "name": "Wave 1 — 新模块", "slices": [ { "slice_id": "S1", "description": "context.ts" }, { "slice_id": "S2", "description": "learnings.ts" }, { "slice_id": "S3", "description": "memory.ts" } ] },
+    { "name": "Wave 2 — 集成", "slices": [ { "slice_id": "S4", "description": "pipeline 集成" } ] },
+    { "name": "Wave 3 — 导出 + 测试", "slices": [ { "slice_id": "S5", "description": "导出新模块并运行全量回归测试" } ] }
+  ],
+  "slice_risks": [
+    { "slice": "S4", "risk": "pipeline 集成可能破坏已有 continue() 行为", "mitigation": "try/catch 包裹，回归现有测试", "probability": "low" }
+  ],
+  "slice_rollbacks": [
+    { "slice": "S4", "rollback": "删除 import 和 context 调用行", "time": "2min", "data_impact": "无— CONTEXT.md 遗留文件无副作用" },
+    { "slice": "S5", "rollback": "删除新增 export 语句", "time": "1min", "data_impact": "无" }
+  ]
+}
