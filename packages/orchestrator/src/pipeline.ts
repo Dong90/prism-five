@@ -11,6 +11,7 @@ import { readPipeline, writePipeline, createInitialState } from './state';
 import { checkAutoGate, type GateResult } from './gate';
 import { saveCheckpoint } from './checkpoint';
 import { writeActivity } from './logger';
+import { saveContext } from './context';
 
 // Status transition map — role completed → status for next role
 const STATUS_MAP: Record<AgentRole, FeatureState> = {
@@ -65,6 +66,7 @@ export class Pipeline {
     this.state.queue.push(slug);
     writePipeline(this.state, this.statePath);
     writeActivity({ event: 'feature_created', slug, role: 'prototyper', timestamp: now, result: 'success' });
+    try { saveContext(feature); } catch { /* context save is best-effort */ }
     return feature;
   }
 
@@ -139,6 +141,7 @@ export class Pipeline {
 
     writePipeline(this.state, this.statePath);
     saveCheckpoint(feature);
+    try { saveContext(feature); } catch { /* context save is best-effort */ }
     return { feature, nextRole: next, gate: { passed: true, requiresHuman: false } };
   }
 

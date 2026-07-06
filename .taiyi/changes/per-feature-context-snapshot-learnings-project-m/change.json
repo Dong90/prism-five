@@ -1,0 +1,99 @@
+{
+  "title": "M14 状态扩展：per-feature context snapshot + LEARNINGS + project memory",
+  "motivation": "当前 Prism 缺乏三种关键状态持久化能力：(1) 跨会话恢复时只能靠 checkpoint.json 恢复 pipeline 状态，但缺少人类可读的上下文摘要（当前 role、已产出工件、阻塞项、下一步），导致复工成本高；(2) 跨 feature 的经验积累完全依赖开发者记忆，没有持久化的失败模式/成功模式/可复用方案记录；(3) 技术栈、惯例、项目约束等全局信息散落在各个文档和开发者头脑中，没有结构化的机器可读存储。TaiyiForge 已有 CONTEXT.md per change、LEARNINGS.md、project-memory.json 三项能力，需吸收为 Prism 原生模块。",
+  "scope": {
+    "includes": [
+      "M14a: 新增 context.ts，为每个 feature 生成/更新 CONTEXT.md（当前 role、已产出工件、阻塞项、下一步 action）",
+      "M14b: 新增 learnings.ts，跨 feature 学习积累（失败模式、成功模式、可复用方案），读/写 .prism/LEARNINGS.md",
+      "M14c: 新增 memory.ts，project memory 持久化（技术栈、惯例、约束），读/写 .prism/project-memory.json",
+      "pipeline.ts continue() 和 persist() 集成 context snapshot 自动更新",
+      "prism learnings 和 prism memory CLI 子命令注册入口",
+      "TypeScript 类型定义和 Zod schema 验证",
+      "单元测试覆盖 80%+"
+    ],
+    "excludes": [
+      "CLI 用户交互界面（prism context/learnings/memory 完整命令由 M5 统一实现）",
+      "LEARNINGS 自动推理/模式发现（仅提供读写 API，不包含 AI 分析）",
+      "project memory 的自动采集（仅提供读写 API，由 agent 调用）",
+      "跨项目 memory 同步",
+      "UI 相关功能（api profile 跳过 ui-design）"
+    ]
+  },
+  "success_criteria": [
+    {
+      "id": "AC-01",
+      "description": "context.saveContext(feature) 在 .prism/features/<slug>/CONTEXT.md 生成包含当前 role、已产出工件、阻塞项、下一步的可读摘要",
+      "is_checked": false
+    },
+    {
+      "id": "AC-02",
+      "description": "context.loadContext(slug) 返回结构化 Context 对象",
+      "is_checked": false
+    },
+    {
+      "id": "AC-03",
+      "description": "learnings.add(entry) 追加到 .prism/LEARNINGS.md，learnings.list() 返回所有条目，支持按分类过滤",
+      "is_checked": false
+    },
+    {
+      "id": "AC-04",
+      "description": "memory.write(key, value) 写入 .prism/project-memory.json，memory.read(key) 读取，schema 验证通过",
+      "is_checked": false
+    },
+    {
+      "id": "AC-05",
+      "description": "pipeline.continue() 自动调用 context.saveContext() 保存上下文快照",
+      "is_checked": false
+    },
+    {
+      "id": "AC-06",
+      "description": "pipeline.createFeature() 自动创建 feature CONTEXT.md 初始文件",
+      "is_checked": false
+    },
+    {
+      "id": "AC-07",
+      "description": "learnings.add() 和 memory.write() 操作自动记录到 activity.jsonl 审计日志",
+      "is_checked": false
+    },
+    {
+      "id": "AC-08",
+      "description": "npm test 通过，新增模块测试覆盖率 >= 80%",
+      "is_checked": false
+    }
+  ],
+  "do_nothing_cost": "跨会话复工时每次需重读代码和文档重建上下文，人均约 5-10 分钟；跨 feature 经验无法积累，同类问题反复出现；项目约束和技术栈信息散落，新加入者或 AI agent 需要额外搜索",
+  "target_state": "每个 feature 有 CONTEXT.md 人类可读摘要；全局 LEARNINGS.md 积累跨 feature 经验；project-memory.json 持久化技术栈/惯例/约束。pipeline.continue() 自动更新 context，CLI 命令可查询 learnings/memory",
+  "risks": [
+    {
+      "risk": "CONTEXT.md 与 checkpoint.json 数据可能不同步",
+      "probability": "low",
+      "impact": "复工时看到过期上下文导致误判",
+      "mitigation": "pipeline.continue() 中先更新 checkpoint 再生成 CONTEXT.md，保证同一事务内完成；提供 context.sync(slug) 手动同步工具函数"
+    },
+    {
+      "risk": "LEARNINGS.md 文件在并发写入时可能丢失数据",
+      "probability": "low",
+      "impact": "部分学习条目未持久化",
+      "mitigation": "使用 append-only 写模式；高频写入场景由调用方控制"
+    },
+    {
+      "risk": "project-memory.json 写入失败导致数据丢失",
+      "probability": "low",
+      "impact": "项目配置重建需要手动配置",
+      "mitigation": "写入前先备份（memory.backup.json），写入成功后删除备份；读时优先读主文件，主文件损坏时自动回退到备份"
+    }
+  ],
+  "impact_map": [
+    { "module": "packages/orchestrator/src/context.ts (new)", "impact": "新增：CONTEXT.md 生成/读取", "owner": "shixiaocai" },
+    { "module": "packages/orchestrator/src/learnings.ts (new)", "impact": "新增：LEARNINGS.md 读写", "owner": "shixiaocai" },
+    { "module": "packages/orchestrator/src/memory.ts (new)", "impact": "新增：project-memory.json 读写", "owner": "shixiaocai" },
+    { "module": "packages/orchestrator/src/pipeline.ts", "impact": "修改：continue() 和 createFeature() 集成 context 调用", "owner": "shixiaocai" },
+    { "module": "packages/orchestrator/src/index.ts", "impact": "修改：导出新模块", "owner": "shixiaocai" },
+    { "module": ".prism/features/<slug>/CONTEXT.md (new)", "impact": "新增：运行时产物", "owner": "shixiaocai" },
+    { "module": ".prism/LEARNINGS.md (new)", "impact": "新增：运行时产物", "owner": "shixiaocai" },
+    { "module": ".prism/project-memory.json (new)", "impact": "新增：运行时产物", "owner": "shixiaocai" }
+  ],
+  "stakeholders": [
+    { "role": "PM", "name": "shixiaocai", "needs": "跨会话复工零信息损失；跨 feature 经验可积累查询" }
+  ]
+}

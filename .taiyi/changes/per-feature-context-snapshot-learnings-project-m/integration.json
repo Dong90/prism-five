@@ -1,0 +1,20 @@
+{
+  "title": "M14 Integration: context / learnings / memory",
+  "changelog_entries": [
+    {
+      "type": "feat",
+      "description": "M14: add per-feature context snapshot (context.ts) \u2014 CONTEXT.md auto-generated on createFeature/continue"
+    },
+    {
+      "type": "feat",
+      "description": "M14: add cross-feature learning accumulation (learnings.ts) \u2014 LEARNINGS.md append-only with activity audit"
+    },
+    {
+      "type": "feat",
+      "description": "M14: add project memory persistence (memory.ts) \u2014 project-memory.json with backup mechanism and Zod validation"
+    }
+  ],
+  "release_version": "0.3.0",
+  "release_date": "2026-07-06",
+  "status": "ready"
+}

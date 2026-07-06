@@ -13,3 +13,6 @@ export { saveCheckpoint, loadCheckpoint, deleteCheckpoint, type Checkpoint } fro
 export { checkHarness, type HarnessCheck, type HarnessResult } from './harness';
 export { planFromDoc, type PlanFeature, type PlanResult } from './plan';
 export { syncSkills, type Platform } from './ci';
+export { saveContext, loadContext, type Context } from './context';
+export { addLearning, listLearnings, type LearningEntry } from './learnings';
+export { writeMemory, readMemory, deleteMemory } from './memory';

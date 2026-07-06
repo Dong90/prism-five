@@ -1,0 +1,54 @@
+{
+  "title": "M14 技术设计：三模块状态扩展（context / learnings / memory）",
+  "options": [
+    {
+      "id": "A",
+      "name": "三个独立模块 + markdown 文件存储",
+      "pros": [
+        "职责单一，与现有模块化风格一致",
+        "Markdown 人类可读，CONTEXT.md/LEARNINGS.md 可直接用编辑器查看",
+        "Append-only 写模式简单安全，无需并发锁",
+        "零新依赖，纯 Node.js fs API"
+      ],
+      "cons": [
+        "Markdown 解析需正则/字符串分割，不如 JSON.parse 精确",
+        "project-memory.json 需要额外备份机制防写坏"
+      ],
+      "cost": "250 LOC"
+    },
+    {
+      "id": "B",
+      "name": "统一 StateManager + SQLite 本地数据库",
+      "pros": [
+        "统一接口，一处读写所有状态",
+        "SQLite 自带事务和并发安全",
+        "结构化查询（按 category/tag 过滤 learnings）"
+      ],
+      "cons": [
+        "引入 better-sqlite3 依赖，增加原生编译复杂度",
+        "与现有 checkpoint.json/activity.jsonl 文件模式不一致",
+        "数据量 < 1MB，SQLite 过度设计"
+      ],
+      "cost": "500 LOC + better-sqlite3"
+    }
+  ],
+  "decision": {
+    "chosen": "A",
+    "reason": "与现有 checkpoint.ts/logger.ts/audit.ts 文件持久化模式一致，零新依赖，Markdown 格式适合人类直接阅读，append-only 写模式简单可靠。SQLite 对本场景过度设计。"
+  },
+  "techStack": {
+    "selected": "TypeScript + Node.js fs/path + Zod",
+    "reason": "与现有 orchestrator 技术栈完全一致，零新依赖"
+  },
+  "existingArchitecture": {
+    "touchedModules": [
+      "packages/orchestrator/src/pipeline.ts — createFeature()/continue() 中 try/catch 调用 context.saveContext()",
+      "packages/orchestrator/src/index.ts — 导出新模块"
+    ],
+    "newModules": [
+      "packages/orchestrator/src/context.ts — per-feature CONTEXT.md 读写",
+      "packages/orchestrator/src/learnings.ts — LEARNINGS.md 读写",
+      "packages/orchestrator/src/memory.ts — project-memory.json 读写"
+    ]
+  }
+}
