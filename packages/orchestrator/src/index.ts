@@ -16,3 +16,4 @@ export { syncSkills, type Platform } from './ci';
 export { saveContext, loadContext, type Context } from './context';
 export { addLearning, listLearnings, type LearningEntry } from './learnings';
 export { writeMemory, readMemory, deleteMemory } from './memory';
+export { TokenBudget, type TokenCheckResult, type TokenUsage } from "./token-budget";

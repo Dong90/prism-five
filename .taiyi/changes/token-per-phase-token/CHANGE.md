@@ -1,4 +1,3 @@
-<!-- taiyi:seed-template -->
 # CHANGE: token 预算系统：per-phase token 追踪与超限告警
 
 ## Motivation

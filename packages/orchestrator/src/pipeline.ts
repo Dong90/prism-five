@@ -12,6 +12,7 @@ import { checkAutoGate, type GateResult } from './gate';
 import { saveCheckpoint } from './checkpoint';
 import { writeActivity } from './logger';
 import { saveContext } from './context';
+import { TokenBudget } from './token-budget';
 
 // Status transition map — role completed → status for next role
 const STATUS_MAP: Record<AgentRole, FeatureState> = {
@@ -101,6 +102,14 @@ export class Pipeline {
     // Human gate: release_approved (maintainer → live)
     if (feature.currentRole === 'maintainer' && !feature.gates.release_approved) {
       return { feature, nextRole: null, gate: { passed: false, reason: 'human gate: release_approved required', requiresHuman: true } };
+    }
+
+    // Token budget check
+    const tokenBudget = new TokenBudget(this);
+    const tokenCheck = tokenBudget.check(slug, feature.currentRole);
+    if (!tokenCheck.passed) {
+      writeActivity({ event: 'gate_blocked', slug, role: feature.currentRole, timestamp: new Date().toISOString(), result: 'blocked', reason: tokenCheck.reason });
+      return { feature, nextRole: null, gate: { passed: false, reason: tokenCheck.reason!, requiresHuman: false } };
     }
 
     // Auto gate

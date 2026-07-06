@@ -1,7 +1,15 @@
 {
   "slug": "token-per-phase-token",
-  "currentPhase": "change",
-  "completedPhases": [],
+  "currentPhase": "integration",
+  "completedPhases": [
+    "change",
+    "requirement",
+    "design",
+    "task",
+    "dev",
+    "test",
+    "review"
+  ],
   "profile": "api",
   "skippedPhases": [
     "ui-design"
@@ -18,5 +26,6 @@
   "auxiliaryCompleted": [],
   "workflowStatus": "active",
   "createdAt": "2026-07-05T13:14:27.788Z",
-  "updatedAt": "2026-07-05T13:14:27.788Z"
+  "updatedAt": "2026-07-06T03:18:51.980Z",
+  "version": 12
 }
