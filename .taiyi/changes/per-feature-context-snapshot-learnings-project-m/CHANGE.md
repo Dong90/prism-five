@@ -92,14 +92,14 @@ downstream: [requirement]
 > **[ALL]** Goal: 定义"做完"的客观标准 | Inputs: Step1目标
 <!-- Action: SC-XX编号，可度量可验证。完成后勾选 -->
 
-- [ ] **AC-01**: context.saveContext(feature) 在 .prism/features/<slug>/CONTEXT.md 生成包含当前 role、已产出工件、阻塞项、下一步的可读摘要
-- [ ] **AC-02**: context.loadContext(slug) 返回结构化 Context 对象
-- [ ] **AC-03**: learnings.add(entry) 追加到 .prism/LEARNINGS.md，learnings.list() 返回所有条目，支持按分类过滤
-- [ ] **AC-04**: memory.write(key, value) 写入 .prism/project-memory.json，memory.read(key) 读取，schema 验证通过
-- [ ] **AC-05**: pipeline.continue() 自动调用 context.saveContext() 保存上下文快照
-- [ ] **AC-06**: pipeline.createFeature() 自动创建 feature CONTEXT.md 初始文件
-- [ ] **AC-07**: learnings.add() 和 memory.write() 操作自动记录到 activity.jsonl 审计日志
-- [ ] **AC-08**: npm test 通过，新增模块测试覆盖率 >= 80%
+- [x] **AC-01**: context.saveContext(feature) 在 .prism/features/<slug>/CONTEXT.md 生成包含当前 role、已产出工件、阻塞项、下一步的可读摘要
+- [x] **AC-02**: context.loadContext(slug) 返回结构化 Context 对象
+- [x] **AC-03**: learnings.add(entry) 追加到 .prism/LEARNINGS.md，learnings.list() 返回所有条目，支持按分类过滤
+- [x] **AC-04**: memory.write(key, value) 写入 .prism/project-memory.json，memory.read(key) 读取，schema 验证通过
+- [x] **AC-05**: pipeline.continue() 自动调用 context.saveContext() 保存上下文快照
+- [x] **AC-06**: pipeline.createFeature() 自动创建 feature CONTEXT.md 初始文件
+- [x] **AC-07**: learnings.add() 和 memory.write() 操作自动记录到 activity.jsonl 审计日志
+- [x] **AC-08**: npm test 通过，新增模块测试覆盖率 >= 80%
 
 <!-- Validate: 每条可客观度量(数字/百分比/布尔)？ -->
 

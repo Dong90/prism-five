@@ -518,3 +518,78 @@ dev, test] downstream: []
 - ⬜ [H] S7 监控覆盖所有SC
 - ⬜ 上下游已通知
 - ⬜ Release已标注
+
+
+<!-- taiyi:ci-taiyi-ci-platform-prism-ci-sync --> 2026-07-05
+# CHANGELOG: 多平台 CI 同步 — taiyi_ci_platform 迁移为 prism ci sync
+
+## Added
+
+- …
+
+## Changed
+
+- …
+
+## Fixed
+
+- …
+
+## Docs / Skills
+
+- [ ] README / AGENTS.md 已同步（若对外行为变化）
+- [ ] OpenSpec / 规格已 archive（若适用）
+
+## Rollback
+
+<!-- 如何回滚本次变更 -->
+
+
+<!-- taiyi:cli-prism-cancel-list-doctor-guide-check-sync-in --> 2026-07-05
+# CHANGELOG: CLI 补齐 — prism cancel/list/doctor/guide/check/sync/init
+
+## Added
+
+- …
+
+## Changed
+
+- …
+
+## Fixed
+
+- …
+
+## Docs / Skills
+
+- [ ] README / AGENTS.md 已同步（若对外行为变化）
+- [ ] OpenSpec / 规格已 archive（若适用）
+
+## Rollback
+
+<!-- 如何回滚本次变更 -->
+
+
+<!-- taiyi:prism-commit-ship-land --> 2026-07-05
+# CHANGELOG: 交付链 — prism commit/ship/land
+
+## Added
+
+- …
+
+## Changed
+
+- …
+
+## Fixed
+
+- …
+
+## Docs / Skills
+
+- [ ] README / AGENTS.md 已同步（若对外行为变化）
+- [ ] OpenSpec / 规格已 archive（若适用）
+
+## Rollback
+
+<!-- 如何回滚本次变更 -->
